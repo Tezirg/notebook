@@ -57,7 +57,7 @@ define([
          [['jupyter-notebook:show-command-palette']],
          ['<add_celltoolbar_reminder>'],
 		 [
-			['eae-notebook:eae-submit'],
+			['<eae-submit>'],
 			'eae-notebook'
 		 ]
         ];
