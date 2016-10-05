@@ -64,12 +64,10 @@ define(function(require){
     var _actions = {
 		'eae-submit':{
             icon: 'fa-play',
-            help_index : 'hb',
             help: 'Submit to eae infrastructure',
             handler : function (env) {
             }
         },
-		
         'edit-command-mode-keyboard-shortcuts': {
             help: 'Open a dialog to edit the command mode keyboard shortcuts',
             handler: function (env) {
