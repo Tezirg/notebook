@@ -55,7 +55,11 @@ define([
             'run_int'],
          ['<add_celltype_list>'],
          [['jupyter-notebook:show-command-palette']],
-         ['<add_celltoolbar_reminder>']
+         ['<add_celltoolbar_reminder>'],
+		 [
+			['eae-notebook:eae-submit'],
+			'eae-notebook'
+		 ]
         ];
         this.construct(grps);
     };
