@@ -395,6 +395,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
                 },
             }
 		};
+		dialog.modal(submit.dialog);
 	};
 
     /**
