@@ -393,7 +393,8 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
                     "class" : "btn-default",
                     "click" : function () {}
                 },
-            };
+            }
+		};
 	};
 
     /**
