@@ -63,7 +63,7 @@ define(function(require){
      **/
     var _actions = {
 		'eae-submit':{
-            icon: 'fa-play',
+            icon: 'fa-upload',
             help: 'Submit to eae infrastructure',
             handler : function (env) {
             }
