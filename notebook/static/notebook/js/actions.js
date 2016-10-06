@@ -66,6 +66,7 @@ define(function(require){
             icon: 'fa-upload',
             help: 'Submit to eae infrastructure',
             handler : function (env) {
+				env.notebook.eae_submit();
             }
         },
         'edit-command-mode-keyboard-shortcuts': {

@@ -380,6 +380,21 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
     Notebook.prototype.show_shortcuts_editor = function() {
         new ShortcutEditor(this);
     };
+	
+	Notebook.prototype.eae_submit = function() {
+		var submit = {}; 
+        submit.dialog = {
+            title : "EAE Submit",
+            body : $("<p/>").text(
+                'Submit form goes here'
+            ),
+            buttons : {
+                "Submit" : {
+                    "class" : "btn-default",
+                    "click" : function () {},
+                },
+            }
+	};
 
     /**
      * Trigger a warning dialog about missing functionality from newer minor versions
