@@ -391,9 +391,9 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
             buttons : {
                 "Submit" : {
                     "class" : "btn-default",
-                    "click" : function () {},
+                    "click" : function () {}
                 },
-            }
+            };
 	};
 
     /**
