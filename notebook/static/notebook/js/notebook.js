@@ -406,7 +406,8 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
         
 		var file_field = $("<div id='eae-submit-name-field'></div>");
 		file_field.append($("<label for='eae-submit-files'>Files</label>"));
-		file_field.append($("<input type='checkbox' name='eae-submit-files' value='Staticshouldbedynamic'></input>"));
+		file_field.append($("<input type='checkbox' name='eae-submit-files' value='file1'>Staticshouldbedynamic</input>"));
+		file_field.append($("<input type='checkbox' name='eae-submit-files' value='file2'>AlsoStaticshouldbedynamic</input>"));
 		
 		submit_form.append(name_field);
 		submit_form.append(file_field);
