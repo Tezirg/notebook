@@ -406,6 +406,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
         
 		var file_field = $("<div id='eae-submit-name-field'></div>");
 		file_field.append($("<div><label for='eae-submit-files'>Files</label></div>"));
+		console.log(this.contents);
 		this.contents.forEach(function(item, idx) {
 			file_field.append($("<div><input type='checkbox' name='eae-submit-files' value='file" + idx.toString() + "'> "+ 
 								item['name'] + "</input></div>"));
