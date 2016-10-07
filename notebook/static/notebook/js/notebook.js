@@ -384,8 +384,8 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 	Notebook.prototype.eae_submit = function() {
 		var task_uuid = function () {
 			var d = new Date().getTime();
-			if(window.performance && typeof window.performance.now === "function"){
-			d += performance.now();; //use high-precision timer if available
+			if (window.performance && typeof window.performance.now === "function"){
+				d += performance.now();; //use high-precision timer if available
 			}
 			var uuid = 'xxxxxxxx'.replace(/[x]/g, function(c) {
 				var r = (d + Math.random()*16)%16 | 0;
@@ -398,13 +398,18 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		var submit = {
 			id: task_uuid()
 		}; 
-		var submit_form = $("<div></div>");
+		var submit_form = $("<form></form>");
 		
 		var name_field = $("<div id='eae-submit-name-field'></div>");
 		name_field.append($("<label for='eae-submit-name'>Task name</label>"));
 		name_field.append($("<input type='text' name='eae-submit-name' value='" + submit.id + "'></input>"));
         
+		var file_field = $("<div id='eae-submit-name-field'></div>");
+		file_field.append($("<label for='eae-submit-files'>Files</label>"));
+		file_field.append($("<input type='checkbox' name='eae-submit-files' value='"Staticshouldbedynamic"'></input>"));
+		
 		submit_form.append(name_field);
+		submit_form.append(file_field);
 		submit.dialog = {
             title : "EAE Submit",
             body : submit_form,
