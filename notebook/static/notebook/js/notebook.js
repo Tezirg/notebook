@@ -382,12 +382,32 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
     };
 	
 	Notebook.prototype.eae_submit = function() {
-		var submit = {}; 
-        submit.dialog = {
+		var task_uuid = function () {
+			var d = new Date().getTime();
+			if(window.performance && typeof window.performance.now === "function"){
+			d += performance.now();; //use high-precision timer if available
+			}
+			var uuid = 'xxxxxxxx'.replace(/[x]/g, function(c) {
+				var r = (d + Math.random()*16)%16 | 0;
+				d = Math.floor(d/16);
+				return (r&0x3|0x8)).toString(16);
+			});
+			return uuid;
+		};
+		
+		var submit = {
+			id: task_uuid()
+		}; 
+		var submit_form = $("<div></div>");
+		
+		var name_field = $("<div id='eae-submit-name-field'></div>");
+		name_field.append($("<label for='eae-submit-name'>Task name</label>"));
+		name_field.append($("<input type='text' name='eae-submit-name' value='" + submit.id + "'></input>"));
+        
+		submit_form.append(name_field);
+		submit.dialog = {
             title : "EAE Submit",
-            body : $("<p/>").text(
-                'Submit form goes here'
-            ),
+            body : submit_form,
             buttons : {
                 "Submit" : {
                     "class" : "btn-default",
