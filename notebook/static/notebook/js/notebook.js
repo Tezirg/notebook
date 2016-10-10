@@ -414,9 +414,9 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				console.log("Files = ");
 				console.log(list);
 				
-				list.forEach(function(item, idx) {
-				file_field.append($("<div><input type='checkbox' name='eae-submit-files' value='file" + idx.toString() + "'> "+ 
-									item['name'] + "</input></div>"));
+				list.content.forEach(function(item, idx) {
+					file_field.append($("<div><input type='checkbox' name='eae-submit-files' value='file" + idx.toString() + "'> "+ 
+										item['name'] + "</input></div>"));
 				});
 			},
 			function(error) {
