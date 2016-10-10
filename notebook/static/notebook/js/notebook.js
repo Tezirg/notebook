@@ -407,7 +407,15 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
         
 		var file_field = $("<div id='eae-submit-name-field'></div>");
 		file_field.append($("<div><label for='eae-submit-files'>Files</label></div>"));
-		//console.log(this.contents);
+		this.contents.list_contents(this.notebook_path).then(
+			function(list) {
+				console.log("Files = ");
+				console.log(list);
+			},
+			function(error) {
+                file_field.append($("<div>Error retreiving file list</div>"));
+            }
+        );
 		
 		/*
 		this.contents.forEach(function(item, idx) {
