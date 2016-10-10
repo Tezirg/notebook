@@ -51,6 +51,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
      * @param {string}          options.notebook_name
      */
     export function Notebook(selector, options) {
+		console.log(options);
         this.config = options.config;
         this.class_config = new configmod.ConfigWithDefaults(this.config, 
                                         Notebook.options_default, 'Notebook');
@@ -406,13 +407,15 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
         
 		var file_field = $("<div id='eae-submit-name-field'></div>");
 		file_field.append($("<div><label for='eae-submit-files'>Files</label></div>"));
-		console.log(this.contents);
+		//console.log(this.contents);
+		
+		/*
 		this.contents.forEach(function(item, idx) {
 			file_field.append($("<div><input type='checkbox' name='eae-submit-files' value='file" + idx.toString() + "'> "+ 
 								item['name'] + "</input></div>"));
 		});
-		
-		//file_field.append($("<div><input type='checkbox' name='eae-submit-files' value='file2'>AlsoStaticshouldbedynamic</input></div>"));
+		*/
+		file_field.append($("<div><input type='checkbox' name='eae-submit-files' value='file2'>AlsoStaticshouldbedynamic</input></div>"));
 		
 		submit_form.append(name_field);
 		submit_form.append(file_field);
