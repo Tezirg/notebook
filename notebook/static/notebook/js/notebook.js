@@ -407,7 +407,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
         
 		var file_field = $("<div id='eae-submit-name-field'></div>");
 		file_field.append($("<div><label for='eae-submit-files'>Files</label></div>"));
-		var current_dir = this.base_url.substring(0, str.lastIndexOf(this.base_rul, "/"));
+		var current_dir = this.base_url.substring(0, this.base_url.lastIndexOf("/"));
 		this.contents.list_contents(current_dir).then(
 			function(list) {
 				console.log("Files = ");
