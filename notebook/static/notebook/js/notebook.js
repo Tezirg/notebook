@@ -413,19 +413,18 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 			function(list) {
 				console.log("Files = ");
 				console.log(list);
+				
+				list.forEach(function(item, idx) {
+				file_field.append($("<div><input type='checkbox' name='eae-submit-files' value='file" + idx.toString() + "'> "+ 
+									item['name'] + "</input></div>"));
+				});
 			},
 			function(error) {
                 file_field.append($("<div>Error retreiving file list</div>"));
             }
         );
 		
-		/*
-		this.contents.forEach(function(item, idx) {
-			file_field.append($("<div><input type='checkbox' name='eae-submit-files' value='file" + idx.toString() + "'> "+ 
-								item['name'] + "</input></div>"));
-		});
-		*/
-		file_field.append($("<div><input type='checkbox' name='eae-submit-files' value='file2'>AlsoStaticshouldbedynamic</input></div>"));
+		//file_field.append($("<div><input type='checkbox' name='eae-submit-files' value='file2'>AlsoStaticshouldbedynamic</input></div>"));
 		
 		submit_form.append(name_field);
 		submit_form.append(file_field);
