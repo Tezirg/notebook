@@ -63,4 +63,5 @@ function(utils) {
         return utils.promising_ajax(this.api_notebook("submit"), settings);
 	};
 	
+	return { Eae: Eae };
 });
