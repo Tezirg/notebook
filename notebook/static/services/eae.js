@@ -32,7 +32,7 @@ function(utils) {
             type : "GET",
             dataType : "json",
         };
-        var url = this.api_eae("utilities/isalive");
+        var url = this.api_eae("utilities/isAlive");
         return utils.promising_ajax(url, settings);
     };
 	
