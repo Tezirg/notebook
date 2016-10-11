@@ -15,7 +15,7 @@ import codecell from 'notebook/js/codecell';
 import moment from 'moment';
 import configmod from 'services/config';
 import session from 'services/sessions/session';
-import eae from 'services/eae';
+import eaemod from 'services/eae';
 import celltoolbar from 'notebook/js/celltoolbar';
 import marked from 'components/marked/lib/marked';
 import CodeMirror from 'codemirror/lib/codemirror';
@@ -52,7 +52,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
      * @param {string}          options.notebook_name
      */
     export function Notebook(selector, options) {
-		this.eae_service = new eae.Eae(options);
+		this.eae_service = new eaemod.Eae(options);
 		console.log(options);
         this.config = options.config;
         this.class_config = new configmod.ConfigWithDefaults(this.config, 
