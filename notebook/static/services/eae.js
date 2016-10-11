@@ -29,8 +29,7 @@ function(utils) {
         var settings = {
             processData : false,
             cache : false,
-            type : "GET",
-            dataType : "json",
+            type : "GET"
         };
         var url = this.api_eae("utilities/isAlive");
         return utils.promising_ajax(url, settings);
