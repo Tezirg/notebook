@@ -15,6 +15,7 @@ import codecell from 'notebook/js/codecell';
 import moment from 'moment';
 import configmod from 'services/config';
 import session from 'services/sessions/session';
+import eae from 'services/eae';
 import celltoolbar from 'notebook/js/celltoolbar';
 import marked from 'components/marked/lib/marked';
 import CodeMirror from 'codemirror/lib/codemirror';
@@ -51,6 +52,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
      * @param {string}          options.notebook_name
      */
     export function Notebook(selector, options) {
+		this.eae_service = new eae.Eae(options);
 		console.log(options);
         this.config = options.config;
         this.class_config = new configmod.ConfigWithDefaults(this.config, 
@@ -383,6 +385,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
     };
 	
 	Notebook.prototype.eae_submit = function() {
+		var that = this;
 		var task_uuid = function () {
 			var d = new Date().getTime();
 			if (window.performance && typeof window.performance.now === "function"){
@@ -434,7 +437,22 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
             buttons : {
                 "Submit" : {
                     "class" : "btn-default",
-                    "click" : function () {}
+                    "click" : function () {
+						that.eae_service.PreSubmit(submit).then(
+							function(PreSubmit_res) {
+								that.eae_service.Submit(submit).then(
+									function(Submit_res) {
+										console.log(submit_success);
+									},
+									function(Submit_error) {
+										console.log("Submit_error");
+									}
+								);
+							},
+							function(PreSubmit_error) {
+								console.log("Presubmit_error");
+							});
+					}
                 },
             }
 		};

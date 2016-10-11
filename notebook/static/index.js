@@ -67,4 +67,5 @@ module.exports = {
     'services/kernels/comm': require('./services/kernels/comm.js'),
     'services/kernels/kernel': require('./services/kernels/kernel.js'),
     'services/config': require('./services/config.js'),
+    'services/eae': require('./services/eae.js'),
 };
