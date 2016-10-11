@@ -1,9 +1,8 @@
-__webpack_public_path__ = window['staticURL'] + 'services/built/';
-
-define(function(require) {
+define([
+    'base/js/utils',
+    ],
+function(utils) {
     "use strict";
-
-    var utils = require('base/js/utils');
 
     var Eae = function(options) {
 		this.eae_url = "http://localhost:8080";
