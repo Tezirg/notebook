@@ -431,6 +431,16 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		
 		submit_form.append(name_field);
 		submit_form.append(file_field);
+		
+		that.eae_service.isAlive().then(
+			function(alive_ok) {
+				console.log("Alive OK");
+			},
+			function(alive_nok) {
+				console.log("Alive NOK");
+			}
+		);
+		
 		submit.dialog = {
             title : "EAE Submit",
             body : submit_form,
