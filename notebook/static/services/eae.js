@@ -11,8 +11,7 @@ function(utils) {
 	
 	Eae.prototype.api_eae = function() {
 		var url_parts = [
-            this.eae_url, 'interfaceEAE/',
-            utils.url_join_encode.apply(null, arguments),
+            this.eae_url, 'interfaceEAE/', arguments
         ];
         return utils.url_path_join.apply(null, url_parts);
 	}
@@ -27,11 +26,10 @@ function(utils) {
 	Eae.prototype.isAlive = function () {
 		console.log("Eae IsAlive:");
         var settings = {
-            processData : false,
-            cache : false,
             type : "GET"
         };
         var url = this.api_eae("utilities/isAlive");
+		console.log(url);
         return utils.promising_ajax(url, settings);
     };
 	
