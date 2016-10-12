@@ -27,7 +27,10 @@ function(utils) {
 	Eae.prototype.isAlive = function () {
 		console.log("Eae IsAlive:");
         var settings = {
-            type : "GET"
+            type : "GET",
+			headers: {
+				Access-Control-Allow-Origin: "*"
+			}
         };
         var url = this.api_eae("utilities/isAlive");
 		console.log(url);
