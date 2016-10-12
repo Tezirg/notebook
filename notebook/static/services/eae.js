@@ -7,6 +7,8 @@ function(utils) {
     var Eae = function(options) {
 		this.eae_url = "146.169.15.140:8080";
 		this.base_rul = options.base_url;
+		console.log(options);
+		console.log(this.base_url);
     };
 	
 	Eae.prototype.api_eae = function() {
