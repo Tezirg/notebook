@@ -29,7 +29,7 @@ function(utils) {
         var settings = {
             type : "GET",
 			headers : {
-				Access-Control-Allow-Origin: "*"
+				"Access-Control-Allow-Origin" : "*"
 			}
         };
         var url = this.api_eae("utilities/isAlive");
