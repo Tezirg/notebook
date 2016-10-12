@@ -5,7 +5,7 @@ function(utils) {
     "use strict";
 
     var Eae = function(options) {
-		this.eae_url = "146.169.15.140:8080";
+		this.eae_url = "146.169.15.140:8081";
 		this.base_url = options.base_url;
     };
 	
