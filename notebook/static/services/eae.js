@@ -11,7 +11,8 @@ function(utils) {
 	
 	Eae.prototype.api_eae = function() {
 		var url_parts = [
-            this.eae_url, 'interfaceEAE/', arguments
+            this.eae_url, 'interfaceEAE/', 
+			utils.url_join_encode.apply(null, arguments)
         ];
         return utils.url_path_join.apply(null, url_parts);
 	}
