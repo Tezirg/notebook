@@ -28,7 +28,7 @@ function(utils) {
 		console.log("Eae IsAlive:");
         var settings = {
             type : "GET",
-			headers: {
+			headers : {
 				Access-Control-Allow-Origin: "*"
 			}
         };
