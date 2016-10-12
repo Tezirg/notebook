@@ -5,7 +5,7 @@ function(utils) {
     "use strict";
 
     var Eae = function(options) {
-		this.eae_url = "https://146.169.15.140:8080";
+		this.eae_url = "146.169.15.140:8080";
 		this.base_rul = options.base_url;
     };
 	
@@ -14,7 +14,7 @@ function(utils) {
             this.eae_url, 'interfaceEAE/', 
 			utils.url_join_encode.apply(null, arguments)
         ];
-        return utils.url_path_join.apply(null, url_parts);
+        return "https://" + utils.url_path_join.apply(null, url_parts);
 	}
 	Eae.prototype.api_notebook = function() {
         var url_parts = [
