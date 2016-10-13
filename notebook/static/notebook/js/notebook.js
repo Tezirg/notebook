@@ -461,14 +461,12 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		that.eae_service.isAlive().then(
 			function(alive_ok) {
 				console.log("Alive OK");
-				submit.dialog.buttons["Submit"]["disabled"] = true;
-				submit.dialog.buttons["Submit"]["class"] = "btn-danger";
+				submit.dialog.buttons["Submit"]["class"] = "btn-danger disabled";
 				dialog.modal(submit.dialog);
 			},
 			function(alive_nok) {
 				console.log("Alive NOK");
-				submit.dialog.buttons["Submit"]["disabled"] = true;
-				submit.dialog.buttons["Submit"]["class"] = "btn-danger";
+				submit.dialog.buttons["Submit"]["class"] = "btn-danger disabled";
 				dialog.modal(submit.dialog);
 			}
 		);
