@@ -440,10 +440,10 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				"class" : "btn-success",
 				"click" : function () {
 					that.eae_service.PreSubmit(submit).then(
-							function(PreSubmit_res) {
+							function(PreSubmit_success) {
 								that.eae_service.Submit(submit).then(
-									function(Submit_res) {
-										console.log(submit_success);
+									function(Submit_success) {
+										console.log("Submit_success");
 									},
 									function(Submit_error) {
 										console.log("Submit_error");
@@ -461,7 +461,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		that.eae_service.isAlive().then(
 			function(alive_ok) {
 				console.log("Alive OK");
-				submit.dialog.buttons["Submit"]["class"] = "btn-danger disabled";
 				dialog.modal(submit.dialog);
 			},
 			function(alive_nok) {

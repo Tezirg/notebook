@@ -271,6 +271,7 @@ class NotebookWebApplication(web.Application):
         handlers.extend(load_handlers('services.nbconvert.handlers'))
         handlers.extend(load_handlers('services.kernelspecs.handlers'))
         handlers.extend(load_handlers('services.security.handlers'))
+        handlers.extend(load_handlers('services.eae.handlers'))
         
         # BEGIN HARDCODED WIDGETS HACK
         # TODO: Remove on notebook 5.0

@@ -567,6 +567,17 @@ paths:
           schema:
             type: object
 
+  /eae/submit:
+    post:
+      summary: Prepare submit to Eae
+      tags:
+        - eae
+      responses:
+        200:
+          description: Prep ok
+          schema:
+            type: object
+
 definitions:
   KernelSpec:
     description: Kernel spec (contents of kernel.json)
