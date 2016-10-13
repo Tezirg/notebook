@@ -39,7 +39,9 @@ function(utils) {
 		console.log(submit_data);
 		var settings = {
             type : "POST",
-            data : submit_data,
+            data :  {
+				id: submit_data.id
+			},
             dataType: "json",
             contentType: 'application/json',
         };
