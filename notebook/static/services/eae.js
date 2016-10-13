@@ -34,13 +34,12 @@ function(utils) {
         return utils.promising_ajax(url, settings);
     };
 	
-	Eae.prototype.Submit = function(data) {
+	Eae.prototype.Submit = function(submit_data) {
 		console.log("Eae Submit:");
-		console.log(data);
+		console.log(submit_data);
 		var settings = {
-            processData : false,
             type : "POST",
-            data : JSON.stringify(data),
+            data : submit_data,
             dataType: "json",
             contentType: 'application/json',
         };
