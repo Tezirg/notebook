@@ -17,8 +17,8 @@ class EaeHandler(APIHandler):
 		POST /api/eae/submit
 		"""
 
-		data = self.get_json_body();
-		print(data);
+		#data = self.get_json_body();
+		#print(data);
 		
 		self.set_status(200);
 		self.set_header('Content-Type', 'application/json');
