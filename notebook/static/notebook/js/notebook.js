@@ -432,23 +432,14 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		submit_form.append(name_field);
 		submit_form.append(file_field);
 		
-		that.eae_service.isAlive().then(
-			function(alive_ok) {
-				console.log("Alive OK");
-			},
-			function(alive_nok) {
-				console.log("Alive NOK");
-			}
-		);
-		
 		submit.dialog = {
-            title : "EAE Submit",
-            body : submit_form,
-            buttons : {
-                "Submit" : {
-                    "class" : "btn-default",
-                    "click" : function () {
-						that.eae_service.PreSubmit(submit).then(
+			title : "EAE Submit",
+			body : submit_form,
+			buttons : {
+				"Submit" : {
+				"class" : "btn-success",
+				"click" : function () {
+					that.eae_service.PreSubmit(submit).then(
 							function(PreSubmit_res) {
 								that.eae_service.Submit(submit).then(
 									function(Submit_res) {
@@ -463,10 +454,26 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 								console.log("Presubmit_error");
 							});
 					}
-                },
-            }
+				},
+			}
 		};
-		dialog.modal(submit.dialog);
+		
+		that.eae_service.isAlive().then(
+			function(alive_ok) {
+				console.log("Alive OK");
+				submit.dialog.buttons["Submit"]["disabled"] = true;
+				submit.dialog.buttons["Submit"]["class"] = "btn-danger";
+				dialog.modal(submit.dialog);
+			},
+			function(alive_nok) {
+				console.log("Alive NOK");
+				submit.dialog.buttons["Submit"]["disabled"] = true;
+				submit.dialog.buttons["Submit"]["class"] = "btn-danger";
+				dialog.modal(submit.dialog);
+			}
+		);
+		
+		
 	};
 
     /**
