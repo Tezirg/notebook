@@ -401,7 +401,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		
 		var submit = {
 			payload : {
-				id : task_uuid()
+				id : utils.uuid()
 			}
 		}; 
 		var submit_form = $("<form></form>");
