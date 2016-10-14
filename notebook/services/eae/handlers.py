@@ -17,7 +17,7 @@ class EaeHandler(APIHandler):
 		POST /api/eae/submit
 		"""
 
-		data = self.request.body;
+		data = self.get_json_body();
 		print(data);
 		
 		self.set_status(200);

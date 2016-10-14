@@ -55,7 +55,8 @@ function(utils) {
 		};
 		var settings = {
             type : "POST",
-            data: payload,
+			processData: false,
+            data: JSON.stringify(payload),
             contentType: 'application/json',
             dataType : "json",
         };
