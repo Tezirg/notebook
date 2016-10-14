@@ -28,7 +28,8 @@ class EaeHandler(APIHandler):
 		for f in data['files']:
 			if f.rfind(".ipynb") != -1:
 				model = self.contents_manager.get(path=f)
-				scripts.append(exporter.from_notebook_node(model['content']));
+				output, ressources = exporter.from_notebook_node(model['content']);
+				scripts.append(output);
 		pprint.pprint(scripts);
 		
 		self.set_status(200);
