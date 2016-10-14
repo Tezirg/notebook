@@ -37,9 +37,11 @@ function(utils) {
 	Eae.prototype.Submit = function(submit_data) {
 		console.log("Eae Submit:");
 		console.log(submit_data);
+		var payload = submit_data.payload;
 		var settings = {
             type : "POST",
-            data :  submit_data,
+			processData: false,
+            data: JSON.stringify(payload),
             dataType: "json",
             contentType: 'application/json',
         };
@@ -50,9 +52,7 @@ function(utils) {
 	Eae.prototype.PreSubmit = function(submit_data) {
 		console.log("Eae PreSubmit:");
 		console.log(submit_data);
-		var payload = {
-			id: submit_data.id
-		};
+		var payload = submit_data.payload;
 		var settings = {
             type : "POST",
 			processData: false,

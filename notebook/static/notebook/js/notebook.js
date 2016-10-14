@@ -400,13 +400,15 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		};
 		
 		var submit = {
-			id: task_uuid()
+			payload : {
+				id : task_uuid()
+			}
 		}; 
 		var submit_form = $("<form></form>");
 		
 		var name_field = $("<div id='eae-submit-name-field'></div>");
 		name_field.append($("<label for='eae-submit-name'>Task name</label>"));
-		name_field.append($("<input type='text' name='eae-submit-name' value='" + submit.id + "'></input>"));
+		name_field.append($("<input type='text' name='eae-submit-name' value='" + submit.payload.id + "'></input>"));
         
 		var file_field = $("<div id='eae-submit-name-field'></div>");
 		file_field.append($("<div><label for='eae-submit-files'>Files</label></div>"));
@@ -418,16 +420,15 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				console.log(list);
 				
 				list.content.forEach(function(item, idx) {
-					file_field.append($("<div><input type='checkbox' name='eae-submit-files' value='file" + idx.toString() + "'> "+ 
+					file_field.append($("<div><input type='checkbox' name='eae-submit-files'" +  
+										"value='" + item['path'] + item['name'] + "'> " + 
 										item['name'] + "</input></div>"));
 				});
 			},
 			function(error) {
-                file_field.append($("<div>Error retreiving file list</div>"));
+                file_field.append($("<div>Error retrieving file list</div>"));
             }
         );
-		
-		//file_field.append($("<div><input type='checkbox' name='eae-submit-files' value='file2'>AlsoStaticshouldbedynamic</input></div>"));
 		
 		submit_form.append(name_field);
 		submit_form.append(file_field);
@@ -439,6 +440,16 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				"Submit" : {
 				"class" : "btn-success",
 				"click" : function () {
+					//Get the data from the form
+					submit.payload['name'] = $('input[name=eae-submit-name]').val(); 
+					submit.payload['files'] = [];
+					$('input[name=eae-submit-files]').forEach(function(item, idx) {
+						if (item.checked) {
+							submit.payload.files.append(item.val());
+						}
+					});
+					
+					//Perform ajax queries
 					that.eae_service.PreSubmit(submit).then(
 							function(PreSubmit_success) {
 								that.eae_service.Submit(submit).then(
@@ -458,12 +469,13 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 			}
 		};
 		
+		//Perform ajax query on Eae status befor diaply form
 		that.eae_service.isAlive().then(
-			function(alive_ok) {
+			function(alive_ok) { //Success
 				console.log("Alive OK");
 				dialog.modal(submit.dialog);
 			},
-			function(alive_nok) {
+			function(alive_nok) { // Fail. Don't allow submitting
 				console.log("Alive NOK");
 				submit.dialog.buttons["Submit"]["class"] = "btn-danger disabled";
 				dialog.modal(submit.dialog);
