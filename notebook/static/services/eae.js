@@ -49,7 +49,7 @@ function(utils) {
 	
 	Eae.prototype.PreSubmit = function(submit_data) {
 		console.log("Eae PreSubmit:");
-		console.log(data);
+		console.log(submit_data);
 		var settings = {
             type : "POST",
             data: submit_data,
