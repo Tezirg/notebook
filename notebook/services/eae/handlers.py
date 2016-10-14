@@ -33,7 +33,7 @@ class EaeHandler(APIHandler):
 		for f in data['files']:
 			if f.rfind(".ipynb") != -1:
 				model = self.contents_manager.get(path=f)
-				output, ressources = exporter.from_notebook_node(model['content']);
+				output, resources = exporter.from_notebook_node(model['content']);
 				to_zip.append({ "content": output, "filename": os.path.splitext(model['name'])[0] + resources['output_extension'] });
 			else:
 				model = self.contents_manager.get(path=f)
