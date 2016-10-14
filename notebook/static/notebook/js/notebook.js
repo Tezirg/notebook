@@ -421,7 +421,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				
 				list.content.forEach(function(item, idx) {
 					file_field.append($("<div><input type='checkbox' name='eae-submit-files'" +  
-										"value='" + item['path'] + item['name'] + "'> " + 
+										"value='" + item['path'] + "'> " + 
 										item['name'] + "</input></div>"));
 				});
 			},
@@ -441,9 +441,9 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				"class" : "btn-success",
 				"click" : function () {
 					//Get the data from the form
-					submit.payload['name'] = $('input[name=eae-submit-name]').val(); 
+					submit.payload['name'] = $("input[name='eae-submit-name']").val(); 
 					submit.payload['files'] = [];
-					$('input[name=eae-submit-files]').forEach(function(item, idx) {
+					$("input[name='eae-submit-files']").forEach(function(item, idx) {
 						if (item.checked) {
 							submit.payload.files.append(item.val());
 						}
