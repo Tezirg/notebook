@@ -3,6 +3,7 @@ import json
 from tornado import gen, web
 
 from ...base.handlers import APIHandler, json_errors
+from ...nbconvert.handlers import get_exporter
 from jupyter_client.jsonutil import date_default
 from notebook.utils import url_path_join, url_escape
 
@@ -19,6 +20,9 @@ class EaeHandler(APIHandler):
 
 		data = self.get_json_body();
 		print(data);
+		
+		exporter = get_exporter("script");
+		print("Got the script exporter");
 		
 		self.set_status(200);
 		self.set_header('Content-Type', 'application/json');
