@@ -421,7 +421,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		submit_form.append(file_field);
 		
 		submit.dialog = {
-			keyboard_manager: this.keyboard_manager,
+			keyboard_manager: that.keyboard_manager,
 			title : "EAE Submit",
 			body : submit_form,
 			buttons : {
