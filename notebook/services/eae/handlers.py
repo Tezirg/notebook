@@ -23,6 +23,12 @@ class EaeHandler(APIHandler):
 		
 		exporter = get_exporter("script");
 		print("Got the script exporter");
+		scripts = []
+		for f in data['files']:
+			if f.rfind(".ipynb") != -1:
+				model = self.contents_manager.get(path=f)
+				scripts.append(from_notebook_node(model['content']));
+		print(scripts);
 		
 		self.set_status(200);
 		self.set_header('Content-Type', 'application/json');
