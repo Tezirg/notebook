@@ -386,19 +386,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 	
 	Notebook.prototype.eae_submit = function() {
 		var that = this;
-		var task_uuid = function () {
-			var d = new Date().getTime();
-			if (window.performance && typeof window.performance.now === "function"){
-				d += performance.now();; //use high-precision timer if available
-			}
-			var uuid = 'xxxxxxxx'.replace(/[x]/g, function(c) {
-				var r = (d + Math.random()*16)%16 | 0;
-				d = Math.floor(d/16);
-				return r.toString(16);
-			});
-			return uuid;
-		};
-		
 		var submit = {
 			payload : {
 				id : utils.uuid()
@@ -434,6 +421,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		submit_form.append(file_field);
 		
 		submit.dialog = {
+			keyboard_manager: this.keyboard_manager,
 			title : "EAE Submit",
 			body : submit_form,
 			buttons : {
@@ -450,17 +438,17 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					
 					//Perform ajax queries
 					that.eae_service.PreSubmit(submit).then(
-							function(PreSubmit_success) {
+							function(preSubmitSuccess) {
 								that.eae_service.Submit(submit).then(
-									function(Submit_success) {
+									function(submit_success) {
 										console.log("Submit_success");
 									},
-									function(Submit_error) {
+									function(submit_error) {
 										console.log("Submit_error");
 									}
 								);
 							},
-							function(PreSubmit_error) {
+							function(preSubmitError) {
 								console.log("Presubmit_error");
 							});
 					}
