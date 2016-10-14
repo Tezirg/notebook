@@ -50,9 +50,12 @@ function(utils) {
 	Eae.prototype.PreSubmit = function(submit_data) {
 		console.log("Eae PreSubmit:");
 		console.log(submit_data);
+		var payload = {
+			id: submit_data.id
+		};
 		var settings = {
             type : "POST",
-            data: submit_data,
+            data: payload,
             contentType: 'application/json',
             dataType : "json",
         };
