@@ -443,7 +443,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					//Get the data from the form
 					submit.payload['name'] = $("input[name='eae-submit-name']").val(); 
 					submit.payload['files'] = [];
-					$("input[name='eae-submit-files']").forEach(function(item, idx) {
+					$("input[name='eae-submit-files']").each(function(idx, item) {
 						if (item.checked) {
 							submit.payload.files.append(item.val());
 						}
