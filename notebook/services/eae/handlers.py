@@ -1,4 +1,5 @@
 import json
+import pprint
 
 from tornado import gen, web
 
@@ -28,7 +29,7 @@ class EaeHandler(APIHandler):
 			if f.rfind(".ipynb") != -1:
 				model = self.contents_manager.get(path=f)
 				scripts.append(exporter.from_notebook_node(model['content']));
-		print(scripts);
+		pprint.pprint(scripts);
 		
 		self.set_status(200);
 		self.set_header('Content-Type', 'application/json');
