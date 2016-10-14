@@ -37,12 +37,21 @@ class EaeHandler(APIHandler):
 				to_zip.append({ "content": output, "filename": os.path.splitext(model['name'])[0] + resources['output_extension'] });
 			else:
 				model = self.contents_manager.get(path=f)
-				to_zip.append({ "content": model['content'], "filename": model['name'] });
+				to_zip.append({ "filename": model['name'], "content": model['content']});
 		pprint.pprint(to_zip);
+		
+		print("TODO: Zip file to /tmp/uuid.zip et hop on est boooooon");
+		zip_path = "/tmp/" + data['id'] + '.zip';
+		# Prepare the zip file
+		zipf = zipfile.ZipFile(zip_path, mode='w', compression=zipfile.ZIP_DEFLATED)
+		for entry in to_zip:
+			zipf.writestr(entry['filename'], entry['content'])
+		zipf.close()
+		
 		
 		self.set_status(200);
 		self.set_header('Content-Type', 'application/json');
-		self.finish(json.dumps({ "test" : True }, default=date_default));
+		self.finish(json.dumps({ "id": data['id'], "zip": zip_path }, default=date_default));
 		
 #-----------------------------------------------------------------------------
 # URL to handler mappings
