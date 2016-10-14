@@ -39,9 +39,7 @@ function(utils) {
 		console.log(submit_data);
 		var settings = {
             type : "POST",
-            data :  {
-				id: submit_data.id
-			},
+            data :  submit_data,
             dataType: "json",
             contentType: 'application/json',
         };
@@ -49,17 +47,17 @@ function(utils) {
         return utils.promising_ajax(url, settings);
     };
 	
-	Eae.prototype.PreSubmit = function(data) {
+	Eae.prototype.PreSubmit = function(submit_data) {
 		console.log("Eae PreSubmit:");
 		console.log(data);
 		var settings = {
-            processData : false,
             type : "POST",
-            data: data,
+            data: submit_data,
             contentType: 'application/json',
             dataType : "json",
         };
-        return utils.promising_ajax(this.api_notebook("submit"), settings);
+		var url = this.api_notebook("submit");
+        return utils.promising_ajax(url, settings);
 	};
 	
 	return { Eae: Eae };
