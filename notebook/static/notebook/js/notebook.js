@@ -401,6 +401,12 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		main_field.append($("<div><label for='eae-submit-main'>Select main script :</label></div>"));
 		var main_select = $("<select name='eae-submit-main-items'></select>");
 		main_field.append(main_select);
+		main_select.change(
+				function(event) {
+					console.log(event);
+					console.log($(this));
+				});
+		
 		
 		var file_field = $("<div id='eae-submit-file-field'></div>");
 		file_field.append($("<div><label for='eae-submit-files'>Select data files :</label></div>"));
@@ -416,10 +422,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 								"value='" + item['name'] + "'> " + 
 								item['name'] + "</option>");
 					main_select.append(opt);
-					opt.click(function(event) {
-						console.log(event);
-						console.log($(this));
-					});
 
 					file_field.append($("<div><input type='checkbox' name='eae-submit-files'" +  
 										"value='" + item['path'] + "'> " + 
