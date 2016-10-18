@@ -405,8 +405,8 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				function(event) {
 					console.log(event);
 					console.log($(this));
-					$("input[name='eae-submit-files']").attr('disabled', 'false');
-					$("[filename='" + $(this).val() + "']").attr('disabled', 'true');
+					$("input[name='eae-submit-files']").prop('disabled', false);
+					$("input[filename='" + $(this).val() + "']").prop('disabled', true);
 				});
 		
 		
@@ -420,14 +420,14 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				console.log(list);
 				
 				list.content.forEach(function(item, idx) {
-					var opt = $("<option name='eae-submit-main-file'" + 
-								"value='" + item['name'] + "'> " + 
+					var opt = $("<option name='eae-submit-main-file' " + 
+								"value='" + item['name'] + "'>" + 
 								item['name'] + "</option>");
 					main_select.append(opt);
 
 					file_field.append($("<div><input type='checkbox' name='eae-submit-files' " +
 										"filename='" + item['name'] + "' " + 					
-										"value='" + item['path'] + "'> " + 
+										"value='" + item['path'] + "'>" + 
 										item['name'] + "</input></div>"));
 				});
 			},
