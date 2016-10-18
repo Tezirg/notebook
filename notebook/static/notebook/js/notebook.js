@@ -450,8 +450,13 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				"click" : function () {
 					//Get the data from the form
 					submit.payload['name'] = $("input[name='eae-submit-name']").val(); 
+					submit.payload['main'] = $("select[name='eae-submit-main-items']").val();
 					submit.payload['files'] = [];
 					$("input[name='eae-submit-files']:checked").each(function(idx, item) {
+						submit.payload.files.push($(item).val());
+						return true;
+					});
+					$("input[name='eae-submit-files']:disabled").each(function(idx, item) {
 						submit.payload.files.push($(item).val());
 						return true;
 					});
