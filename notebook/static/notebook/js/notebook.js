@@ -414,7 +414,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					var opt = $("<option name='eae-submit-main-file'" +  
 								"value='" + item['name'] + "'> " + 
 								item['name'] + "</option>");
-					main_field.append(opt);
+					main_field.children().append(opt);
 
 					file_field.append($("<div><input type='checkbox' name='eae-submit-files'" +  
 										"value='" + item['path'] + "'> " + 
