@@ -429,6 +429,9 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 										"filename='" + item['name'] + "' " + 					
 										"value='" + item['path'] + "'>" + 
 										item['name'] + "</input></div>"));
+					if (idx == 0) {
+						$("input[name='eae-submit-files'][value='" + item['path']+ "']").prop('disabled', true);
+					}
 				});
 			},
 			function(error) {
