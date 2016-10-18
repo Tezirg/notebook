@@ -404,7 +404,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		main_select.change(
 				function(event) {
 					console.log(event);
-					console.log($(this).val());
+					console.log($(this));
 					$("input[name='eae-submit-files']").attr('disabled', '');
 					$("input[name='eae-submit-files'][value='" + $(this).attr("path") + "']").attr('disabled', 'disabled');
 				});
@@ -421,7 +421,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				
 				list.content.forEach(function(item, idx) {
 					var opt = $("<option name='eae-submit-main-file'" +  
-								"path='" + item['path'] + " " + 
+								"path='" + item['path'] + "'" + 
 								"value='" + item['name'] + "'> " + 
 								item['name'] + "</option>");
 					main_select.append(opt);
