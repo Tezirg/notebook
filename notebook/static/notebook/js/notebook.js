@@ -405,8 +405,8 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				function(event) {
 					console.log(event);
 					console.log($(this).val());
-					$("input[name='eae-submit-files']").enable();
-					$("input[name='eae-submit-files'][path='" + $(this).val() + "']").disable();
+					$("input[name='eae-submit-files']").attr('disabled', '');
+					$("input[name='eae-submit-files'][path='" + $(this).val() + "']").attr('disabled', 'disabled');
 				});
 		
 		
