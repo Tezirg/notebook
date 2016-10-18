@@ -397,8 +397,12 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		name_field.append($("<label for='eae-submit-name'>Task name</label>"));
 		name_field.append($("<input type='text' name='eae-submit-name' value='" + submit.payload.id + "'></input>"));
         
-		var file_field = $("<div id='eae-submit-name-field'></div>");
-		file_field.append($("<div><label for='eae-submit-files'>Files</label></div>"));
+		var main_field = $("<div id='eae-submit-main-field'></div>");
+		main_field.append($("<div><label for='eae-submit-main'>Select main script :</label></div>"));
+		main_field.append($("<div><select name='eae-submit-main-items'></select></div>"));
+		
+		var file_field = $("<div id='eae-submit-file-field'></div>");
+		file_field.append($("<div><label for='eae-submit-files'>Select data files :</label></div>"));
 		var current_dir = this.notebook_path.substring(0, this.notebook_path.lastIndexOf("/"));
 		console.log(current_dir);
 		this.contents.list_contents(current_dir).then(
@@ -407,6 +411,11 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				console.log(list);
 				
 				list.content.forEach(function(item, idx) {
+					var opt = $("<option name='eae-submit-main-file'" +  
+								"value='" + item['name'] + "'> " + 
+								item['name'] + "</option>");
+					main_field.append(opt);
+
 					file_field.append($("<div><input type='checkbox' name='eae-submit-files'" +  
 										"value='" + item['path'] + "'> " + 
 										item['name'] + "</input></div>"));
@@ -440,6 +449,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					that.eae_service.PreSubmit(submit).then(
 							function(preSubmitSuccess) {
 								console.log(preSubmitSuccess);
+								submit.payload.zip = preSubmitSuccess.zip;
 								that.eae_service.Submit(submit).then(
 									function(submit_success) {
 										console.log("Submit_success");
