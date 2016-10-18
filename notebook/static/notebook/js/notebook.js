@@ -425,12 +425,13 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 								item['name'] + "</option>");
 					main_select.append(opt);
 
-					file_field.append($("<div><input type='checkbox' name='eae-submit-files' " +
-										"filename='" + item['name'] + "' " + 					
-										"value='" + item['path'] + "'>" + 
-										item['name'] + "</input></div>"));
-					if (idx == 0) {
-						$("input[name='eae-submit-files'][value='" + item['path']+ "']").prop('disabled', true);
+					var file_elem = $("<input type='checkbox' name='eae-submit-files' " +
+									  "filename='" + item['name'] + "' " + 					
+									  "value='" + item['path'] + "'>" + 
+									  item['name'] + "</input>")
+					file_field.append(file_elem);
+					if (idx === 0) {
+						file_elem.prop('disabled', true);
 					}
 				});
 			},
