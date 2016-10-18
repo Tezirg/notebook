@@ -428,8 +428,10 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					var file_elem = $("<input type='checkbox' name='eae-submit-files' " +
 									  "filename='" + item['name'] + "' " + 					
 									  "value='" + item['path'] + "'>" + 
-									  item['name'] + "</input>")
-					file_field.append(file_elem);
+									  item['name'] + "</input>");
+					var file_div = $("<div></div>");
+					file_div.append(file_elem);
+					file_field.append(file_div);
 					if (idx === 0) {
 						file_elem.prop('disabled', true);
 					}
