@@ -411,14 +411,10 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		
 		
 		var file_field = $("<div id='eae-submit-file-field'></div>");
-		file_field.append($("<div><label for='eae-submit-files'>Select data files :</label></div>"));
+		file_field.append($("<div><label for='eae-submit-files'>Select data files:</label></div>"));
 		var current_dir = this.notebook_path.substring(0, this.notebook_path.lastIndexOf("/"));
-		console.log(current_dir);
 		this.contents.list_contents(current_dir).then(
-			function(list) {
-				console.log("Files = ");
-				console.log(list);
-				
+			function(list) {			
 				list.content.forEach(function(item, idx) {
 					var opt = $("<option name='eae-submit-main-file' " + 
 								"value='" + item['name'] + "'>" + 
@@ -442,9 +438,17 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
             }
         );
 		
+		var param_field = $("<div id='eae-submit-param-field'>" +
+								"<label for='eae-submit-param'>Main script command line parameters:</label>" +
+							"</div>" +
+							"<div>" + 
+								"<textaera name='eae-submit-param'>--help</textaera>" +
+							"</div>");
+		
 		submit_form.append(name_field);
 		submit_form.append(main_field);
 		submit_form.append(file_field);
+		submit_form.append(param_field);
 		
 		submit.dialog = {
 			keyboard_manager: that.keyboard_manager,
@@ -458,6 +462,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					submit.payload['name'] = $("input[name='eae-submit-name']").val(); 
 					submit.payload['main'] = $("select[name='eae-submit-main-items']").val();
 					submit.payload['files'] = [];
+					submit.payload['params'] = $("textaera[name='eae-submit-param']").val();
 					$("input[name='eae-submit-files']:checked").each(function(idx, item) {
 						submit.payload.files.push($(item).val());
 						return true;
