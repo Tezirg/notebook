@@ -22,14 +22,10 @@ class EaeHandler(APIHandler):
 		POST /api/eae/submit
 		"""
 
-		data = self.get_json_body();
-		print(data);
-		
+		data = self.get_json_body();		
 		exporter = get_exporter("script");
-		print("Got the script exporter");
 		
-		to_zip = []
-		
+		to_zip = []		
 		for f in data['files']:
 			if f.rfind(".ipynb") != -1:
 				model = self.contents_manager.get(path=f)
@@ -38,15 +34,14 @@ class EaeHandler(APIHandler):
 			else:
 				model = self.contents_manager.get(path=f)
 				to_zip.append({ "filename": model['name'], "content": model['content']});
-		pprint.pprint(to_zip);
 		
-		print("TODO: Zip file to /tmp/uuid.zip et hop on est boooooon");
-		zip_path = "/tmp/" + data['id'] + '.zip';
+
 		# Prepare the zip file
+		zip_path = "/tmp/" + data['id'] + '.zip';
 		zipf = zipfile.ZipFile(zip_path, mode='w', compression=zipfile.ZIP_DEFLATED)
 		for entry in to_zip:
 			zipf.writestr(entry['filename'], entry['content'])
-		zipf.close()
+		zipf.close();
 		
 		
 		self.set_status(200);

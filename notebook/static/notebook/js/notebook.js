@@ -439,9 +439,11 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					//Perform ajax queries
 					that.eae_service.PreSubmit(submit).then(
 							function(preSubmitSuccess) {
+								console.log(preSubmitSuccess);
 								that.eae_service.Submit(submit).then(
 									function(submit_success) {
 										console.log("Submit_success");
+										console.log(submit_success);
 									},
 									function(submit_error) {
 										console.log("Submit_error");
