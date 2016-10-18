@@ -464,7 +464,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					submit.payload['name'] = $("input[name='eae-submit-name']").val(); 
 					submit.payload['main'] = $("select[name='eae-submit-main-items']").val();
 					submit.payload['files'] = [];
-					submit.payload['params'] = $("textaera[name='eae-submit-param']").val();
+					submit.payload['params'] = $("textarea[name='eae-submit-param']").val();
 					$("input[name='eae-submit-files']:checked").each(function(idx, item) {
 						submit.payload.files.push($(item).val());
 						return true;
