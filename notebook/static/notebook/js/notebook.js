@@ -427,6 +427,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
         );
 		
 		submit_form.append(name_field);
+		submit_form.append(main_field);
 		submit_form.append(file_field);
 		
 		submit.dialog = {
