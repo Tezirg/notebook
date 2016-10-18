@@ -442,7 +442,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 								"<label for='eae-submit-param'>Main script command line parameters:</label>" +
 							"</div>" +
 							"<div>" + 
-								"<textaera name='eae-submit-param'>--help</textaera>" +
+								"<textaera name='eae-submit-param' rows='3' cols='55'>--help</textaera>" +
 							"</div>");
 		
 		submit_form.append(name_field);
