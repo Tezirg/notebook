@@ -37,7 +37,7 @@ function(utils) {
 		console.log("List Clusters");
 
 		var settings = {
-            type : "GET"
+            type : "GET",
 			contentType: 'application/json'
         };
         var url = this.api_eae("EAEManagement/retrieveClusters");
