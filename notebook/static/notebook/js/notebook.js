@@ -454,7 +454,26 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 								"<label for='eae-submit-cluster-items'>Choose target cluster:</label>" +
 							  "</div>");
 		var cluster_select = $("<select name='eae-submit-cluster-items'></select>");
-		cluster_field.append(cluster_select);	
+		cluster_field.append(cluster_select);
+		this.eae_service.listClusters().then(
+			function(list_ok) {
+				console.log("OKAY list cluster");
+				var item_list = JSON.parse(list_ok);
+				console.log(item_list);
+				item_list.forEach(function(item, idx) {
+					console.log(item);
+					var cluster = $("<option name='eae-submit-cluster' " + 
+								  "value='" + item['name'] + "' >" + 
+								  "[" + item['type'] + "] - " + item['name'] + 
+								  "</option>");
+					console.log("Created a cluster entry");
+					cluster_select.append(cluster);
+				});
+			},
+			function(list_nok) {
+				console.log("Listing clusters failed");
+			}
+		);
 
 		submit_form.append(name_field);
 		submit_form.append(main_field);
@@ -464,6 +483,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		
 		submit.dialog = {
 			keyboard_manager: that.keyboard_manager,
+			body: submit_form,
 			title : "EAE Submit",
 			buttons : {
 				"Submit" : {
@@ -506,42 +526,19 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				},
 			}
 		}; //Closes submit.dialog
-
-		this.eae_service.listClusters().then(
-			function(list_ok) {
-				console.log("OKAY list cluster");
-				var item_list = json.Parse(list_ok);
-				
-				item_list.forEach(function(item, idx) {
-					console.log(item);
-					var cluster = $("<option name='eae-submit-cluster' " + 
-								  "value='" + item['name'] + "' >" + 
-								  "[" + item['type'] + "] - " + item['name'] + 
-								  "</option>");
-					console.log("Created a cluster entry");
-					cluster_select.append(cluster);
-				});
-				
-				submit.dialog.body = submit_form;
-				console.log("Wil perform is alive");
-				
-				//Is isAlive, display dialog
-				that.eae_service.isAlive().then(
-					function(alive_ok) { //Success
-						console.log("Alive OK");
-						dialog.modal(submit.dialog);
-					},
-					function(alive_nok) { // Fail. Don't allow submitting
-						console.log("Alive NOK");
-						submit.dialog.buttons["Submit"]["class"] = "btn-danger disabled";
-						dialog.modal(submit.dialog);
-					}
-				);//End isAlive
-			}, //end listCluster_OK
-			function(list_nok) {
-				console.log("Listing clusters failed");
-			}
-		);
+		
+		//Is isAlive, display dialog
+		this.eae_service.isAlive().then(
+				function(alive_ok) { //Success
+					console.log("Alive OK");
+					dialog.modal(submit.dialog);
+				},
+				function(alive_nok) { // Fail. Don't allow submitting
+					console.log("Alive NOK");
+					submit.dialog.buttons["Submit"]["class"] = "btn-danger disabled";
+					dialog.modal(submit.dialog);
+				}
+		);//End isAlive
 		
 	};//End function eae_submit
 
