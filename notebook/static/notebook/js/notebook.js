@@ -454,38 +454,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 								"<label for='eae-submit-cluster-items'>Choose target cluster:</label>" +
 							  "</div>");
 		var cluster_select = $("<select name='eae-submit-cluster-items'></select>");
-		cluster_field.append(cluster_select);
-		that.eae_service.listClusters().then(
-			function(list_ok) {
-				list_ok.forEach(function(item, idx) {
-					console.log("Inner loop");
-					console.log(item);
-					var entry = $("<option name='eae-submit-cluster' " + 
-								  "value='" + item['name'] + "' >" + 
-								  "[" + item['type'] + "] - " + item['name'] + 
-								  "</option>");
-					$("select[name='eae-submit-cluster-items']").append(entry);
-				});
-			},
-			function(list_nok) {
-				console.log("Listing clusters failed");
-			}
-		).then(function () {
-			console.log("After listCluster");
-			//Perform ajax query on Eae status before display form
-			that.eae_service.isAlive().then(
-				function(alive_ok) { //Success
-					console.log("Alive OK");
-					dialog.modal(submit.dialog);
-				},
-				function(alive_nok) { // Fail. Don't allow submitting
-					console.log("Alive NOK");
-					submit.dialog.buttons["Submit"]["class"] = "btn-danger disabled";
-					dialog.modal(submit.dialog);
-				}
-			);//End isAlive
-		});
-		
+		cluster_field.append(cluster_select);	
 		
 		console.log("Done creating form");
 
@@ -540,6 +509,36 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				},
 			}
 		}; //Closes submit.dialog
+
+		that.eae_service.listClusters().then(
+			function(list_ok) {
+				list_ok.forEach(function(item, idx) {
+					console.log("Inner loop");
+					console.log(item);
+					var entry = $("<option name='eae-submit-cluster' " + 
+								  "value='" + item['name'] + "' >" + 
+								  "[" + item['type'] + "] - " + item['name'] + 
+								  "</option>");
+					$("select[name='eae-submit-cluster-items']").append(entry);
+				});
+				
+				//Is isAlive, display dialog
+				that.eae_service.isAlive().then(
+					function(alive_ok) { //Success
+						console.log("Alive OK");
+						dialog.modal(submit.dialog);
+					},
+					function(alive_nok) { // Fail. Don't allow submitting
+						console.log("Alive NOK");
+						submit.dialog.buttons["Submit"]["class"] = "btn-danger disabled";
+						dialog.modal(submit.dialog);
+					}
+				);//End isAlive
+			}, //end listCluster_OK
+			function(list_nok) {
+				console.log("Listing clusters failed");
+			}
+		);
 		
 	};//End function eae_submit
 
