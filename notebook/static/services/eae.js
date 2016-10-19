@@ -39,7 +39,7 @@ function(utils) {
 		var settings = {
             type : "GET"
         };
-        var url = this.api_eae("eAEManagement/retrieveClusters");
+        var url = this.api_eae("EAEManagement/retrieveClusters");
 		console.log(url);
 		
 		return utils.promising_ajax(url, settings);
