@@ -519,7 +519,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 								  "value='" + item['name'] + "' >" + 
 								  "[" + item['type'] + "] - " + item['name'] + 
 								  "</option>");
-					$("select[name='eae-submit-cluster-items']").append(entry);
+					cluster_select.append(entry);
 				});
 				
 				//Is isAlive, display dialog
