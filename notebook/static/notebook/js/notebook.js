@@ -509,6 +509,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 
 		this.eae_service.listClusters().then(
 			function(list_ok) {
+				console.log("OKAY list cluster");
 				list_ok.forEach(function(item, idx) {
 					var entry = $("<option name='eae-submit-cluster' " + 
 								  "value='" + item['name'] + "' >" + 
@@ -518,6 +519,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				});
 				
 				submit.dialog.body = submit_form;
+				console.log("Wil perform is alive");
 				
 				//Is isAlive, display dialog
 				that.eae_service.isAlive().then(
