@@ -396,15 +396,15 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		
 		var id_field = $("<div id='eae-submit-id-field' class='form-group'></div>");
 		id_field.append($("<label for='eae-submit-id'>Task ID:</label>"));
-		id_field.append($("<input type='text' name='eae-submit-id' value='" + submit.payload.id + "' disabled='true'></input>"));
+		id_field.append($("<input class='form-control' type='text' name='eae-submit-id' value='" + submit.payload.id + "' disabled='true'></input>"));
 		
 		var name_field = $("<div id='eae-submit-name-field' class='form-group'></div>");
 		name_field.append($("<label for='eae-submit-name'>Task name:</label>"));
-		name_field.append($("<input type='text' name='eae-submit-name' value='" + submit.payload.id + "'></input>"));
+		name_field.append($("<input class='form-control' type='text' name='eae-submit-name' value='" + submit.payload.id + "'></input>"));
         
 		var main_field = $("<div id='eae-submit-main-field' class='form-group'></div>");
 		main_field.append($("<div><label for='eae-submit-main'>Script to execute:</label></div>"));
-		var main_select = $("<select name='eae-submit-main-items'></select>");
+		var main_select = $("<select class='form-control' name='eae-submit-main-items'></select>");
 		main_field.append(main_select);
 		main_select.change(
 				function(event) {
@@ -416,7 +416,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		
 		var param_field = $("<div id='eae-submit-param-field' class='form-group'>" +
 								"<label for='eae-submit-param'>Parameters:</label>" +
-								"<textarea name='eae-submit-param' rows='2' cols='55' placeholder='Command line arguments here' >" + 
+								"<textarea class='form-control' name='eae-submit-param' rows='1' cols='80' placeholder='Command line arguments here' >" + 
 								"</textarea>" +
 							"</div>");
 
@@ -431,7 +431,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 								item['name'] + "</option>");
 					main_select.append(opt);
 
-					var file_elem = $("<input type='checkbox' name='eae-submit-files' " +
+					var file_elem = $("<input class='form-control' type='checkbox' name='eae-submit-files' " +
 									  "filename='" + item['name'] + "' " + 					
 									  "value='" + item['path'] + "'>" + 
 									  item['name'] + "</input>");
@@ -452,7 +452,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		var cluster_field = $("<div id='eae-submit-cluster-field' class='form-group'>" +
 								"<label for='eae-submit-cluster-items'>Choose target cluster:</label>" +
 							  "</div>");
-		var cluster_select = $("<select name='eae-submit-cluster-items'></select>");
+		var cluster_select = $("<select class='form-control' name='eae-submit-cluster-items'></select>");
 		cluster_field.append(cluster_select);
 		this.eae_service.listClusters().then(
 			function(list_ok) {
