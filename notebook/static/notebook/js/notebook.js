@@ -464,9 +464,8 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 								  "value='" + item['name'] + "' >" + 
 								  "[" + item['type'] + "] - " + item['name'] + 
 								  "</option>");
-					//input.append(entry);
+					cluster_select.append(entry);
 				});
-				//console.log(input);
 			},
 			function(list_nok) {
 				console.log("Listing clusters failed");
