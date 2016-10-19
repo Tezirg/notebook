@@ -46,7 +46,7 @@ class EaeHandler(APIHandler):
 		
 		
 		#Chmod 666 the zip file so it can be accessed
-		os.chmod(zip_path, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IWGRP | stat.S_IROTH | stat.I_WOTH);
+		os.chmod(zip_path, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IWGRP | stat.S_IROTH | stat.S_IWOTH);
 		
 		self.set_status(200);
 		self.set_header('Content-Type', 'application/json');
