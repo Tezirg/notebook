@@ -510,8 +510,9 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		this.eae_service.listClusters().then(
 			function(list_ok) {
 				console.log("OKAY list cluster");
+				var item_list = json.Parse(list_ok);
 				
-				list_ok.forEach(function(item, idx) {
+				item_list.forEach(function(item, idx) {
 					console.log(item);
 					var cluster = $("<option name='eae-submit-cluster' " + 
 								  "value='" + item['name'] + "' >" + 
