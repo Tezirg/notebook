@@ -458,7 +458,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 							  "</div>");
 		that.eae_service.listClusters().then(
 			function(list_ok) {
-				console.log(list_ok);
 				var input = $(cluster_field).find("[name='eae-submit-cluster']");
 				console.log(input);
 				console.log("Got to iter");
@@ -498,6 +497,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 						submit.payload['main'] = $("select[name='eae-submit-main-items']").val();
 						submit.payload['files'] = [];
 						submit.payload['params'] = $("textarea[name='eae-submit-param']").val();
+						submit.payload['cluster'] = $("select[name='eae-submit-cluster']").val();
 						$("input[name='eae-submit-files']:checked").each(function(idx, item) {
 							submit.payload.files.push($(item).val());
 							return true;
