@@ -2,6 +2,7 @@ import json
 import pprint
 import io
 import os
+import stat
 import zipfile
 
 from tornado import gen, web
@@ -43,6 +44,9 @@ class EaeHandler(APIHandler):
 			zipf.writestr(entry['filename'], entry['content'])
 		zipf.close();
 		
+		
+		#Chmod 666 the zip file so it can be accessed
+		os.chmod(zip_path, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IWGRP | stat.S_IROTH | stat.I_WOTH);
 		
 		self.set_status(200);
 		self.set_header('Content-Type', 'application/json');
