@@ -416,8 +416,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		
 		var param_field = $("<div id='eae-submit-param-field' class='form-group'>" +
 								"<label for='eae-submit-param'>Parameters:</label>" +
-								"<textarea name='eae-submit-param' rows='2' cols='55'>" + 
-								"Command line arguments here..." + 
+								"<textarea name='eae-submit-param' rows='2' cols='55' placeholder='Command line arguments here' >" + 
 								"</textarea>" +
 							"</div>");
 
