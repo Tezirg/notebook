@@ -472,6 +472,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 			}
 		).then(function () {
 		
+			console.log("Done creating form");
 
 			submit_form.append(name_field);
 			submit_form.append(main_field);
