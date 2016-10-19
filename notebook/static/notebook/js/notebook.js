@@ -436,7 +436,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 			function(error) {
                 file_field.append($("<div>Error retrieving file list</div>"));
             }
-        ).then(
+        );
 		
 		var param_field = $("<div id='eae-submit-param-field'>" +
 								"<label for='eae-submit-param'>Main script parameters:</label>" +
