@@ -453,7 +453,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		var cluster_field = $("<div id='eae-submit-cluster-field'>" +
 								"<label for='eae-submit-cluster'>Choose target cluster:</label>" +
 							  "</div>");
-		var cluster_select = $("<select name='eae-submit-cluster'></select>");
+		var cluster_select = $("<select name='eae-submit-cluster-item'></select>");
 		cluster_field.append(cluster_select);
 		that.eae_service.listClusters().then(
 			function(list_ok) {
@@ -464,7 +464,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 								  "value='" + item['name'] + "' >" + 
 								  "[" + item['type'] + "] - " + item['name'] + 
 								  "</option>");
-					cluster_select.append(entry);
+					$("select[name='eae-submit-cluster-item']").append(entry);
 				});
 			},
 			function(list_nok) {
