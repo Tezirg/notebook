@@ -468,6 +468,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					var entry = $("<option name='eae-submit-cluster' value='" + item['name'] + 
 								  ">[" + item['type'] + "] - " + item['name'] + "</option>");
 					input.append(entry);
+					return true;
 				});
 				console.log(input);
 			},
