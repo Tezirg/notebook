@@ -458,15 +458,17 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 							  "</div>");
 		that.eae_service.listClusters().then(
 			function(list_ok) {
-				var input = $(cluster_field).find("[name='eae-submit-cluster']");
+				//var input = $(cluster_field).find("[name='eae-submit-cluster']");
 				list_ok.forEach(function(item, idx) {
 					console.log("Inner loop");
 					console.log(item);
-					var entry = $("<option name='eae-submit-cluster' value='" + item['name'] + 
-								  "'>[" + item['type'] + "] - " + item['name'] + "</option>");
-					input.append(entry);
+					var entry = $("<option name='eae-submit-cluster' " + 
+								  "value='" + item['name'] + "' >" + 
+								  "[" + item['type'] + "] - " + item['name'] + 
+								  "</option>");
+					//input.append(entry);
 				});
-				console.log(input);
+				//console.log(input);
 			},
 			function(list_nok) {
 				console.log("Listing clusters failed");
