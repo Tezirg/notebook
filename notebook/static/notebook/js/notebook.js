@@ -451,9 +451,9 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		
 		//Perform ajax query on Eae status before display form
 		var cluster_field = $("<div id='eae-submit-cluster-field'>" +
-								"<label for='eae-submit-cluster'>Choose target cluster:</label>" +
+								"<label for='eae-submit-cluster-items'>Choose target cluster:</label>" +
 							  "</div>");
-		var cluster_select = $("<select name='eae-submit-cluster-item'></select>");
+		var cluster_select = $("<select name='eae-submit-cluster-items'></select>");
 		cluster_field.append(cluster_select);
 		that.eae_service.listClusters().then(
 			function(list_ok) {
@@ -464,7 +464,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 								  "value='" + item['name'] + "' >" + 
 								  "[" + item['type'] + "] - " + item['name'] + 
 								  "</option>");
-					$("select[name='eae-submit-cluster-item']").append(entry);
+					$("select[name='eae-submit-cluster-items']").append(entry);
 				});
 			},
 			function(list_nok) {
@@ -492,9 +492,9 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					//Get the data from the form
 					submit.payload['name'] = $("input[name='eae-submit-name']").val(); 
 					submit.payload['main'] = $("select[name='eae-submit-main-items']").val();
-					submit.payload['files'] = [];
 					submit.payload['params'] = $("textarea[name='eae-submit-param']").val();
-					submit.payload['cluster'] = $("select[name='eae-submit-cluster']").val();
+					submit.payload['cluster'] = $("select[name='eae-submit-cluster-items']").val();
+					submit.payload['files'] = [];
 					$("input[name='eae-submit-files']:checked").each(function(idx, item) {
 						submit.payload.files.push($(item).val());
 						return true;
