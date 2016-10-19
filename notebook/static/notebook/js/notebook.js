@@ -392,7 +392,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 			}
 		}; 
 	
-		var submit_form = $("<fieldset></fieldset>");
+		var submit_form = $("<form role='form'></form>");
 		
 		var id_field = $("<div id='eae-submit-id-field' class='form-group row'></div>");
 		id_field.append($("<label for='eae-submit-id'>Task ID:</label>"));
@@ -480,7 +480,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		submit_form.append(param_field);
 		submit_form.append(file_field);
 		submit_form.append(cluster_field);
-		submit_form = $('<form></form>').append(submit_form); //Filling a form with the completed fieldset
 		
 		submit.dialog = {
 			keyboard_manager: that.keyboard_manager,
