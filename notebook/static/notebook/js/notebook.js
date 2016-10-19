@@ -470,7 +470,21 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 			function(list_nok) {
 				console.log("Listing clusters failed");
 			}
-		);
+		).then(function () {
+			console.log("After listCluster");
+			//Perform ajax query on Eae status before display form
+			that.eae_service.isAlive().then(
+				function(alive_ok) { //Success
+					console.log("Alive OK");
+					dialog.modal(submit.dialog);
+				},
+				function(alive_nok) { // Fail. Don't allow submitting
+					console.log("Alive NOK");
+					submit.dialog.buttons["Submit"]["class"] = "btn-danger disabled";
+					dialog.modal(submit.dialog);
+				}
+			);//End isAlive
+		});
 		
 		
 		console.log("Done creating form");
@@ -526,19 +540,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				},
 			}
 		}; //Closes submit.dialog
-	
-		//Perform ajax query on Eae status before display form
-		that.eae_service.isAlive().then(
-			function(alive_ok) { //Success
-				console.log("Alive OK");
-				dialog.modal(submit.dialog);
-			},
-			function(alive_nok) { // Fail. Don't allow submitting
-				console.log("Alive NOK");
-				submit.dialog.buttons["Submit"]["class"] = "btn-danger disabled";
-				dialog.modal(submit.dialog);
-			}
-		);//End isAlive
 		
 	};//End function eae_submit
 
