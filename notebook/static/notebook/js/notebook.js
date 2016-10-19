@@ -402,7 +402,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		name_field.append($("<label for='eae-submit-name'>Task name:</label>"));
 		name_field.append($("<input class='form-control' type='text' name='eae-submit-name' value='" + submit.payload.id + "'></input>"));
         
-		var main_field = $("<div id='eae-submit-main-field' class='form-group'></div>");
+		var main_field = $("<div id='eae-submit-main-field' class='form-group row'></div>");
 		main_field.append($("<label for='eae-submit-main-items'>Script to execute:</label>"));
 		var main_select = $("<select class='form-control' id='eae-submit-main-items' name='eae-submit-main-items'></select>");
 		main_field.append(main_select);
@@ -449,10 +449,10 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
         );
 		
 		//Perform ajax query on Eae status before display form
-		var cluster_field = $("<div id='eae-submit-cluster-field' class='form-group'>" +
+		var cluster_field = $("<div id='eae-submit-cluster-field' class='form-group row'>" +
 								"<label for='eae-submit-cluster-items'>Choose target cluster:</label>" +
 							  "</div>");
-		var cluster_select = $("<select class='form-control' id='eae-submit-cluster-items' name='eae-submit-cluster-items'></select>");
+		var cluster_select = $("<select id='eae-submit-cluster-items' name='eae-submit-cluster-items' class='form-control'></select>");
 		cluster_field.append(cluster_select);
 		this.eae_service.listClusters().then(
 			function(list_ok) {
@@ -480,8 +480,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		submit_form.append(param_field);
 		submit_form.append(file_field);
 		submit_form.append(cluster_field);
-		
-		submit_form = $('<form></form>').append(submit_form);
+		submit_form = $('<form></form>').append(submit_form); //Filling a form with the completed fieldset
 		
 		submit.dialog = {
 			keyboard_manager: that.keyboard_manager,
