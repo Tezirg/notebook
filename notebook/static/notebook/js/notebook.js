@@ -447,11 +447,32 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 								"</textarea>" +
 							"</div>");
 		
+		
+		
+		//Perform ajax query on Eae status before display form
+		var cluster_field = $("<div id='eae-submit-cluster-field'>" +
+								"<label for='eae-submit-cluster'>Chhose target cluster:</label>" +
+							  "</div>" +
+							  "<div>" +
+								"<select name='eae-submit-cluster'></select>" +
+							  "</div>");
+		that.eae_service.listClusters().then(
+			function(list_ok) {
+				console.log(list_ok);
+				var input = $(cluster_field).find("[name=eae-submit-cluster]");
+				console.log(input.name());
+			},
+			function(list_nok) {
+				console.log("Listing clusters failed");
+			}
+		);
+		
+
 		submit_form.append(name_field);
 		submit_form.append(main_field);
 		submit_form.append(file_field);
 		submit_form.append(param_field);
-		
+
 		submit.dialog = {
 			keyboard_manager: that.keyboard_manager,
 			title : "EAE Submit",
@@ -497,18 +518,11 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 			}
 		};
 		
-		//Perform ajax query on Eae status befor diaply form
+				//Perform ajax query on Eae status before display form
 		that.eae_service.isAlive().then(
 			function(alive_ok) { //Success
 				console.log("Alive OK");
-				that.eae_service.listClusters().then(
-					function(list_ok) {
-						console.log(list_ok);
-						dialog.modal(submit.dialog);
-					},
-					function(list_nok) {
-						console.log("Listing clusters failed");
-					});
+				dialog.modal(submit.dialog);
 			},
 			function(alive_nok) { // Fail. Don't allow submitting
 				console.log("Alive NOK");
@@ -516,7 +530,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				dialog.modal(submit.dialog);
 			}
 		);
-		
 		
 	};
 
