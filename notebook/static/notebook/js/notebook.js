@@ -455,8 +455,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 							  "</div>");
 		var cluster_select = $("<select name='eae-submit-cluster-items'></select>");
 		cluster_field.append(cluster_select);	
-		
-		console.log("Done creating form");
 
 		submit_form.append(name_field);
 		submit_form.append(main_field);
@@ -467,7 +465,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		submit.dialog = {
 			keyboard_manager: that.keyboard_manager,
 			title : "EAE Submit",
-			body : submit_form,
 			buttons : {
 				"Submit" : {
 				"class" : "btn-success",
@@ -521,6 +518,8 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 								  "</option>");
 					cluster_select.append(entry);
 				});
+				
+				submit.dialog.body = submit_form;
 				
 				//Is isAlive, display dialog
 				that.eae_service.isAlive().then(
