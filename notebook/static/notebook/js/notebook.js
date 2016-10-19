@@ -396,14 +396,14 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		
 		var id_field = $("<div id='eae-submit-id-field' class='form-group row'></div>");
 		id_field.append($("<label for='eae-submit-id'>Task ID:</label>"));
-		id_field.append($("<input class='form-control' type='text' name='eae-submit-id' value='" + submit.payload.id + "' disabled='true'></input>"));
+		id_field.append($("<input class='form-control' type='text' name='eae-submit-id' value='" + submit.payload.id + "' readonly></input>"));
 		
 		var name_field = $("<div id='eae-submit-name-field' class='form-group row'></div>");
 		name_field.append($("<label for='eae-submit-name'>Task name:</label>"));
 		name_field.append($("<input class='form-control' type='text' name='eae-submit-name' value='" + submit.payload.id + "'></input>"));
         
 		var main_field = $("<div id='eae-submit-main-field' class='form-group row'></div>");
-		main_field.append($("<label for='eae-submit-main'>Script to execute:</label>"));
+		main_field.append($("<label for='eae-submit-main-items'>Script to execute:</label>"));
 		var main_select = $("<select class='form-control' name='eae-submit-main-items'></select>");
 		main_field.append(main_select);
 		main_select.change(
@@ -431,7 +431,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 								item['name'] + "</option>");
 					main_select.append(opt);
 
-					var file_elem = $("<input class='form-control' type='checkbox' name='eae-submit-files' " +
+					var file_elem = $("<input class='form-check-input' type='checkbox' name='eae-submit-files' " +
 									  "filename='" + item['name'] + "' " + 					
 									  "value='" + item['path'] + "'>" + 
 									  item['name'] + "</input>");
