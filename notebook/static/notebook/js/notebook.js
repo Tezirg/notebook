@@ -507,11 +507,9 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 			}
 		}; //Closes submit.dialog
 
-		that.eae_service.listClusters().then(
+		this.eae_service.listClusters().then(
 			function(list_ok) {
 				list_ok.forEach(function(item, idx) {
-					console.log("Inner loop");
-					console.log(item);
 					var entry = $("<option name='eae-submit-cluster' " + 
 								  "value='" + item['name'] + "' >" + 
 								  "[" + item['type'] + "] - " + item['name'] + 
