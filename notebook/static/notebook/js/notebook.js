@@ -461,7 +461,9 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				console.log(list_ok);
 				var input = $(cluster_field).find("[name='eae-submit-cluster']");
 				console.log(input);
+				console.log("Got to iter");
 				list_ok.forEach(function(item, idx) {
+					console.log("Inner loop");
 					console.log(item);
 					var entry = $("<option name='eae-submit-cluster' value='" + item['name'] + 
 								  ">[" + item['type'] + "] - " + item['name'] + "</option>");
