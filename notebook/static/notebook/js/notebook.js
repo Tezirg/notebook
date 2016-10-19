@@ -461,77 +461,86 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				console.log(list_ok);
 				var input = $(cluster_field).find("[name=eae-submit-cluster]");
 				console.log(input.name());
+				list_ok.forEach(function(item, idx) {
+					var entry = $("<option name='eae-submit-cluster' value='" + item['name'] + 
+								  ">[" + item['type'] + "] - " + item['name'] + "</option>");
+					input.append(entry);
+				});
 			},
 			function(list_nok) {
 				console.log("Listing clusters failed");
 			}
-		);
+		).then(function () {
 		
 
-		submit_form.append(name_field);
-		submit_form.append(main_field);
-		submit_form.append(file_field);
-		submit_form.append(param_field);
-
-		submit.dialog = {
-			keyboard_manager: that.keyboard_manager,
-			title : "EAE Submit",
-			body : submit_form,
-			buttons : {
-				"Submit" : {
-				"class" : "btn-success",
-				"click" : function () {
-					//Get the data from the form
-					submit.payload['name'] = $("input[name='eae-submit-name']").val(); 
-					submit.payload['main'] = $("select[name='eae-submit-main-items']").val();
-					submit.payload['files'] = [];
-					submit.payload['params'] = $("textarea[name='eae-submit-param']").val();
-					$("input[name='eae-submit-files']:checked").each(function(idx, item) {
-						submit.payload.files.push($(item).val());
-						return true;
-					});
-					$("input[name='eae-submit-files']:disabled").each(function(idx, item) {
-						submit.payload.files.push($(item).val());
-						return true;
-					});
+			submit_form.append(name_field);
+			submit_form.append(main_field);
+			submit_form.append(file_field);
+			submit_form.append(param_field);
+			submit_form.append(cluster_field);
+			
+			submit.dialog = {
+				keyboard_manager: that.keyboard_manager,
+				title : "EAE Submit",
+				body : submit_form,
+				buttons : {
+					"Submit" : {
+					"class" : "btn-success",
+					"click" : function () {
+						//Get the data from the form
+						submit.payload['name'] = $("input[name='eae-submit-name']").val(); 
+						submit.payload['main'] = $("select[name='eae-submit-main-items']").val();
+						submit.payload['files'] = [];
+						submit.payload['params'] = $("textarea[name='eae-submit-param']").val();
+						$("input[name='eae-submit-files']:checked").each(function(idx, item) {
+							submit.payload.files.push($(item).val());
+							return true;
+						});
+						$("input[name='eae-submit-files']:disabled").each(function(idx, item) {
+							submit.payload.files.push($(item).val());
+							return true;
+						});
 					
-					//Perform ajax queries
-					that.eae_service.PreSubmit(submit).then(
-							function(preSubmitSuccess) {
-								console.log(preSubmitSuccess);
-								submit.payload.zip = preSubmitSuccess.zip;
-								that.eae_service.Submit(submit).then(
-									function(submit_success) {
-										console.log("Submit_success");
-										console.log(submit_success);
-									},
-									function(submit_error) {
-										console.log("Submit_error");
-									}
-								);
-							},
-							function(preSubmitError) {
-								console.log("Presubmit_error");
-							});
-					}
+						//Perform ajax queries
+						that.eae_service.PreSubmit(submit).then(
+								function(preSubmitSuccess) {
+									console.log(preSubmitSuccess);
+									submit.payload.zip = preSubmitSuccess.zip;
+									that.eae_service.Submit(submit).then(
+										function(submit_success) {
+											console.log("Submit_success");
+											console.log(submit_success);
+										},
+										function(submit_error) {
+											console.log("Submit_error");
+										}
+									);
+								},
+								function(preSubmitError) {
+									console.log("Presubmit_error");
+								});
+						}
+					},
+				}
+			}; //Closes submit.dialog
+		
+			//Perform ajax query on Eae status before display form
+			that.eae_service.isAlive().then(
+				function(alive_ok) { //Success
+					console.log("Alive OK");
+					dialog.modal(submit.dialog);
 				},
-			}
-		};
+				function(alive_nok) { // Fail. Don't allow submitting
+					console.log("Alive NOK");
+					submit.dialog.buttons["Submit"]["class"] = "btn-danger disabled";
+					dialog.modal(submit.dialog);
+				}
+			);
+			//End isAlive
+			
+		});//End second .then callback
 		
-				//Perform ajax query on Eae status before display form
-		that.eae_service.isAlive().then(
-			function(alive_ok) { //Success
-				console.log("Alive OK");
-				dialog.modal(submit.dialog);
-			},
-			function(alive_nok) { // Fail. Don't allow submitting
-				console.log("Alive NOK");
-				submit.dialog.buttons["Submit"]["class"] = "btn-danger disabled";
-				dialog.modal(submit.dialog);
-			}
-		);
-		
-	};
+	};//End function eae_submit
 
     /**
      * Trigger a warning dialog about missing functionality from newer minor versions
