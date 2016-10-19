@@ -25,7 +25,6 @@ function(utils) {
     };
 	
 	Eae.prototype.isAlive = function () {
-		console.log("Eae IsAlive:");
         var settings = {
             type : "GET"
         };
@@ -33,6 +32,18 @@ function(utils) {
 		console.log(url);
         return utils.promising_ajax(url, settings);
     };
+	
+	Eae.prototype.listClusters = function () {
+		console.log("List Clusters");
+
+		var settings = {
+            type : "GET"
+        };
+        var url = this.api_eae("utilities/isAlive");
+		console.log(url);
+		
+		return utils.promising_ajax(url, settings);
+	};
 	
 	Eae.prototype.Submit = function(submit_data) {
 		console.log("Eae Submit:");

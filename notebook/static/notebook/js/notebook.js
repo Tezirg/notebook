@@ -501,7 +501,14 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		that.eae_service.isAlive().then(
 			function(alive_ok) { //Success
 				console.log("Alive OK");
-				dialog.modal(submit.dialog);
+				that.eae_service.listClusters().then(
+					function(list_ok) {
+						console.log(list_ok);
+						dialog.modal(submit.dialog);
+					},
+					function(list_nok) {
+						console.log("Listing clusters failed");
+					});
 			},
 			function(alive_nok) { // Fail. Don't allow submitting
 				console.log("Alive NOK");
