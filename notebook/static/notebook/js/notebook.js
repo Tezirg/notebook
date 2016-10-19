@@ -383,7 +383,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
     Notebook.prototype.show_shortcuts_editor = function() {
         new ShortcutEditor(this);
     };
-	
+		
 	Notebook.prototype.eae_submit = function() {
 		var that = this;
 		var submit = {
@@ -391,8 +391,13 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				id : utils.uuid()
 			}
 		}; 
+	
 		var submit_form = $("<form></form>");
-		
+
+		var id_field = $("<div id='eae-submit-id-field'></div>");
+		id_field.append($("<label for='eae-submit-id'>Task ID:</label>"));
+		id_field.append($("<input type='text' name='eae-submit-id' value='" + submit.payload.id + "' disabled='true'></input>"));
+				
 		var name_field = $("<div id='eae-submit-name-field'></div>");
 		name_field.append($("<label for='eae-submit-name'>Task name</label>"));
 		name_field.append($("<input type='text' name='eae-submit-name' value='" + submit.payload.id + "'></input>"));
