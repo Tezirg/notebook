@@ -402,9 +402,9 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		name_field.append($("<label for='eae-submit-name'>Task name:</label>"));
 		name_field.append($("<input class='form-control' type='text' name='eae-submit-name' value='" + submit.payload.id + "'></input>"));
         
-		var main_field = $("<div id='eae-submit-main-field' class='form-group row'></div>");
+		var main_field = $("<div id='eae-submit-main-field' class='form-group'></div>");
 		main_field.append($("<label for='eae-submit-main-items'>Script to execute:</label>"));
-		var main_select = $("<select class='form-control' name='eae-submit-main-items'></select>");
+		var main_select = $("<select class='form-control' id='eae-submit-main-items' name='eae-submit-main-items'></select>");
 		main_field.append(main_select);
 		main_select.change(
 				function(event) {
@@ -421,7 +421,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 							"</div>");
 
 		var file_field = $("<div id='eae-submit-file-field' class='form-group row'></div>");
-		file_field.append($("<label for='eae-submit-files'>Select data files:</label>"));
+		file_field.append($("<label for='eae-submit-files'>Select additional files:</label>"));
 		var current_dir = this.notebook_path.substring(0, this.notebook_path.lastIndexOf("/"));
 		this.contents.list_contents(current_dir).then(
 			function(list) {			
@@ -449,10 +449,10 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
         );
 		
 		//Perform ajax query on Eae status before display form
-		var cluster_field = $("<div id='eae-submit-cluster-field' class='form-group row'>" +
+		var cluster_field = $("<div id='eae-submit-cluster-field' class='form-group'>" +
 								"<label for='eae-submit-cluster-items'>Choose target cluster:</label>" +
 							  "</div>");
-		var cluster_select = $("<select class='form-control' name='eae-submit-cluster-items'></select>");
+		var cluster_select = $("<select class='form-control' id='eae-submit-cluster-items' name='eae-submit-cluster-items'></select>");
 		cluster_field.append(cluster_select);
 		this.eae_service.listClusters().then(
 			function(list_ok) {
