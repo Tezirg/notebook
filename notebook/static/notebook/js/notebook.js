@@ -404,7 +404,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
         
 		var main_field = $("<div id='eae-submit-main-field' class='form-group row'></div>");
 		main_field.append($("<label for='eae-submit-main-items'>Script to execute:</label>"));
-		var main_select = $("<select class='form-control pull-left' id='eae-submit-main-items' name='eae-submit-main-items'></select>");
+		var main_select = $("<select class='form-control col-sm-6' id='eae-submit-main-items' name='eae-submit-main-items'></select>");
 		main_field.append(main_select);
 		main_select.change(
 				function(event) {
@@ -452,7 +452,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		var cluster_field = $("<div id='eae-submit-cluster-field' class='form-group row'>" +
 								"<label for='eae-submit-cluster-items'>Choose target cluster:</label>" +
 							  "</div>");
-		var cluster_select = $("<select class='form-control pull-left' id='eae-submit-cluster-items' name='eae-submit-cluster-items'></select>");
+		var cluster_select = $("<select class='form-control col-sm-6' id='eae-submit-cluster-items' name='eae-submit-cluster-items'></select>");
 		cluster_field.append(cluster_select);
 		this.eae_service.listClusters().then(
 			function(list_ok) {
