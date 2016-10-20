@@ -87,6 +87,7 @@
 
 .eae-step .body .parameters .container {
 	padding-top: 98px;
+	width: 100%;
 }
 
 .eae-step .body .parameters .container > .clear {
