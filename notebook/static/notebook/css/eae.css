@@ -5,12 +5,12 @@
 
 #eae-submit-wrapper {
 	position: fixed;
-	width: 1000px;
-	height: 500px;
+	width: 100%;
+	height: 100%;
 	top: 50%;
 	left: 50%;
-	margin-top: -250px;
-	margin-left: -500px;
+	margin-top: -50%;
+	margin-left: -50%;
 	background-color: #ffffff;
 	border: solid 1px #cccccc;
 }
@@ -31,8 +31,8 @@
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	top: 50px;
-	height: 400px;
+	top: 10%;
+	height: 80%;
 }
 
 #eae-submit-form .body .container {
@@ -118,8 +118,8 @@
 	position: absolute;
 	top: 0px;
 	width: 100%;
-	height: 50px;
-	line-height: 50px;
+	height: 10%;
+	line-height: 10%;
 	padding: 0px 20px;
 	font-weight: bold;
 }
@@ -132,8 +132,8 @@
 
 #eae-submit-form .footer {
 	bottom: 0px;
-	height: 50px;
-	line-height: 50px;
+	height: 10%;
+	line-height: 10%;
 	padding: 0 20px;
 	text-align: right;
 }
