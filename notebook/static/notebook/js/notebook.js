@@ -410,27 +410,36 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		var current_script = this.notebook_path.substring(this.notebook_path.lastIndexOf("/") + 1, this.notebook_path.length);
 		step_1_body.find(".name").text(current_script);
 		
-		//Form decl
-		var step_1_form = {
-			body: $(step_1_body),
-			title : step_1_title,
-			buttons : {
-				"Next" : {
-				"class" : "btn-primary",
-				"click" : function() {
-						//Trigger next step
-						that._eae_submit_step_2();
-						that.keyboard_manager.disable();
+		var current_dir = this.notebook_path.substring(0, this.notebook_path.lastIndexOf("/"));
+		this.contents.list_contents(current_dir).then(
+			function(list) {			
+				list.content.forEach(function(item, idx) {
+					console.log(item);
+				});
+				//Form decl
+				var step_1_form = {
+					body: $(step_1_body),
+					title : step_1_title,
+					buttons : {
+						"Next" : {
+						"class" : "btn-primary",
+						"click" : function() {
+								//Trigger next step
+								that._eae_submit_step_2();
+								that.keyboard_manager.disable();
+							}
+						},
+						"Cancel" : {
+							"class": "btn-danger"
+						}
 					}
-				},
-				"Cancel" : {
-					"class": "btn-danger"
-				}
-			}
 		};
 		
 		//console.log("Display step 1");
 		dialog.modal(step_1_form);
+			}
+		);
+		
 	}
 	
 	Notebook.prototype._eae_submit_step_2 = function() {
