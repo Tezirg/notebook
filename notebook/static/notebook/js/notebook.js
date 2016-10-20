@@ -480,7 +480,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		this.eae_service.listClusters().then(
 			function(list_ok) {
 				var item_list = JSON.parse(list_ok);
-				console.log(item_list);
 				item_list.forEach(function(item, idx) {
 					var elem = cluster.clone(); 
 					elem.find('.name').text(item['name']);
