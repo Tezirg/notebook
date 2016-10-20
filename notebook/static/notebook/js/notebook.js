@@ -412,7 +412,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		
 		//Form decl
 		var step_1_form = {
-			keyboard_manager: that.keyboard_manager,
 			body: $(step_1_body),
 			title : step_1_title,
 			buttons : {
@@ -440,7 +439,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		var step_2_body = $($("#eae-step-2").html());
 		
 		var step_2_form = {
-			keyboard_manager: that.keyboard_manager,
 			body: $(step_2_body),
 			title : step_2_title,
 			buttons : {
@@ -449,6 +447,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				"click" : function() {
 						//Trigger next step
 						that._eae_submit_step_3();
+						that.keyboard_manager.disable();
 					}
 				},
 				"Cancel" : {
@@ -460,6 +459,33 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		console.log("Display step 2");
 		dialog.modal(step_2_form);
 		
+	}
+	
+	Notebook..prototype._eae_submit_step_3 = function() {
+		var that = this;
+		var step_3_title = "Submit to EAE";
+		var step_3_body = $($("#eae-step-2").html());
+		
+		var step_3_form = {
+			body: $(step_3_body),
+			title : step_3_title,
+			buttons : {
+				"Next" : {
+				"class" : "btn-primary",
+				"click" : function() {
+						//Trigger next step
+						that._eae_submit_step_4();
+						that.keyboard_manager.disable();
+					}
+				},
+				"Cancel" : {
+					"class": "btn-danger"
+				}
+			}
+		};
+		
+		console.log("Display step 3");
+		dialog.modal(step_3_form);
 	}
 	
 	Notebook.prototype.eae_submit = function() {
