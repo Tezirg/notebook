@@ -60,7 +60,7 @@
 }
 
 
-.eae-step .task .running {
+.task .running {
 	display: block;
 	width: 100%;
 	height: 60px;
@@ -69,13 +69,13 @@
 	margin-bottom: 5px;
 }
 
-.eae-step  .task .running .change {
+.running .change {
 	color: #5b8ecc;
 	font-size: 10px;
 	text-decoration: underline;
 }
 
-.eae-step .task .running .details {
+.running .details {
 	color: #aaaaaa;
 	font-size: 13px;
 }
