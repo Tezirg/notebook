@@ -405,17 +405,40 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		var that = this;
 		var step_1_title = "Submit to EAE";
 		var step_1_body = $($("#eae-step-1").html());
+		var current_script = this.notebook_path.substring(this.notebook_path.lastIndexOf("/") + 1, this.notebook_path.length);
+		var select_script = step_1_body.find("select");
+		var change_script = step_1_body.find(".change");
+		var runing_script = step_1_body.find(".running");
+
+		//What happens on select scripts
+		var step_1_select = function(name) {
+			step_1_body.find(".name").text(name);
+			running_script.removeClass("hidden");
+			select_script.addClass("hidden");
+		};
+		
 		
 		//Dynamic fill of form body
-		var current_script = this.notebook_path.substring(this.notebook_path.lastIndexOf("/") + 1, this.notebook_path.length);
-		step_1_body.find(".name").text(current_script);
-		
 		var current_dir = this.notebook_path.substring(0, this.notebook_path.lastIndexOf("/"));
 		this.contents.list_contents(current_dir).then(
 			function(list) {			
+				//Iterate over file list
 				list.content.forEach(function(item, idx) {
 					console.log(item);
+					if (item['name'].lastIndexOf('.ipynb') != -1) { //Is a script file
+						var opt = $("<option" + 
+									"value='" + item['name'] + "'>" + 
+									item['name'] + "</option>");
+						opt.click(function(event) {
+							step_1_select($(event.delegateTarget).val());
+						});
+						select_script.append(opt);
+						if (item['name'] == current_script) {
+							step_1_select(current_script);
+						}
+					}
 				});
+				
 				//Form decl
 				var step_1_form = {
 					body: $(step_1_body),
@@ -434,6 +457,12 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 						}
 					}
 				};
+				
+				change_script.click(function(event) {
+					running_script.addClass("hidden");
+					select_script.removeClass("hidden");
+				});
+				
 				//console.log("Display step 1");
 				dialog.modal(step_1_form);
 			}
