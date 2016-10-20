@@ -481,9 +481,9 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					cluster_list.append(elem);
 					if (idx == 0)
 						elem.addClass("chosen");
-					elem.click(function() {
+					elem.click(function(event) {
 						cluster_list.find('li').removeClass("chosen");
-						this.addClass("chosen");
+						event.delegateTarget.addClass("chosen");
 					})
 				});
 				cluster.addClass('hidden');
