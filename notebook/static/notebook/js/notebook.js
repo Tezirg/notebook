@@ -53,7 +53,8 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
      */
     export function Notebook(selector, options) {
 		this.eae_service = new eaemod.Eae(options);
-		console.log(options);
+		this.eae_job = {};
+		
         this.config = options.config;
         this.class_config = new configmod.ConfigWithDefaults(this.config, 
                                         Notebook.options_default, 'Notebook');
@@ -393,13 +394,12 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					"</div>",
 			title : "Submit to EAE failed",
 			buttons : {
-				"Submit" : {
+				"OK" : {
 				"class" : "btn-success",
 				"click" : function() {
 					//Trigger next step
 					}
-				},
-			
+				}
 			}
 		};
 	}
@@ -413,14 +413,14 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 			body: step_1_body,
 			title : step_1_title,
 			buttons : {
-				"Submit" : {
-				"class" : "btn-success",
+				"Next" : {
+				"class" : "btn-default",
 				"click" : function() {
 					//Trigger next step
 					}
 				},
 				"Cancel" : {
-					"class": "btn-default",
+					"class": "btn-danger",
 					"click": function() {
 						//Clear form for re-use
 					}
@@ -436,9 +436,8 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 	
 	Notebook.prototype.eae_submit = function() {
 		var that = this;
-		this.eae_job = {
-			id: utils.uuid()
-		};
+		this.eae_job['id'] utils.uuid();
+		
 		//Is isAlive, display dialog
 		this.eae_service.isAlive().then(
 				function(alive_ok) { //Success
