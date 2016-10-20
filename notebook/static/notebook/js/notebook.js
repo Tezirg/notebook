@@ -410,6 +410,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		var step_1_body = $("#eae-step-1").html();
 		
 		var current_script = this.notebook_path.substring(this.notebook_path.lastIndexOf("/"), this.notebook_path.length);
+		console.log(current_script);
 		step_1_body.find(".name").text(current_script);
 		
 		var step_1_form = {
