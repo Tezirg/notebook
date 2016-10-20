@@ -489,7 +489,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				"class" : "btn-primary",
 				"click" : function() {
 						//Trigger next step
-						that.eae_job['params'] = step_2_body.find("#param-list").text();
+						that.eae_job['params'] = step_2_body.find("#param-list input").val();
 						that._eae_submit_step_3();
 						that.keyboard_manager.disable();
 					}
