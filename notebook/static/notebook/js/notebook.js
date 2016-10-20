@@ -466,6 +466,27 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		var step_3_title = "Submit to EAE";
 		var step_3_body = $($("#eae-step-3").html());
 		
+		var cluster_list = step_3_body.find("#eae-cluster-list");
+		var cluster = step_3_body.find("li");
+		
+		this.eae_service.listClusters().then(
+			function(list_ok) {
+				var item_list = JSON.parse(list_ok);
+				console.log(item_list);
+				item_list.forEach(function(item, idx) {
+					var elem = cluster.clone(); 
+					elem.find('.name').text(item['name']);
+					elem.find('.type').text(item['type']);
+					elem.find(".node-num").text(item['hosts'].split().length.toString());
+					cluster_list.append(elem);
+				}
+				cluster.addClass('hidden');
+			},
+			function(list_nok) {
+				that._eae_fail("Could not list available clusters");
+			}
+		);
+		
 		var step_3_form = {
 			body: $(step_3_body),
 			title : step_3_title,
