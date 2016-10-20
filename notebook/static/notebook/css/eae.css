@@ -229,7 +229,7 @@ p {
 
 .tick {
 	display: none;
-	position: absolute;
+	position: relative;
 	top: -46px;
 	right: -92%;
 	height: 60px;
