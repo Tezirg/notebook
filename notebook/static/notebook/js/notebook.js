@@ -436,7 +436,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 	Notebook.prototype.eae_submit = function() {
 		var that = this;
 		this.eae_job = {
-			id: utils.uuid();
+			id: utils.uuid()
 		}
 		//Is isAlive, display dialog
 		this.eae_service.isAlive().then(
