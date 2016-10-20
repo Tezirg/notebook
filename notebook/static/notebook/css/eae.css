@@ -15,19 +15,19 @@
 	border: solid 1px #cccccc;
 }
 
-#.eae-step{
+#.eae-step {
 	width: 100%;
 	height: 100%;
 }
 
-#.eae-step.header, #.eae-step.footer {
+#.eae-step .header, #.eae-step .footer {
 	position: absolute;
 	width: 100%;
 	left: 0px;
 	background-color: #eeeeee;
 }
 
-#.eae-step.body {
+#.eae-step .body {
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -35,7 +35,7 @@
 	height: 80%;
 }
 
-#.eae-step.body .container {
+#.eae-step .body .container {
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -43,31 +43,31 @@
 	left: 0px;
 }
 
-#.eae-step.body .container > .clear {
+#.eae-step .body .container > .clear {
 	overflow: auto;
 }
 
-#.eae-step.body .task, #.eae-step.body .parameters, #.eae-step.body .cluster {
+#.eae-step .body .task, #.eae-step .body .parameters, #.eae-step .body .cluster {
 	position: absolute;
 	height: 100%;
 	top: 0px;
 	right: 0px;
 }
 
-#.eae-step.body .task div, #.eae-step.body .parameters div, #.eae-step.body .cluster div {
+#.eae-step .body .task div, #.eae-step .body .parameters div, #.eae-step .body .cluster div {
 	display: block;
 }
 
-#.eae-step.body .task > .clear, #.eae-step.body .parameters > .clear, #.eae-step.body .cluster > .clear {
+#.eae-step .body .task > .clear, #.eae-step .body .parameters > .clear, #.eae-step .body .cluster > .clear {
 	padding: 20px;
 }
 
-#.eae-step.body .task {
+#.eae-step .body .task {
 	width: 100%;
 	padding-right: 66.66667%;
 }
 
-#.eae-step.body .task .running {
+#.eae-step .body .task .running {
 	display: block;
 	width: 100%;
 	height: 60px;
@@ -76,45 +76,45 @@
 	margin-bottom: 5px;
 }
 
-#.eae-step.body .task .running .change {
+#.eae-step .body .task .running .change {
 	color: #5b8ecc;
 	font-size: 10px;
 	text-decoration: underline;
 }
 
-#.eae-step.body .task .running .details {
+#.eae-step .body .task .running .details {
 	color: #aaaaaa;
 	font-size: 13px;
 }
 
-#.eae-step.body .task .container {
+#.eae-step .body .task .container {
 	padding-top: 215px;
 }
 
-#.eae-step.body .parameters {
+#.eae-step .body .parameters {
 	width: 66.66667%;
 	padding-right: 33.33333%;
 	border-left: solid 1px #eeeeee;
 }
 
-#.eae-step.body .parameters .container {
+#.eae-step .body .parameters .container {
 	padding-top: 98px;
 }
 
-#.eae-step.body .parameters .container > .clear {
+#.eae-step .body .parameters .container > .clear {
 	padding: 0 20px 20px 20px;
 }
 
-#.eae-step.body .cluster {
+#.eae-step .body .cluster {
 	width: 33.33333%;
 	border-left: solid 1px #eeeeee;
 }
 
-#.eae-step.body .cluster .container {
+#.eae-step .body .cluster .container {
 	padding-top: 100px;
 }
 
-#.eae-step.header {
+#.eae-step .header {
 	position: absolute;
 	top: 0px;
 	width: 100%;
@@ -124,13 +124,13 @@
 	font-weight: bold;
 }
 
-#.eae-step.header .uuid {
+#.eae-step .header .uuid {
 	float: right;
 	color: #bbbbbb;
 	font-size: 11px;
 }
 
-#.eae-step.footer {
+#.eae-step .footer {
 	bottom: 0px;
 	height: 10%;
 	line-height: 10%;
@@ -138,7 +138,7 @@
 	text-align: right;
 }
 
-#.eae-step.footer .button {
+#.eae-step .footer .button {
 	display: inline-block;
 	height: 30px;
 	line-height: 30px;
