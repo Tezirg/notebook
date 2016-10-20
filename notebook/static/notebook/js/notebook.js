@@ -437,7 +437,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		var that = this;
 		this.eae_job = {
 			id: utils.uuid()
-		}
+		};
 		//Is isAlive, display dialog
 		this.eae_service.isAlive().then(
 				function(alive_ok) { //Success
