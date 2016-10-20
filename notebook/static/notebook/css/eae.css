@@ -59,10 +59,6 @@
 	padding: 20px;
 }
 
-.eae-step .body .task {
-	width: 100%;
-	padding-right: 66.66667%;
-}
 
 .eae-step .body .task .running {
 	display: block;
@@ -88,11 +84,6 @@
 	padding-top: 215px;
 }
 
-.eae-step .body .parameters {
-	width: 66.66667%;
-	padding-right: 33.33333%;
-	border-left: solid 1px #eeeeee;
-}
 
 .eae-step .body .parameters .container {
 	padding-top: 98px;
