@@ -415,8 +415,8 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 			step_1_body.find(".name").text(name);
 			running_script.removeClass("hidden");
 			select_script.addClass("hidden");
+			that.eae_job['main'] = name;
 		};
-		
 		
 		//Dynamic fill of form body
 		var current_dir = this.notebook_path.substring(0, this.notebook_path.lastIndexOf("/"));
@@ -427,7 +427,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					console.log(item);
 					if (item['name'].lastIndexOf('.ipynb') != -1) { //Is a script file
 						var opt = $("<option " + 
-									"value='" + item['name'] + "'>" + 
+									"value='" + item['path'] + "'>" + 
 									item['name'] + "</option>");
 						select_script.append(opt);
 						if (item['name'] == current_script) {

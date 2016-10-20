@@ -77,11 +77,14 @@ data-notebook-path="{{notebook_path | urlencode}}"
           <span>Set your parameters</span>
         </div>
         <p>
-          What are the comamnd line parameters that we should pass to your script?
+          What are the command line parameters that we should pass to your script?
         </p>
         <div class="container">
         <div class="clear">
-          <input type="text" value="">
+			<div id="param-list">
+				<input type="text" value="">
+			</div>
+		  <button type="button" class="btn btn-info">Add</button>
         </div>
         </div>
      </div>
