@@ -508,6 +508,14 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					body: $(step_3_body),
 					title : step_3_title,
 					buttons : {
+						"Previous" : {
+						"class" : "btn-primary",
+						"click" : function() {
+								//Trigger prev step
+								that._eae_submit_step_2();
+								that.keyboard_manager.disable();
+							}
+						},
 						"Next" : {
 						"class" : "btn-primary",
 						"click" : function() {
