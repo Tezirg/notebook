@@ -460,7 +460,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					select_script.removeClass("hidden");
 				});
 				select_script.change(function(event) {
-					step_1_select($(event.delegateTarget).text(), $(event.delegateTarget).val());
+					step_1_select($(event.delegateTarget).val(), $(event.delegateTarget).val());
 				})
 				//console.log("Display step 1");
 				dialog.modal(step_1_form);
@@ -549,7 +549,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 						"class" : "btn-primary",
 						"click" : function() {
 								//Trigger next step
-								that.eae_job['cluster'] = cluster_list.find("li .chosen .name").text();
+								that.eae_job['cluster'] = cluster_list.find("li").find(".chosen").find(".name").text();
 								console.log(that.eae_job);
 								that._eae_submit_step_4();
 								that.keyboard_manager.disable();
