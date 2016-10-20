@@ -395,10 +395,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 			title : "Submit to EAE failed",
 			buttons : {
 				"OK" : {
-				"class" : "btn-success",
-				"click" : function() {
-					//Trigger next step
-					}
+					"class" : "btn-primary"
 				}
 			}
 		};
@@ -424,6 +421,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				"click" : function() {
 						//Trigger next step
 						that._eae_submit_step_2();
+						keyboard_manager.disable();
 					}
 				},
 				"Cancel" : {
@@ -458,6 +456,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				}
 			}
 		};
+		
 		console.log("Display step 2");
 		dialog.modal(step_2_form);
 		
