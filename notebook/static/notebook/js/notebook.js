@@ -477,7 +477,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					var elem = cluster.clone(); 
 					elem.find('.name').text(item['name']);
 					elem.find('.type').text(item['type']);
-					elem.find(".node-num").text(item['hosts'].split().length.toString());
+					elem.find(".node-num").text(item['hosts'].split(" ").length.toString());
 					cluster_list.append(elem);
 				});
 				cluster.addClass('hidden');
