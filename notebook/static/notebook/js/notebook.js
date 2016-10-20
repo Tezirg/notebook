@@ -408,6 +408,10 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		var that = this;
 		var step_1_title = "Submit to EAE";
 		var step_1_body = $("#eae-step-1").html();
+		
+		var current_script = this.notebook_path.substring(this.notebook_path.lastIndexOf("/"), this.notebook_path.length);
+		step_1_body.find(".name").text(current_script);
+		
 		var step_1_form = {
 			keyboard_manager: that.keyboard_manager,
 			body: $(step_1_body),
