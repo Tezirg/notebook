@@ -426,7 +426,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				list.content.forEach(function(item, idx) {
 					console.log(item);
 					if (item['name'].lastIndexOf('.ipynb') != -1) { //Is a script file
-						var opt = $("<option" + 
+						var opt = $("<option " + 
 									"value='" + item['name'] + "'>" + 
 									item['name'] + "</option>");
 						opt.click(function(event) {
