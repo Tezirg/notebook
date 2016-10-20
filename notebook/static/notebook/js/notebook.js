@@ -489,6 +489,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				"class" : "btn-primary",
 				"click" : function() {
 						//Trigger next step
+						that.eae_job['params'] = step_2_body.find("#param-list").text();
 						that._eae_submit_step_3();
 						that.keyboard_manager.disable();
 					}
@@ -548,6 +549,8 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 						"class" : "btn-primary",
 						"click" : function() {
 								//Trigger next step
+								that.eae_job['cluster'] = cluster_list.find("li .chosen .name").text();
+								console.log(that.eae_job);
 								that._eae_submit_step_4();
 								that.keyboard_manager.disable();
 							}
