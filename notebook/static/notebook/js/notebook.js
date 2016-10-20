@@ -421,7 +421,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				"click" : function() {
 						//Trigger next step
 						that._eae_submit_step_2();
-						keyboard_manager.disable();
+						that.keyboard_manager.disable();
 					}
 				},
 				"Cancel" : {
