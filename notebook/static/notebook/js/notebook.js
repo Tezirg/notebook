@@ -433,13 +433,11 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 							"class": "btn-danger"
 						}
 					}
-		};
-		
-		//console.log("Display step 1");
-		dialog.modal(step_1_form);
+				};
+				//console.log("Display step 1");
+				dialog.modal(step_1_form);
 			}
-		);
-		
+		);		
 	}
 	
 	Notebook.prototype._eae_submit_step_2 = function() {
