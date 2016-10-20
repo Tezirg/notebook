@@ -481,6 +481,10 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					cluster_list.append(elem);
 					if (idx == 0)
 						elem.addClass("chosen");
+					elem.click(function() {
+						cluster_list.find('li').removeClass("chosen");
+						this.addClass("chosen");
+					})
 				});
 				cluster.addClass('hidden');
 				var step_3_form = {
