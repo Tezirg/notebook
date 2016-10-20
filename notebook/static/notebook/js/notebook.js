@@ -410,11 +410,11 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		var step_1_body = $("#eae-step-1").html();
 		var step_1_form = {
 			keyboard_manager: that.keyboard_manager,
-			body: step_1_body,
+			body: $(step_1_body),
 			title : step_1_title,
 			buttons : {
 				"Next" : {
-				"class" : "btn-default",
+				"class" : "btn-primary",
 				"click" : function() {
 						//Trigger next step
 						that._eae_submit_step_2();
