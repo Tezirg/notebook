@@ -411,11 +411,11 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		var running_script = step_1_body.find(".running");
 
 		//What happens on select scripts
-		var step_1_select = function(name) {
+		var step_1_select = function(name, path) {
 			step_1_body.find(".name").text(name);
 			running_script.removeClass("hidden");
 			select_script.addClass("hidden");
-			that.eae_job['main'] = name;
+			that.eae_job['main'] = path;
 		};
 		
 		//Dynamic fill of form body
@@ -431,7 +431,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 									item['name'] + "</option>");
 						select_script.append(opt);
 						if (item['name'] == current_script) {
-							step_1_select(current_script);
+							step_1_select(current_script, item['path']);
 						}
 					}
 				});
@@ -460,7 +460,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					select_script.removeClass("hidden");
 				});
 				select_script.change(function(event) {
-					step_1_select($(event.delegateTarget).val());
+					step_1_select($(event.delegateTarget).text(), $(event.delegateTarget).val());
 				})
 				//console.log("Display step 1");
 				dialog.modal(step_1_form);
