@@ -427,6 +427,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				}
 			}
 		};
+		console.log("Display step 1");
 		dialog.modal(step_1_form);
 	}
 	
