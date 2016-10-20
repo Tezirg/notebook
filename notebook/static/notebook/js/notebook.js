@@ -549,7 +549,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 						"class" : "btn-primary",
 						"click" : function() {
 								//Trigger next step
-								that.eae_job['cluster'] = cluster_list.find("li").find(".chosen").find(".name").text();
+								that.eae_job['cluster'] = cluster_list.find("li .chosen").find(".name").text();
 								console.log(that.eae_job);
 								that._eae_submit_step_4();
 								that.keyboard_manager.disable();
