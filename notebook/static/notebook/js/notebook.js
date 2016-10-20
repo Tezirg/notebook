@@ -460,7 +460,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					select_script.removeClass("hidden");
 				});
 				select_script.change(function(event) {
-					step_1_select($(event.delegateTarget).val(), $(event.delegateTarget).val());
+					step_1_select($(event.delegateTarget).find(":selected").text(), $(event.delegateTarget).val());
 				})
 				//console.log("Display step 1");
 				dialog.modal(step_1_form);
