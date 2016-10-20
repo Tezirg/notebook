@@ -86,6 +86,44 @@ data-notebook-path="{{notebook_path | urlencode}}"
 	</div>
 </div>
 
+<div id="eae-step-3"class="hidden">
+ <div class="cluster">
+      <div class="clear">
+        <div>
+          <span class="badge">3</span>
+          <span>Select an execution cluster</span>
+        </div>
+        <p>
+          Tell us which computation cluster you want your script executed on.
+        </p>
+        <div class="container">
+        <div class="clear">
+          <ul id="eae-cluster-list">
+            <li class="chosen">
+            <span class="status ok"></span>
+            <span class="name">Spark GPU</span><br/>
+            <span class="details">8 nodes, Healthy</span>
+            <div class="tick">&#10004;</div>
+            </li>
+            <li>
+            <span class="status ok"></span>
+            <span class="name">Spark Traditional</span><br/>
+            <span class="details">32 nodes, Healthy</span>
+            <div class="tick">&#10004;</div>
+            </li>
+            <li>
+            <span class="status not"></span>
+            <span class="name">Munching42</span><br/>
+            <span class="details">2 nodes, Down</span>
+            <div class="tick">&#10004;</div>
+            </li>
+          </ul>
+        </div>
+        </div>
+      </div>
+      </div>
+</div>
+
 <span id="save_widget" class="pull-left save_widget">
     <span id="notebook_name" class="filename"></span>
     <span class="checkpoint_status"></span>
