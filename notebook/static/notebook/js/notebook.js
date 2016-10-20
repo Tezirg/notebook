@@ -461,7 +461,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		
 	}
 	
-	Notebook..prototype._eae_submit_step_3 = function() {
+	Notebook.prototype._eae_submit_step_3 = function() {
 		var that = this;
 		var step_3_title = "Submit to EAE";
 		var step_3_body = $($("#eae-step-2").html());
