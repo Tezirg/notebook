@@ -483,7 +483,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 						elem.addClass("chosen");
 					elem.click(function(event) {
 						cluster_list.find('li').removeClass("chosen");
-						event.delegateTarget.addClass("chosen");
+						event.delegateTarget().addClass("chosen");
 					})
 				});
 				cluster.addClass('hidden');
