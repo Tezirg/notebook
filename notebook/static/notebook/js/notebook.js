@@ -481,32 +481,31 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					cluster_list.append(elem);
 				}
 				cluster.addClass('hidden');
+				var step_3_form = {
+					body: $(step_3_body),
+					title : step_3_title,
+					buttons : {
+						"Next" : {
+						"class" : "btn-primary",
+						"click" : function() {
+								//Trigger next step
+								that._eae_submit_step_4();
+								that.keyboard_manager.disable();
+							}
+						},
+						"Cancel" : {
+							"class": "btn-danger"
+						}
+					}
+				};
+		
+				console.log("Display step 3");
+				dialog.modal(step_3_form);
 			},
 			function(list_nok) {
 				that._eae_fail("Could not list available clusters");
 			}
 		);
-		
-		var step_3_form = {
-			body: $(step_3_body),
-			title : step_3_title,
-			buttons : {
-				"Next" : {
-				"class" : "btn-primary",
-				"click" : function() {
-						//Trigger next step
-						that._eae_submit_step_4();
-						that.keyboard_manager.disable();
-					}
-				},
-				"Cancel" : {
-					"class": "btn-danger"
-				}
-			}
-		};
-		
-		console.log("Display step 3");
-		dialog.modal(step_3_form);
 	}
 	
 	Notebook.prototype.eae_submit = function() {
