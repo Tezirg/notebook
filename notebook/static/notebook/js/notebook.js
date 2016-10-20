@@ -429,9 +429,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 						var opt = $("<option " + 
 									"value='" + item['name'] + "'>" + 
 									item['name'] + "</option>");
-						opt.click(function(event) {
-							step_1_select($(event.delegateTarget).val());
-						});
 						select_script.append(opt);
 						if (item['name'] == current_script) {
 							step_1_select(current_script);
@@ -462,7 +459,9 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					running_script.addClass("hidden");
 					select_script.removeClass("hidden");
 				});
-				
+				select_script.change(function(event) {
+					step_1_select($(event.delegateTarget).val());
+				})
 				//console.log("Display step 1");
 				dialog.modal(step_1_form);
 			}
