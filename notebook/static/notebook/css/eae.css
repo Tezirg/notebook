@@ -60,7 +60,7 @@
 }
 
 
-.task .running {
+.task .running , .task select{
 	display: block;
 	width: 100%;
 	height: 60px;
