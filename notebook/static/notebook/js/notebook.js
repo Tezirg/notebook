@@ -416,7 +416,8 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				"Next" : {
 				"class" : "btn-default",
 				"click" : function() {
-					//Trigger next step
+						//Trigger next step
+						that._eae_submit_step_2();
 					}
 				},
 				"Cancel" : {
@@ -443,7 +444,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		this.eae_service.isAlive().then(
 				function(alive_ok) { //Success
 					console.log("Alive OK");
-					that._eae_step_1();
+					that._eae_submit_step_1();
 				},
 				function(alive_nok) { // Fail. Don't allow submitting
 					console.log("Alive NOK");
