@@ -84,6 +84,9 @@
 	padding-top: 215px;
 }
 
+#cluster-container {
+	width: 100%;
+}
 
 .eae-step .body .parameters .container {
 	padding-top: 98px;
