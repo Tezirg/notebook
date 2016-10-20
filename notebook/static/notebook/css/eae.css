@@ -24,7 +24,7 @@
 	background-color: #eeeeee;
 }
 
-.eae-step .body {
+.eae-step  {
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -32,7 +32,7 @@
 	height: 400px;
 }
 
-.eae-step .body .container {
+.eae-step  .container {
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -40,27 +40,27 @@
 	left: 0px;
 }
 
-.eae-step .body .container > .clear {
+.eae-step  .container > .clear {
 	overflow: auto;
 }
 
-.eae-step .body .task, .eae-step .body .parameters, .eae-step .body .cluster {
+.eae-step  .task, .eae-step  .parameters, .eae-step  .cluster {
 	position: absolute;
 	height: 100%;
 	top: 0px;
 	right: 0px;
 }
 
-.eae-step .body .task div, .eae-step .body .parameters div, .eae-step .body .cluster div {
+.eae-step  .task div, .eae-step  .parameters div, .eae-step  .cluster div {
 	display: block;
 }
 
-.eae-step .body .task > .clear, .eae-step .body .parameters > .clear, .eae-step .body .cluster > .clear {
+.eae-step  .task > .clear, .eae-step  .parameters > .clear, .eae-step  .cluster > .clear {
 	padding: 20px;
 }
 
 
-.eae-step .body .task .running {
+.eae-step .task .running {
 	display: block;
 	width: 100%;
 	height: 60px;
@@ -69,18 +69,18 @@
 	margin-bottom: 5px;
 }
 
-.eae-step .body .task .running .change {
+.eae-step  .task .running .change {
 	color: #5b8ecc;
 	font-size: 10px;
 	text-decoration: underline;
 }
 
-.eae-step .body .task .running .details {
+.eae-step  .task .running .details {
 	color: #aaaaaa;
 	font-size: 13px;
 }
 
-.eae-step .body .task .container {
+.eae-step  .task .container {
 	padding-top: 215px;
 }
 
@@ -88,21 +88,21 @@
 	width: 100%;
 }
 
-.eae-step .body .parameters .container {
+.eae-step  .parameters .container {
 	padding-top: 98px;
 	width: 100%;
 }
 
-.eae-step .body .parameters .container > .clear {
+.eae-step  .parameters .container > .clear {
 	padding: 0 20px 20px 20px;
 }
 
-.eae-step .body .cluster {
+.eae-step  .cluster {
 	width: 33.33333%;
 	border-left: solid 1px #eeeeee;
 }
 
-.eae-step .body .cluster .container {
+.eae-step  .cluster .container {
 	padding-top: 100px;
 }
 
