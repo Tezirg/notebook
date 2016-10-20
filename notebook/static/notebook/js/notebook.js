@@ -408,7 +408,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		var current_script = this.notebook_path.substring(this.notebook_path.lastIndexOf("/") + 1, this.notebook_path.length);
 		var select_script = step_1_body.find("select");
 		var change_script = step_1_body.find(".change");
-		var runing_script = step_1_body.find(".running");
+		var running_script = step_1_body.find(".running");
 
 		//What happens on select scripts
 		var step_1_select = function(name) {
