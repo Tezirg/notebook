@@ -491,7 +491,10 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 						elem.addClass("chosen");
 					elem.click(function(event) {
 						cluster_list.find("li").removeClass("chosen");
+						cluster_list.find("li").find('.tick').removeClass("chosen");
 						 $( event.delegateTarget ).addClass("chosen");
+						 $( event.delegateTarget ).find('.tick').addClass("chosen");
+						 
 					})
 				});
 				cluster.addClass('hidden');
