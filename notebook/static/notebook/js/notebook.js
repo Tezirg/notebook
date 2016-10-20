@@ -400,7 +400,8 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					}
 				},
 			
-		}
+			}
+		};
 	}
 	
 	Notebook.prototype._eae_submit_step_1 = function() {
