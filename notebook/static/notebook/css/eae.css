@@ -1,0 +1,261 @@
+* {
+	font-family: sans-serif;
+	box-sizing: border-box;
+}
+
+#eae-submit-wrapper {
+	position: fixed;
+	width: 1000px;
+	height: 500px;
+	top: 50%;
+	left: 50%;
+	margin-top: -250px;
+	margin-left: -500px;
+	background-color: #ffffff;
+	border: solid 1px #cccccc;
+}
+
+#eae-submit-form {
+	width: 100%;
+	height: 100%;
+}
+
+#eae-submit-form .header, #eae-submit-form .footer {
+	position: absolute;
+	width: 100%;
+	left: 0px;
+	background-color: #eeeeee;
+}
+
+#eae-submit-form .body {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 50px;
+	height: 400px;
+}
+
+#eae-submit-form .body .container {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	left: 0px;
+}
+
+#eae-submit-form .body .container > .clear {
+	overflow: auto;
+}
+
+#eae-submit-form .body .task, #eae-submit-form .body .parameters, #eae-submit-form .body .cluster {
+	position: absolute;
+	height: 100%;
+	top: 0px;
+	right: 0px;
+}
+
+#eae-submit-form .body .task div, #eae-submit-form .body .parameters div, #eae-submit-form .body .cluster div {
+	display: block;
+}
+
+#eae-submit-form .body .task > .clear, #eae-submit-form .body .parameters > .clear, #eae-submit-form .body .cluster > .clear {
+	padding: 20px;
+}
+
+#eae-submit-form .body .task {
+	width: 100%;
+	padding-right: 66.66667%;
+}
+
+#eae-submit-form .body .task .running {
+	display: block;
+	width: 100%;
+	height: 60px;
+	border: solid 1px #dddddd;
+	padding: 10px;
+	margin-bottom: 5px;
+}
+
+#eae-submit-form .body .task .running .change {
+	color: #5b8ecc;
+	font-size: 10px;
+	text-decoration: underline;
+}
+
+#eae-submit-form .body .task .running .details {
+	color: #aaaaaa;
+	font-size: 13px;
+}
+
+#eae-submit-form .body .task .container {
+	padding-top: 215px;
+}
+
+#eae-submit-form .body .parameters {
+	width: 66.66667%;
+	padding-right: 33.33333%;
+	border-left: solid 1px #eeeeee;
+}
+
+#eae-submit-form .body .parameters .container {
+	padding-top: 98px;
+}
+
+#eae-submit-form .body .parameters .container > .clear {
+	padding: 0 20px 20px 20px;
+}
+
+#eae-submit-form .body .cluster {
+	width: 33.33333%;
+	border-left: solid 1px #eeeeee;
+}
+
+#eae-submit-form .body .cluster .container {
+	padding-top: 100px;
+}
+
+#eae-submit-form .header {
+	position: absolute;
+	top: 0px;
+	width: 100%;
+	height: 50px;
+	line-height: 50px;
+	padding: 0px 20px;
+	font-weight: bold;
+}
+
+#eae-submit-form .header .uuid {
+	float: right;
+	color: #bbbbbb;
+	font-size: 11px;
+}
+
+#eae-submit-form .footer {
+	bottom: 0px;
+	height: 50px;
+	line-height: 50px;
+	padding: 0 20px;
+	text-align: right;
+}
+
+#eae-submit-form .footer .button {
+	display: inline-block;
+	height: 30px;
+	line-height: 30px;
+	padding: 0 10px;
+	background-color: #cccccc;
+	color: #ffffff;
+}
+
+.badge {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	line-height: 20px;
+	text-align: center;
+	border-radius: 100%;
+	color: #ffffff;
+	background-color: #555555;
+}
+
+#eae-cluster-list {
+	width: 100%;
+	padding-left: 0;
+	list-style: none;
+	margin: 0px;
+	padding: 0 20px 20px 20px;
+}
+
+#eae-cluster-list li {
+	height: 60px;
+	border: solid 1px #dddddd;
+	padding: 10px;
+	margin-bottom: 5px;
+}
+
+#eae-cluster-list li:hover {
+	cursor: pointer;
+	background-color: #f7f7f7;
+}
+
+#eae-cluster-list li .status {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	border-radius: 100%;
+}
+
+#eae-cluster-list li .status.ok {
+	background-color: #079904;
+}
+
+#eae-cluster-list li .status.not {
+	background-color: #ce063e;
+}
+
+#eae-cluster-list li .details {
+	color: #aaaaaa;
+	font-size: 13px;
+}
+
+#eae-taskattachments-list {
+	list-style: none;
+	margin: 0px;
+	padding: 0 20px 20px 20px;
+}
+
+#eae-taskattachments-list li {
+	height: 25px;
+	line-height: 25px;
+	margin-bottom: 5px;
+	color: #999999;
+}
+
+#eae-taskattachments-list li span {
+	font-weight: bold;
+	margin: 5px;
+}
+
+#eae-taskattachments-list li span.data {
+	color: #c922c6;
+}
+
+#eae-taskattachments-list li span.script {
+	color: #ffaf11;
+}
+
+p {
+	padding-top: 5px;
+	font-size: 12px;
+}
+
+.clear {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.tick {
+	position: absolute;
+	top: 0px;
+	right: 20px;
+	height: 60px;
+	width: 60px;
+	display: none;
+	background-color: #ebebeb;
+	text-align: center;
+	line-height: 60px;
+	border: solid 1px #dddddd;
+}
+
+.chosen .tick {
+	display: block;
+}
+
+input {
+	width: 137px;
+	height: 30px;
+	border: solid 1px #dddddd;
+	margin-bottom: 5px;
+	padding: 0 5px;
+}

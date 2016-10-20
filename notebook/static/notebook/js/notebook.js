@@ -383,15 +383,81 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
     Notebook.prototype.show_shortcuts_editor = function() {
         new ShortcutEditor(this);
     };
-		
+	
+	Notebook.prototype._eae_fail = function(message) {
+		var that = this;
+		var fail_form = {
+			keyboard_manager: that.keyboard_manager,
+			body: 	"<div class='alert-danger'>" +
+					message + 
+					"</div>",
+			title : "Submit to EAE failed",
+			buttons : {
+				"Submit" : {
+				"class" : "btn-success",
+				"click" : function() {
+					//Trigger next step
+					}
+				},
+			
+		}
+	}
+	
+	Notebook.prototype._eae_submit_step_1 = function() {
+		var that = this;
+		var step_1_title = "Submit to EAE";
+		var step_1_body = $("#eae-step-1").html();
+		var step_1_form = {
+			keyboard_manager: that.keyboard_manager,
+			body: step_1_body,
+			title : step_1_title,
+			buttons : {
+				"Submit" : {
+				"class" : "btn-success",
+				"click" : function() {
+					//Trigger next step
+					}
+				},
+				"Cancel" : {
+					"class": "btn-default",
+					"click": function() {
+						//Clear form for re-use
+					}
+				}
+			}
+		};
+		dialog.modal(step_1_form);
+	}
+	
+	Notebook.prototype._eae_submit_step_2 = function() {
+		console.log("TODO step 2");
+	}
+	
 	Notebook.prototype.eae_submit = function() {
 		var that = this;
+		this.eae_job = {
+			id: utils.uuid();
+		}
+		//Is isAlive, display dialog
+		this.eae_service.isAlive().then(
+				function(alive_ok) { //Success
+					console.log("Alive OK");
+					that._eae_step_1();
+				},
+				function(alive_nok) { // Fail. Don't allow submitting
+					console.log("Alive NOK");
+					that._eae_fail("Eae interface is not responding, please try again later.");
+				}
+		);//End isAlive
+		return true;
+		
+		//OLD CODE
 		var submit = {
 			payload : {
 				id : utils.uuid()
 			}
 		}; 
-	
+		
 		var submit_form = $("<form role='form'></form>");
 		
 		var id_field = $("<div id='eae-submit-id-field' class='form-group row'></div>");

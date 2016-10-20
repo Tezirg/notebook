@@ -18,6 +18,7 @@ window.mathjax_url = "{{mathjax_url}}";
 
 <link rel="stylesheet" href="{{ static_url("notebook/css/override.css") }}" type="text/css" />
 <link rel="stylesheet" href=""  id='kernel-css'                             type="text/css" />
+<link rel="stylesheet" href="{{ static_url("notebook/css/eae.css") }}" type="text/css" />
 
 {% endblock %}
 
@@ -35,6 +36,34 @@ data-notebook-path="{{notebook_path | urlencode}}"
 
 {% block headercontainer %}
 
+
+<div id="eae-step-1" class='hidden'>
+	<div class="clear">
+        <div>
+          <span class="badge">1</span>
+          <span>Select a script</span>
+        </div>
+        <p>
+          Here is the script that we are gonna be running on the cluster for you:
+        </p>
+        <div class="running">
+          <span class="name">example.ipynb</span>
+          <span class="change">Select another</span><br/>
+          <span class="details">Last change 6/06/16 06:06:06</span>
+        </div>
+        <p>
+          Note that we will additionally be joining those files with the script package:
+        </p>
+        <div class="container">
+        <div class="clear">
+          <ul id="eae-taskattachments-list">
+            <li><span class="data">&#9737;</span> data-example.json</li>
+            <li><span class="script">&#9881;</span> script-example.ipynb</li>
+          </ul>
+        </div>
+        </div>
+    </div>
+</div>
 
 <span id="save_widget" class="pull-left save_widget">
     <span id="notebook_name" class="filename"></span>
