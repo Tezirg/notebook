@@ -479,6 +479,8 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					elem.find('.type').text(item['type']);
 					elem.find(".node-num").text(item['hosts'].split(" ").length.toString());
 					cluster_list.append(elem);
+					if (idx == 0)
+						elem.addClass("chosen");
 				});
 				cluster.addClass('hidden');
 				var step_3_form = {
