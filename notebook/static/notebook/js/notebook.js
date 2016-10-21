@@ -389,9 +389,9 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		var that = this;
 		var fail_form = {
 			keyboard_manager: that.keyboard_manager,
-			body: 	"<div class='alert-danger'>" +
+			body: 	$("<div class='alert-danger'>" +
 					message + 
-					"</div>",
+					"</div>"),
 			title : "Submit to EAE failed",
 			buttons : {
 				"OK" : {
@@ -662,7 +662,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				},
 				function(preSubmitError) {
 					that._eae_fail("Could not create .zip file. [" + 
-									preSubmitError.xhr_status + " " +
+									preSubmitError.xhr.status.toString() + " " +
 								    preSubmitError.xhr_error +
 								   "]");
 				}
