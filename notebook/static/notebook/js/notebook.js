@@ -446,7 +446,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 							"class": "btn-danger"
 						},
 						"Next" : {
-						"class" : "btn-primary",
+						"class" : "btn-success",
 						"click" : function() {
 								//Trigger next step
 								that._eae_submit_step_2();
@@ -490,7 +490,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					}
 				},
 				"Next" : {
-				"class" : "btn-primary",
+				"class" : "btn-success",
 				"click" : function() {
 						//Trigger next step
 						that.eae_job['params'] = step_2_body.find("#param-list input").val();
@@ -500,8 +500,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				}
 			}
 		};
-		
-		console.log("Display step 2");
 		dialog.modal(step_2_form);
 		
 	}
@@ -550,7 +548,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 							}
 						},
 						"Next" : {
-						"class" : "btn-primary",
+						"class" : "btn-success",
 						"click" : function() {
 								//Trigger next step
 								that.eae_job['cluster'] = step_3_body.find(".chosen").find(".name").text();
@@ -561,8 +559,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 						}
 					}
 				};
-		
-				console.log("Display step 3");
 				dialog.modal(step_3_form);
 			},
 			function(list_nok) {
@@ -660,162 +656,26 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				}
 		);//End isAlive
 		return true;
-		
-		//OLD CODE
-		var submit = {
-			payload : {
-				id : utils.uuid()
-			}
-		}; 
-		
-		var submit_form = $("<form role='form'></form>");
-		
-		var id_field = $("<div id='eae-submit-id-field' class='form-group row'></div>");
-		id_field.append($("<label for='eae-submit-id'>Task ID:</label>"));
-		id_field.append($("<input class='form-control' type='text' name='eae-submit-id' value='" + submit.payload.id + "' readonly></input>"));
-		
-		var name_field = $("<div id='eae-submit-name-field' class='form-group row'></div>");
-		name_field.append($("<label for='eae-submit-name'>Task name:</label>"));
-		name_field.append($("<input class='form-control' type='text' name='eae-submit-name' value='" + submit.payload.id + "'></input>"));
-        
-		var main_field = $("<div id='eae-submit-main-field' class='form-group row'></div>");
-		main_field.append($("<label for='eae-submit-main-items'>Script to execute:</label>"));
-		var main_select = $("<select class='form-control col-sm-6' id='eae-submit-main-items' name='eae-submit-main-items'></select>");
-		main_field.append(main_select);
-		main_select.change(
-				function(event) {
-					console.log(event);
-					console.log($(this));
-					$("input[name='eae-submit-files']").prop('disabled', false);
-					$("input[filename='" + $(this).val() + "']").prop('disabled', true);
-				});
-		
-		var param_field = $("<div id='eae-submit-param-field' class='form-group row'>" +
-								"<label for='eae-submit-param'>Parameters:</label>" +
-								"<textarea class='form-control' name='eae-submit-param' rows='1' cols='80' placeholder='Command line arguments here' >" + 
-								"</textarea>" +
-							"</div>");
-
-		var file_field = $("<div id='eae-submit-file-field' class='form-group row'></div>");
-		file_field.append($("<label for='eae-submit-files'>Select additional files:</label>"));
-		var current_dir = this.notebook_path.substring(0, this.notebook_path.lastIndexOf("/"));
-		this.contents.list_contents(current_dir).then(
-			function(list) {			
-				list.content.forEach(function(item, idx) {
-					var opt = $("<option name='eae-submit-main-file' " + 
-								"value='" + item['name'] + "'>" + 
-								item['name'] + "</option>");
-					main_select.append(opt);
-
-					var file_elem = $("<input class='form-check-input' type='checkbox' name='eae-submit-files' " +
-									  "filename='" + item['name'] + "' " + 					
-									  "value='" + item['path'] + "'>" + 
-									  item['name'] + "</input>");
-					var file_div = $("<div></div>");
-					file_div.append(file_elem);
-					file_field.append(file_div);
-					if (idx === 0) {
-						file_elem.prop('disabled', true);
-					}
-				});
-			},
-			function(error) {
-                file_field.append($("<div>Error retrieving file list</div>"));
-            }
-        );
-		
-		//Perform ajax query on Eae status before display form
-		var cluster_field = $("<div id='eae-submit-cluster-field' class='form-group row'>" +
-								"<label for='eae-submit-cluster-items'>Choose target cluster:</label>" +
-							  "</div>");
-		var cluster_select = $("<select class='form-control col-sm-6' id='eae-submit-cluster-items' name='eae-submit-cluster-items'></select>");
-		cluster_field.append(cluster_select);
-		this.eae_service.listClusters().then(
-			function(list_ok) {
-				console.log("OKAY list cluster");
-				var item_list = JSON.parse(list_ok);
-				console.log(item_list);
-				item_list.forEach(function(item, idx) {
-					console.log(item);
-					var cluster = $("<option name='eae-submit-cluster' " + 
-								  "value='" + item['name'] + "' >" + 
-								  "[" + item['type'] + "] - " + item['name'] + 
-								  "</option>");
-					console.log("Created a cluster entry");
-					cluster_select.append(cluster);
-				});
-			},
-			function(list_nok) {
-				console.log("Listing clusters failed");
-			}
-		);
-
-		submit_form.append(id_field);
-		submit_form.append(name_field);
-		submit_form.append(main_field);
-		submit_form.append(param_field);
-		submit_form.append(file_field);
-		submit_form.append(cluster_field);
-		
-		submit.dialog = {
-			keyboard_manager: that.keyboard_manager,
-			body: submit_form,
-			title : "EAE Submit",
-			buttons : {
-				"Submit" : {
-				"class" : "btn-success",
-				"click" : function () {
-					//Get the data from the form
-					submit.payload['name'] = $("input[name='eae-submit-name']").val(); 
-					submit.payload['main'] = $("select[name='eae-submit-main-items']").val();
-					submit.payload['params'] = $("textarea[name='eae-submit-param']").val();
-					submit.payload['cluster'] = $("select[name='eae-submit-cluster-items']").val();
-					submit.payload['files'] = [];
-					$("input[name='eae-submit-files']:checked").each(function(idx, item) {
-						submit.payload.files.push($(item).val());
-						return true;
-					});
-					$("input[name='eae-submit-files']:disabled").each(function(idx, item) {
-						submit.payload.files.push($(item).val());
-						return true;
-					});
 				
-					//Perform ajax queries
-					that.eae_service.PreSubmit(submit).then(
-							function(preSubmitSuccess) {
-								console.log(preSubmitSuccess);
-								submit.payload.zip = preSubmitSuccess.zip;
-								that.eae_service.Submit(submit).then(
-									function(submit_success) {
-										console.log("Submit_success");
-										console.log(submit_success);
-									},
-									function(submit_error) {
-										console.log("Submit_error");
-									}
-								);
-							},
-							function(preSubmitError) {
-								console.log("Presubmit_error");
-							});
-					}
+		//Perform ajax queries
+		that.eae_service.PreSubmit(submit).then(
+				function(preSubmitSuccess) {
+					console.log(preSubmitSuccess);
+					submit.payload.zip = preSubmitSuccess.zip;
+					that.eae_service.Submit(submit).then(
+						function(submit_success) {
+							console.log("Submit_success");
+							console.log(submit_success);
+						},
+						function(submit_error) {
+							console.log("Submit_error");
+						}
+					);
 				},
-			}
-		}; //Closes submit.dialog
-		
-		//Is isAlive, display dialog
-		this.eae_service.isAlive().then(
-				function(alive_ok) { //Success
-					console.log("Alive OK");
-					dialog.modal(submit.dialog);
-				},
-				function(alive_nok) { // Fail. Don't allow submitting
-					console.log("Alive NOK");
-					submit.dialog.buttons["Submit"]["class"] = "btn-danger disabled";
-					dialog.modal(submit.dialog);
+				function(preSubmitError) {
+					console.log("Presubmit_error");
 				}
-		);//End isAlive
-		
+		);		
 	};//End function eae_submit
 
     /**
