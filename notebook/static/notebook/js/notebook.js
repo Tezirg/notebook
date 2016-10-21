@@ -621,10 +621,10 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 								var path_list = []
 								step_4_cluster_list.find("li.chosen").find(".name").each(function(idx, item) {
 									console.log(item);
-									file_list.push(item.text());
+									file_list.push($(item).text());
 								});
 								step_4_cluster_list.find("li.chosen").find(".details").each(function(idx, item) {
-									path_list.push(item.text());
+									path_list.push($(item).text());
 								});
 								that.eae_job['files'] = file_list;
 								that.eae_job['files_path'] = path_list;
