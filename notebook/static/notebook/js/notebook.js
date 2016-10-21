@@ -639,7 +639,32 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				dialog.modal(step_4_form);
 			}
 		);		
-	}
+	};
+	
+	Notebook.prototype._eae_submit_send = function() {
+		var that = this;
+		
+		//Perform ajax queries
+		this.eae_service.PreSubmit(that.eae_job).then(
+				function(preSubmitSuccess) {
+					console.log(preSubmitSuccess);
+					that.eae_job['zip'] = preSubmitSuccess.zip;
+					that.eae_service.Submit(that.eae_job).then(
+						function(submit_success) {
+							console.log("Submit_success");
+							console.log(submit_success);
+						},
+						function(submit_error) {
+							that._eae_fail("Job submit failed, procedure has been cancelled");
+						}
+					);
+				},
+				function(preSubmitError) {
+					that._eae_fail("Could not create .zip file");
+					console.log("Presubmit_error");
+				}
+		);		
+	};
 	
 	Notebook.prototype.eae_submit = function() {
 		var that = this;
@@ -655,26 +680,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				}
 		);//End isAlive
 		return true;
-				
-		//Perform ajax queries
-		that.eae_service.PreSubmit(submit).then(
-				function(preSubmitSuccess) {
-					console.log(preSubmitSuccess);
-					submit.payload.zip = preSubmitSuccess.zip;
-					that.eae_service.Submit(submit).then(
-						function(submit_success) {
-							console.log("Submit_success");
-							console.log(submit_success);
-						},
-						function(submit_error) {
-							console.log("Submit_error");
-						}
-					);
-				},
-				function(preSubmitError) {
-					console.log("Presubmit_error");
-				}
-		);		
 	};//End function eae_submit
 
     /**
