@@ -661,10 +661,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					);
 				},
 				function(preSubmitError) {
-					that._eae_fail("Could not create .zip file. [" + 
-									preSubmitError.xhr.status.toString() + " " +
-								    preSubmitError.xhr_error +
-								   "]");
+					that._eae_fail("Oops we have encountered an error");
 				}
 		);		
 	};

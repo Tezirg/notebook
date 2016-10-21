@@ -26,15 +26,15 @@ class EaeHandler(APIHandler):
 		data = self.get_json_body();		
 		exporter = get_exporter("script");
 		
-		to_zip = []		
-		for f in data['files']:
-			if f.rfind(".ipynb") != -1:
-				model = self.contents_manager.get(path=f)
-				output, resources = exporter.from_notebook_node(model['content']);
-				to_zip.append({ "content": output, "filename": os.path.splitext(model['name'])[0] + resources['output_extension'] });
-			else:
+		to_zip = [];	
+		for f in data['files_path']:
 				model = self.contents_manager.get(path=f)
 				to_zip.append({ "filename": model['name'], "content": model['content']});
+		for f in data['scripts_path']:
+			model = self.contents_manager.get(path=f)
+			output, resources = exporter.from_notebook_node(model['content']);
+			to_zip.append({ "content": output, "filename": os.path.splitext(model['name'])[0] + resources['output_extension'] });
+				
 		
 
 		# Prepare the zip file
