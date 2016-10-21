@@ -399,6 +399,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				}
 			}
 		};
+		dialog.modal(fail_form);
 	}
 	
 	Notebook.prototype._eae_submit_step_1 = function() {
@@ -660,11 +661,9 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					);
 				},
 				function(preSubmitError) {
-					console.log("Presubmit_error");
-					console.log(preSubmitError);
 					that._eae_fail("Could not create .zip file. [" + 
-									preSubmitError['status'] + " " +
-								    preSubmitError['responseJSON']['message'] +
+									preSubmitError.xhr_status + " " +
+								    preSubmitError.xhr_error +
 								   "]");
 				}
 		);		
