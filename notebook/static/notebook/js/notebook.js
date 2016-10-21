@@ -416,7 +416,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 			step_1_body.find(".name").text(name);
 			running_script.removeClass("hidden");
 			select_script.addClass("hidden");
-			that.eae_job['scripts_path'] = [ path ];
+			that.eae_job['scriptsPath'] = [ path ];
 			that.eae_job['scripts'] = [ name ];
 		};
 		
@@ -627,7 +627,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 									path_list.push($(item).text());
 								});
 								that.eae_job['files'] = file_list;
-								that.eae_job['files_path'] = path_list;
+								that.eae_job['filesPath'] = path_list;
 								console.log(that.eae_job);
 								//Trigger next step
 								that._eae_submit_send();
@@ -648,7 +648,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				function(preSubmitSuccess) {
 					console.log(preSubmitSuccess);
 					that.eae_job['zip'] = preSubmitSuccess.zip;
-					that.eae_job['scripts_export'] = preSubmitSuccess.scripts_export;
+					that.eae_job['scriptsExport'] = preSubmitSuccess.scriptsExport;
 					that.eae_service.Submit(that.eae_job).then(
 						function(submit_success) {
 							console.log("Submit_success");

@@ -28,10 +28,10 @@ class EaeHandler(APIHandler):
 		
 		to_zip = [];
 		scripts = [];
-		for f in data['files_path']:
+		for f in data['filesPath']:
 				model = self.contents_manager.get(path=f)
 				to_zip.append({ "filename": model['name'], "content": model['content']});
-		for f in data['scripts_path']:
+		for f in data['scriptsPath']:
 			model = self.contents_manager.get(path=f)
 			output, resources = exporter.from_notebook_node(model['content']);
 			name = os.path.splitext(model['name'])[0] + resources['output_extension']
@@ -53,7 +53,7 @@ class EaeHandler(APIHandler):
 		
 		self.set_status(200);
 		self.set_header('Content-Type', 'application/json');
-		self.finish(json.dumps({ "id": data['id'], "zip": zip_path, "scripts_export": scripts }, default=date_default));
+		self.finish(json.dumps({ "id": data['id'], "zip": zip_path, "scriptsExport": scripts }, default=date_default));
 		
 #-----------------------------------------------------------------------------
 # URL to handler mappings
