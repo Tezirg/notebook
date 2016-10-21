@@ -580,11 +580,13 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		
 		//Dynamic fill of form body
 		var current_dir = this.notebook_path.substring(0, this.notebook_path.lastIndexOf("/"));
+		var list_size = 0;
 		this.contents.list_contents(current_dir).then(
 			function(list) {			
 				//Iterate over file list
 				list.content.forEach(function(item, idx) {
 					if (item['name'].lastIndexOf('.ipynb') == -1) { //Is NOT a script file
+						list_size += 1;
 						var elem = step_4_cluster.clone(); 
 						elem.find('.name').text(item['name']);
 						elem.find(".details").text(item['path']);
@@ -595,8 +597,13 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 						});
 					}
 				});
-				step_4_cluster.addClass('hidden');
-				
+				if (list_size > 0) {
+					step_4_cluster.addClass('hidden');
+				}
+				else {
+					step_4_cluster.find(".name").text("No additionnal data found");
+					step_4_cluster.find(".details").text("Directory is: " + current_dir);
+				}
 				//Form decl
 				var step_4_form = {
 					body: $(step_4_body),
