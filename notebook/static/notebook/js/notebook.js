@@ -644,7 +644,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 	Notebook.prototype._eae_submit_send = function() {
 		var that = this;
 		//Perform ajax queries
-		this.eae_service.PreSubmit(that.eae_job).then(
+		this.eae_service.PreSubmit(this.eae_job).then(
 				function(preSubmitSuccess) {
 					console.log(preSubmitSuccess);
 					that.eae_job['zip'] = preSubmitSuccess.zip;
