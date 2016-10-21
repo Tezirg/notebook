@@ -584,7 +584,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 						elem.find('.name').text(item['name']);
 						elem.find(".details").text(item['path']);
 						step_4_cluster_list.append(elem);
-						elem.click(function() {
+						elem.click(function(event) {
 							$( event.delegateTarget ).toggleClass("chosen");
 							$( event.delegateTarget ).find('.tick').toggleClass("chosen");
 						});
