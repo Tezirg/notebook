@@ -442,6 +442,9 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					body: $(step_1_body),
 					title : step_1_title,
 					buttons : {
+						"Cancel" : {
+							"class": "btn-danger"
+						},
 						"Next" : {
 						"class" : "btn-primary",
 						"click" : function() {
@@ -449,9 +452,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 								that._eae_submit_step_2();
 								that.keyboard_manager.disable();
 							}
-						},
-						"Cancel" : {
-							"class": "btn-danger"
 						}
 					}
 				};
@@ -478,6 +478,9 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 			body: $(step_2_body),
 			title : step_2_title,
 			buttons : {
+				"Cancel" : {
+					"class": "btn-danger"
+				},
 				"Previous" : {
 				"class" : "btn-primary",
 				"click" : function() {
@@ -494,9 +497,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 						that._eae_submit_step_3();
 						that.keyboard_manager.disable();
 					}
-				},
-				"Cancel" : {
-					"class": "btn-danger"
 				}
 			}
 		};
