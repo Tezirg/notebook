@@ -492,7 +492,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				"class" : "btn-success",
 				"click" : function() {
 						//Trigger next step
-						that.eae_job['params'] = step_2_body.find("#param-list input").val();
+						that.eae_job['configs'] = step_2_body.find("#param-list input").val();
 						that._eae_submit_step_3();
 						that.keyboard_manager.disable();
 					}
@@ -648,6 +648,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				function(preSubmitSuccess) {
 					console.log(preSubmitSuccess);
 					that.eae_job['zip'] = preSubmitSuccess.zip;
+					that.eae_job['scripts_export'] = preSubmitSuccess.scripts_export;
 					that.eae_service.Submit(that.eae_job).then(
 						function(submit_success) {
 							console.log("Submit_success");
