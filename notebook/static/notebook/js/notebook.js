@@ -620,6 +620,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 								var file_list = [];
 								var path_list = []
 								step_4_cluster_list.find("li.chosen").find(".name").each(function(idx, item) {
+									console.log(item);
 									file_list.push(item.text());
 								});
 								step_4_cluster_list.find("li.chosen").find(".details").each(function(idx, item) {
@@ -635,8 +636,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 						}
 					}
 				};
-				
-				//console.log("Display step 1");
 				dialog.modal(step_4_form);
 			}
 		);		
