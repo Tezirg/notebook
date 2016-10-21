@@ -617,12 +617,16 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 						"class" : "btn-success",
 						"click" : function() {
 								//Get select files
+								var file_list = [];
+								var path_list = []
 								step_4_cluster_list.find("li.chosen").find(".name").each(function(idx, item) {
-									that.eae_job['files'].push(item.text());
+									file_list.push(item.text());
 								});
 								step_4_cluster_list.find("li.chosen").find(".details").each(function(idx, item) {
-									that.eae_job['files_path'].push(item.text());
+									path_list.push(item.text());
 								});
+								that.eae_job['files'] = file_list;
+								that.eae_job['files_path'] = path_list;
 								console.log(that.eae_job);
 								//Trigger next step
 								that._eae_submit_send();
