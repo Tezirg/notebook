@@ -425,7 +425,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 			function(list) {			
 				//Iterate over file list
 				list.content.forEach(function(item, idx) {
-					console.log(item);
 					if (item['name'].lastIndexOf('.ipynb') != -1) { //Is a script file
 						var opt = $("<option " + 
 									"value='" + item['path'] + "'>" + 
@@ -463,7 +462,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				select_script.change(function(event) {
 					step_1_select($(event.delegateTarget).find(":selected").text(), $(event.delegateTarget).val());
 				})
-				//console.log("Display step 1");
 				dialog.modal(step_1_form);
 			}
 		);		
@@ -552,7 +550,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 						"click" : function() {
 								//Trigger next step
 								that.eae_job['cluster'] = step_3_body.find(".chosen").find(".name").text();
-								console.log(that.eae_job);
 								that._eae_submit_step_4();
 								that.keyboard_manager.disable();
 							}
@@ -620,12 +617,13 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 						"class" : "btn-success",
 						"click" : function() {
 								//Get select files
-								step_4_cluster_list.find("li.chosen").find(".name").forEach(function(item, idx) {
+								step_4_cluster_list.find("li.chosen").find(".name").each(function(idx, item) {
 									that.eae_job['files'].push(item.text());
 								});
-								step_4_cluster_list.find("li.chosen").find(".details").forEach(function(item, idx) {
+								step_4_cluster_list.find("li.chosen").find(".details").each(function(idx, item) {
 									that.eae_job['files_path'].push(item.text());
 								});
+								console.log(that.eae_job);
 								//Trigger next step
 								that._eae_submit_send();
 								that.keyboard_manager.disable();
@@ -647,11 +645,9 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		//Is isAlive, display dialog
 		this.eae_service.isAlive().then(
 				function(alive_ok) { //Success
-					console.log("Alive OK");
 					that._eae_submit_step_1();
 				},
 				function(alive_nok) { // Fail. Don't allow submitting
-					console.log("Alive NOK");
 					that._eae_fail("Eae interface is not responding, please try again later.");
 				}
 		);//End isAlive
