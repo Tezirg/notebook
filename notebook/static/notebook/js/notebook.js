@@ -621,7 +621,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 								var file_list = [];
 								var path_list = []
 								step_4_cluster_list.find("li.chosen").find(".name").each(function(idx, item) {
-									console.log(item);
 									file_list.push($(item).text());
 								});
 								step_4_cluster_list.find("li.chosen").find(".details").each(function(idx, item) {
@@ -644,7 +643,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 	
 	Notebook.prototype._eae_submit_send = function() {
 		var that = this;
-		
 		//Perform ajax queries
 		this.eae_service.PreSubmit(that.eae_job).then(
 				function(preSubmitSuccess) {
@@ -663,7 +661,8 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				function(preSubmitError) {
 					that._eae_fail("Oops we have encountered an error");
 				}
-		);		
+		);
+		return true;
 	};
 	
 	Notebook.prototype.eae_submit = function() {
