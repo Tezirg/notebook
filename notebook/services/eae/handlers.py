@@ -25,6 +25,7 @@ class EaeHandler(APIHandler):
 
 		data = self.get_json_body();		
 		exporter = get_exporter("script");
+		pprint.pprint(data);
 		
 		to_zip = [];	
 		for f in data['files_path']:

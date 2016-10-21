@@ -68,7 +68,7 @@ function(utils) {
 			processData: false,
             data: JSON.stringify(payload),
             contentType: 'application/json',
-            dataType : "json",
+            dataType : "json"
         };
 		var url = this.api_notebook("submit");
         return utils.promising_ajax(url, settings);
