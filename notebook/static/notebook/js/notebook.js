@@ -415,7 +415,8 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 			step_1_body.find(".name").text(name);
 			running_script.removeClass("hidden");
 			select_script.addClass("hidden");
-			that.eae_job['main'] = path;
+			that.eae_job['scripts_path'] = [ path ];
+			that.eae_job['scripts'] = [ name ];
 		};
 		
 		//Dynamic fill of form body
@@ -537,6 +538,9 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					body: $(step_3_body),
 					title : step_3_title,
 					buttons : {
+						"Cancel" : {
+							"class": "btn-danger"
+						},
 						"Previous" : {
 						"class" : "btn-primary",
 						"click" : function() {
@@ -554,9 +558,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 								that._eae_submit_step_4();
 								that.keyboard_manager.disable();
 							}
-						},
-						"Cancel" : {
-							"class": "btn-danger"
 						}
 					}
 				};
@@ -568,6 +569,72 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				that._eae_fail("Could not list available clusters");
 			}
 		);
+	}
+	
+	Notebook.prototype._eae_submit_step_4 = function() {
+		var that = this;
+		var step_4_title = "Submit to EAE";
+		var step_4_body = $($("#eae-step-4").html());
+		var step_4_cluster_list = step_4_body.find("#eae-cluster-list");
+		var step_4_cluster = step_4_body.find("li");
+		
+		//Dynamic fill of form body
+		var current_dir = this.notebook_path.substring(0, this.notebook_path.lastIndexOf("/"));
+		this.contents.list_contents(current_dir).then(
+			function(list) {			
+				//Iterate over file list
+				list.content.forEach(function(item, idx) {
+					if (item['name'].lastIndexOf('.ipynb') == -1) { //Is NOT a script file
+						var elem = step_4_cluster.clone(); 
+						elem.find('.name').text(item['name']);
+						elem.find(".details").text(item['path']);
+						step_4_cluster_list.append(elem);
+						elem.click(function() {
+							$( event.delegateTarget ).toggleClass("chosen");
+							$( event.delegateTarget ).find('.tick').toggleClass("chosen");
+						});
+					}
+				});
+				step_4_cluster.addClass('hidden');
+				
+				//Form decl
+				var step_4_form = {
+					body: $(step_4_body),
+					title : step_4_title,
+					buttons : {
+						"Cancel" : {
+							"class": "btn-danger"
+						},
+						"Previous" : {
+						"class" : "btn-primary",
+						"click" : function() {
+								//Trigger prev step
+								that._eae_submit_step_3();
+								that.keyboard_manager.disable();
+							}
+						},
+						"Send" : {
+						"class" : "btn-success",
+						"click" : function() {
+								//Get select files
+								step_4_cluster_list.find("li.chosen").find(".name").forEach(function(item, idx) {
+									that.eae_job['files'].push(item.text());
+								});
+								step_4_cluster_list.find("li.chosen").find(".details").forEach(function(item, idx) {
+									that.eae_job['files_path'].push(item.text());
+								});
+								//Trigger next step
+								that._eae_submit_send();
+								that.keyboard_manager.disable();
+							}
+						}
+					}
+				};
+				
+				//console.log("Display step 1");
+				dialog.modal(step_4_form);
+			}
+		);		
 	}
 	
 	Notebook.prototype.eae_submit = function() {
