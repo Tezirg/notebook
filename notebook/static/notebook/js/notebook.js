@@ -660,8 +660,11 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					);
 				},
 				function(preSubmitError) {
-					that._eae_fail("Could not create .zip file");
 					console.log("Presubmit_error");
+					that._eae_fail("Could not create .zip file. [" + 
+									preSubmitError['status'] + " " +
+								    preSubmitError['responseJSON']['message'] +
+								   "]");
 				}
 		);		
 	};
