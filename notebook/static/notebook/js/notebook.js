@@ -661,6 +661,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				},
 				function(preSubmitError) {
 					console.log("Presubmit_error");
+					console.log(preSubmitError);
 					that._eae_fail("Could not create .zip file. [" + 
 									preSubmitError['status'] + " " +
 								    preSubmitError['responseJSON']['message'] +
