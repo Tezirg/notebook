@@ -26,21 +26,34 @@ class EaeHandler(APIHandler):
 
 		data = self.get_json_body();		
 		exporter = get_exporter("script");
-		
+
 		to_zip = [];
 		scripts = [];
+		mainScript = "";
+		
+		model = self.contents_manager.get(path=data['mainScriptPath']);
+		output, resources = exporter.from_notebook_node(model['content']);
+		name = os.path.splitext(model['name'])[0] + resources['output_extension'];
+		to_zip.append({ "content": output, "filename": name });
+		if data['clusterType'] == 'Spark' :
+			r1 = re.sub(r'#(.*SparkConf\(\).*)', r'\1', to_zip[-1]['content'], flags=re.MULTILINE);
+			r2 = re.sub(r'#(.*SparkContext\(.*\).*)', r'\1', r1, flags=re.MULTILINE);
+			to_zip[-1]['content'] = r2;
+			mainScript = name;
+		
 		for f in data['filesPath']:
-				model = self.contents_manager.get(path=f)
+				model = self.contents_manager.get(path=f);
 				to_zip.append({ "filename": model['name'], "content": model['content']});
-				if data['clusterType'] == 'spark' :
+		
+		for f in data['scriptsPath']:
+			model = self.contents_manager.get(path=f);
+			output, resources = exporter.from_notebook_node(model['content']);
+			name = os.path.splitext(model['name'])[0] + resources['output_extension'];
+			to_zip.append({ "content": output, "filename": name });
+			if data['clusterType'] == 'Spark' :
 					r1 = re.sub(r'#(.*SparkConf\(\).*)', r'\1', to_zip[-1]['content'], flags=re.MULTILINE);
 					r2 = re.sub(r'#(.*SparkContext\(.*\).*)', r'\1', r1, flags=re.MULTILINE);
 					to_zip[-1]['content'] = r2;
-		for f in data['scriptsPath']:
-			model = self.contents_manager.get(path=f)
-			output, resources = exporter.from_notebook_node(model['content']);
-			name = os.path.splitext(model['name'])[0] + resources['output_extension']
-			to_zip.append({ "content": output, "filename": name });
 			scripts.append(name);
 				
 		
@@ -58,7 +71,7 @@ class EaeHandler(APIHandler):
 		
 		self.set_status(200);
 		self.set_header('Content-Type', 'application/json');
-		self.finish(json.dumps({ "id": data['id'], "zip": zip_path, "scriptsExport": scripts }, default=date_default));
+		self.finish(json.dumps({ "id": data['id'], "zip": zip_path, "mainScriptExport": mainScript, "scriptsExport": scripts }, default=date_default));
 		
 #-----------------------------------------------------------------------------
 # URL to handler mappings

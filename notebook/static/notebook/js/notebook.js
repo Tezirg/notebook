@@ -416,8 +416,10 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 			step_1_body.find(".name").text(name);
 			running_script.removeClass("hidden");
 			select_script.addClass("hidden");
-			that.eae_job['scriptsPath'] = [ path ];
-			that.eae_job['scripts'] = [ name ];
+			that.eae_job['mainScriptPath'] = path;
+			that.eae_job['mainScript'] = name;
+			that.eae_job['scriptsPath'] = [];
+			that.eae_job['scripts'] = [];
 		};
 		
 		//Dynamic fill of form body
@@ -650,6 +652,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					console.log(preSubmitSuccess);
 					that.eae_job['zip'] = preSubmitSuccess.zip;
 					that.eae_job['scriptsExport'] = preSubmitSuccess.scriptsExport;
+					that.eae_job['mainScriptExport'] = preSubmitSuccess.mainScriptExport;
 					that.eae_service.Submit(that.eae_job).then(
 						function(submit_success) {
 							console.log("Submit_success");
