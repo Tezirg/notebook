@@ -551,6 +551,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 						"click" : function() {
 								//Trigger next step
 								that.eae_job['cluster'] = step_3_body.find(".chosen").find(".name").text();
+								that.eae_job['clusterType'] = step_3_body.find(".chosen").find(".type").text();
 								that._eae_submit_step_4();
 								that.keyboard_manager.disable();
 							}
