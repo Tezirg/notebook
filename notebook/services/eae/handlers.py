@@ -4,6 +4,7 @@ import io
 import os
 import stat
 import zipfile
+import re
 
 from tornado import gen, web
 
