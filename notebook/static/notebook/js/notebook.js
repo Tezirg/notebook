@@ -631,7 +631,6 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 								});
 								that.eae_job['files'] = file_list;
 								that.eae_job['filesPath'] = path_list;
-								console.log(that.eae_job);
 								//Trigger next step
 								that._eae_submit_send();
 								that.keyboard_manager.disable();
@@ -649,14 +648,12 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		//Perform ajax queries
 		this.eae_service.PreSubmit(this.eae_job).then(
 				function(preSubmitSuccess) {
-					console.log(preSubmitSuccess);
 					that.eae_job['zip'] = preSubmitSuccess.zip;
 					that.eae_job['scriptsExport'] = preSubmitSuccess.scriptsExport;
 					that.eae_job['mainScriptExport'] = preSubmitSuccess.mainScriptExport;
 					that.eae_service.Submit(that.eae_job).then(
 						function(submit_success) {
-							console.log("Submit_success");
-							console.log(submit_success);
+							console.log("Eae Submit job success");
 						},
 						function(submit_error) {
 							that._eae_fail("Job submit failed, procedure has been cancelled");
