@@ -51,7 +51,7 @@ function(utils) {
             dataType: "json",
             contentType: 'application/json',
         };
-        var url = this.api_eae("EAEManagement/submitJob");
+        var url = this.api_eae("OpenLava/submitJob");
         return utils.promising_ajax(url, settings);
     };
 	
