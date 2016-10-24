@@ -501,7 +501,11 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				"class" : "btn-success",
 				"click" : function() {
 						//Trigger next step
-						that.eae_job['configs'] = step_2_body.find("#param-list input").val();
+						var configs = "";
+						step_2_body.find("#param-list input").each(function(idx, elem) {
+							configs = configs + elem.val() + "\n";
+						});
+						that.eae_job['configs'] = configs;
 						that._eae_submit_step_3();
 						that.keyboard_manager.disable();
 					}
