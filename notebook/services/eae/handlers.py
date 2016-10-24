@@ -5,6 +5,8 @@ import os
 import stat
 import zipfile
 import re
+import socket
+import urlparse
 
 from tornado import gen, web
 
