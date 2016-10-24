@@ -648,7 +648,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		//Perform ajax queries
 		this.eae_service.PreSubmit(this.eae_job).then(
 				function(preSubmitSuccess) {
-					console.log("Test ip = " + preSubmitSuccess.jqXHR);
+					that.eae_job['serverIp'] = that.eae_service.base_ip;
 					that.eae_job['zip'] = preSubmitSuccess.zip;
 					that.eae_job['scriptsExport'] = preSubmitSuccess.scriptsExport;
 					that.eae_job['mainScriptExport'] = preSubmitSuccess.mainScriptExport;
