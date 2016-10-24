@@ -43,7 +43,6 @@ function(utils) {
 	};
 	
 	Eae.prototype.Submit = function(submit_data) {
-		console.log("ipv4 is = " + this.base_url);
 		var payload = submit_data;
 		var settings = {
             type : "POST",
