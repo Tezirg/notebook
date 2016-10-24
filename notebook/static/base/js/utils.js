@@ -759,6 +759,7 @@ define([
         settings = settings || {};
         return new Promise(function(resolve, reject) {
             settings.success = function(data, status, jqXHR) {
+				data.jqXHR = jqXHR;
                 resolve(data);
             };
             settings.error = function(jqXHR, status, error) {
