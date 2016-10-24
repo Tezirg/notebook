@@ -502,9 +502,9 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				"click" : function() {
 						//Trigger next step
 						var configs = "";
-						step_2_body.find("#param-list").find("input").each(function(idx, elem) {
+						step_2_params.find("input").each(function(idx, elem) {
 							console.log(elem);
-							configs = configs + elem.val() + "\n";
+							configs = configs + $(elem).val() + "\n";
 						});
 						that.eae_job['configs'] = configs;
 						that._eae_submit_step_3();
