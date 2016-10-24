@@ -474,6 +474,13 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		var that = this;
 		var step_2_title = "Submit to EAE";
 		var step_2_body = $($("#eae-step-2").html());
+		var step_2_button = step_2_body.find('button');
+		var step_2_params = step_2_boy.find('#param-list');
+		
+		step_2_button.click(function(event) {
+			var new_param = $('<input type="text" value="">');
+			step_2_params.append(new_param);
+		});
 		
 		var step_2_form = {
 			body: $(step_2_body),
