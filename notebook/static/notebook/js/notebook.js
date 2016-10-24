@@ -478,7 +478,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		var step_2_params = step_2_body.find('#param-list');
 		
 		step_2_button.click(function(event) {
-			var new_param = $('<input type="text" value="">');
+			var new_param = $('<div><input type="text" value=""></div>');
 			step_2_params.append(new_param);
 		});
 		
@@ -502,7 +502,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 				"click" : function() {
 						//Trigger next step
 						var configs = "";
-						step_2_body.find("#param-list input").each(function(idx, elem) {
+						step_2_body.find("#param-list").find("input").each(function(idx, elem) {
 							console.log(elem);
 							configs = configs + elem.val() + "\n";
 						});
