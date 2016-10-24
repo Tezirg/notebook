@@ -480,6 +480,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		step_2_button.click(function(event) {
 			var new_param = $('<div><input type="text" value="" id='+ +'><button type="button" class="btn btn-danger">X</button></div>');
 			new_param.find('button').click(function(event) {
+				console.log(event.target);
 				step_2_params.remove($(event.target).parent());
 			})
 			step_2_params.append(new_param);
