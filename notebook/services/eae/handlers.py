@@ -36,7 +36,7 @@ class EaeHandler(APIHandler):
 		
 		print(model['name']);
 		print("\n------\n");
-		print(ressources);
+		print(ressources[1]);
 		root, ext = os.path.splitext(model['name']);
 		print("\n------\n");
 		print(root);
@@ -56,8 +56,8 @@ class EaeHandler(APIHandler):
 		
 		for f in data['scriptsPath']:
 			model = self.contents_manager.get(path=f);
-			output, ressources = exporter.from_notebook_node(model['content']);
-			name = os.path.splitext(model['name'])[0] + ressources['output_extension'];
+			output, ressource = exporter.from_notebook_node(model['content']);
+			name = os.path.splitext(model['name'])[0] + ressource['output_extension'];
 			to_zip.append({ "content": output, "filename": name });
 			if data['clusterType'] == 'Spark' :
 					r1 = re.sub(r'#(.*SparkConf\(\).*)', r'\1', to_zip[-1]['content'], flags=re.MULTILINE);
