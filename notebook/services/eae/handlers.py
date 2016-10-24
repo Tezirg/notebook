@@ -34,21 +34,14 @@ class EaeHandler(APIHandler):
 		model = self.contents_manager.get(path=data['mainScriptPath']);
 		output, ressources = exporter.from_notebook_node(model['content']);
 		
-		print(model['name']);
-		print("\n------\n");
-		print(ressources['output_extension']);
 		root, ext = os.path.splitext(model['name']);
-		print("\n------\n");
-		print(root);
-		print("\n------\n");
-		print(ext);
 		name = root + ressources['output_extension'];
-		to_zip.append({ "content": output, "filename": name });
+		mainScript = name;
+		to_zip.append({ "content": output, "filename": mainScript });
 		if data['clusterType'] == 'Spark' :
 			r1 = re.sub(r'#(.*SparkConf\(\).*)', r'\1', to_zip[-1]['content'], flags=re.MULTILINE);
 			r2 = re.sub(r'#(.*SparkContext\(.*\).*)', r'\1', r1, flags=re.MULTILINE);
 			to_zip[-1]['content'] = r2;
-			mainScript = name;
 		
 		for f in data['filesPath']:
 				model = self.contents_manager.get(path=f);
