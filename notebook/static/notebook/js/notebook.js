@@ -503,6 +503,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 						//Trigger next step
 						var configs = "";
 						step_2_body.find("#param-list input").each(function(idx, elem) {
+							console.log(elem);
 							configs = configs + elem.val() + "\n";
 						});
 						that.eae_job['configs'] = configs;
