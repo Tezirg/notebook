@@ -5,8 +5,6 @@ import os
 import stat
 import zipfile
 import re
-import socket
-import urlparse
 
 from tornado import gen, web
 
@@ -25,9 +23,6 @@ class EaeHandler(APIHandler):
 		
 		POST /api/eae/submit
 		"""
-
-		hostname = urlparse.urlparse("%s://%s" % (self.request.protocol, self.request.host)).hostname;
-		ip_address = socket.gethostbyname(hostname);
 		
 		data = self.get_json_body();		
 		exporter = get_exporter("script");
@@ -78,7 +73,7 @@ class EaeHandler(APIHandler):
 		
 		self.set_status(200);
 		self.set_header('Content-Type', 'application/json');
-		self.finish(json.dumps({ "id": data['id'], "zip": zip_path, "mainScriptExport": mainScript, "scriptsExport": scripts, "serverIp": ip_address }, default=date_default));
+		self.finish(json.dumps({ "id": data['id'], "zip": zip_path, "mainScriptExport": mainScript, "scriptsExport": scripts }, default=date_default));
 		
 #-----------------------------------------------------------------------------
 # URL to handler mappings
