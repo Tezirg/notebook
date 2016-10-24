@@ -49,7 +49,7 @@ function(utils) {
             type : "POST",
 			processData: false,
             data: JSON.stringify(payload),
-            dataType: "json"
+            contentType: 'application/json'
         };
         var url = this.api_eae("OpenLava/submitJob");
         return utils.promising_ajax(url, settings);
