@@ -36,7 +36,7 @@ class EaeHandler(APIHandler):
 		
 		print(model['name']);
 		print("\n------\n");
-		print(ressources[1]);
+		print(ressources['output_extension']);
 		root, ext = os.path.splitext(model['name']);
 		print("\n------\n");
 		print(root);
