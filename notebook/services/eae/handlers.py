@@ -107,7 +107,7 @@ class EaeHandler(APIHandler):
 				print(content);
 				if content:
 					for c in content:
-						c['filename'] = root + + "/" + c['filename'];
+						c['filename'] = root + "/" + c['filename'];
 						print("Fixed filename");
 						print(c['filename']);
 					data += content;
