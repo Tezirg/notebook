@@ -86,7 +86,7 @@ class EaeHandler(APIHandler):
 		data = [];
 		if model['type'] == 'file':
 			data.append({ "filename": model['name'], "content": model['content']});
-		elif model['type'] == 'script':
+		elif model['type'] == 'notebook':
 			root, ext = os.path.splitext(model['name']);
 			output, ressources = exporter.from_notebook_node(model['content']);
 			name = root + ressources['output_extension'];
