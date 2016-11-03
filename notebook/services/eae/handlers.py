@@ -29,8 +29,9 @@ class EaeHandler(APIHandler):
 		data = self.get_json_body();
 
 		to_zip = [];
-		scripts = [];
 		mainScript = "";
+		scripts = [];
+		files = [];
 		
 		#Handle main script
 		model = self.contents_manager.get(path=data['mainScriptPath']);
@@ -46,7 +47,10 @@ class EaeHandler(APIHandler):
 		#Handle other files & dirs
 		for f in data['filesPath']:
 				model = self.contents_manager.get(path=f);
-				to_zip += self._dataExtract(model);	
+				extract = self._dataExtract(model);
+				for e in extract:
+					files += e['filename'];
+				to_zip += extract;
 				
 		# Prepare the zip file
 		zip_path = "/tmp/" + data['id'] + '.zip';
@@ -60,7 +64,7 @@ class EaeHandler(APIHandler):
 		
 		self.set_status(200);
 		self.set_header('Content-Type', 'application/json');
-		self.finish(json.dumps({ "id": data['id'], "zip": zip_path, "mainScriptExport": mainScript, "scriptsExport": scripts }, default=date_default));
+		self.finish(json.dumps({ "id": data['id'], "zip": zip_path, "mainScriptExport": mainScript, "scriptsExport": scripts, "filesExport": files }, default=date_default));
 		return;
 	
 	
