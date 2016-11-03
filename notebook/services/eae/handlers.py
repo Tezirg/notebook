@@ -95,7 +95,7 @@ class EaeHandler(APIHandler):
 			r1 = re.sub(r'#(.*SparkConf\(\).*)', r'\1', data[-1]['content'], flags=re.MULTILINE);
 			r2 = re.sub(r'#(.*SparkContext\(.*\).*)', r'\1', r1, flags=re.MULTILINE);
 			data[-1]['content'] = r2;
-		elif model['type'] == 'directory' && model['content'] != None:
+		elif model['type'] == 'directory' and model['content'] != None:
 			for file in model['content']:
 				data += self._dataExtract(file);
 		return data;
