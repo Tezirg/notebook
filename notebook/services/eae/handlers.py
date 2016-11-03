@@ -82,8 +82,7 @@ class EaeHandler(APIHandler):
 		"""Extract contents from file model
 		Formats name, export script and recurs into directories
 		"""
-		pprint.pprint(model);
-		
+
 		data = [];
 		if model['type'] == 'file' and model['content'] != None:
 			data.append({ "filename": model['name'], "content": model['content']});
