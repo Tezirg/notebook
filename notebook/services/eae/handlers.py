@@ -85,9 +85,9 @@ class EaeHandler(APIHandler):
 		pprint.pprint(model);
 		
 		data = [];
-		if model['type'] == 'file':
+		if model['type'] == 'file' and model['content'] != None:
 			data.append({ "filename": model['name'], "content": model['content']});
-		elif model['type'] == 'notebook':
+		elif model['type'] == 'notebook' and model['content'] != None:
 			root, ext = os.path.splitext(model['name']);
 			output, ressources = self.exporter.from_notebook_node(model['content']);
 			name = root + ressources['output_extension'];
