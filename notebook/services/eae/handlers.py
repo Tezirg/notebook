@@ -18,7 +18,7 @@ class EaeHandler(APIHandler):
     @web.authenticated
     @json_errors
     @gen.coroutine
-    def post(self):
+	def post(self):
 		"""Eae submit query prep. From notebook data form
 		
 		POST /api/eae/submit
@@ -32,7 +32,7 @@ class EaeHandler(APIHandler):
 		mainScript = "";
 		
 		model = self.contents_manager.get(path=data['mainScriptPath']);
-		to_zip += dataExctract(model);
+		to_zip += _dataExtract(model);
 		mainScript = to_zip[-1]['filename'];
 		
 		#output, ressources = exporter.from_notebook_node(model['content']);
@@ -49,21 +49,19 @@ class EaeHandler(APIHandler):
 		for f in data['filesPath']:
 				model = self.contents_manager.get(path=f);
 				#pprint.pprint(model);
-				to_zip += dataExctract(model);#.append({ "filename": model['name'], "content": model['content']});
+				to_zip += _dataExtract(model);#.append({ "filename": model['name'], "content": model['content']});
 		
 		for f in data['scriptsPath']:
 			model = self.contents_manager.get(path=f);
 			#output, ressource = exporter.from_notebook_node(model['content']);
 			#name = os.path.splitext(model['name'])[0] + ressource['output_extension'];
-			to_zip += dataExctract(model); #.append({ "content": output, "filename": name });
+			to_zip += _dataExtract(model); #.append({ "content": output, "filename": name });
 			#if data['clusterType'] == 'Spark' :
 					#r1 = re.sub(r'#(.*SparkConf\(\).*)', r'\1', to_zip[-1]['content'], flags=re.MULTILINE);
 					#r2 = re.sub(r'#(.*SparkContext\(.*\).*)', r'\1', r1, flags=re.MULTILINE);
 					#to_zip[-1]['content'] = r2;
 			scripts.append(to_zip[-1]['filename']);
 				
-		
-
 		# Prepare the zip file
 		zip_path = "/tmp/" + data['id'] + '.zip';
 		zipf = zipfile.ZipFile(zip_path, mode='w', compression=zipfile.ZIP_DEFLATED)
@@ -71,15 +69,18 @@ class EaeHandler(APIHandler):
 			zipf.writestr(entry['filename'], entry['content'])
 		zipf.close();
 		
-		
 		#Chmod 666 the zip file so it can be accessed
 		os.chmod(zip_path, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IWGRP | stat.S_IROTH | stat.S_IWOTH);
 		
 		self.set_status(200);
 		self.set_header('Content-Type', 'application/json');
 		self.finish(json.dumps({ "id": data['id'], "zip": zip_path, "mainScriptExport": mainScript, "scriptsExport": scripts }, default=date_default));
+		return;
 	
-	def dataExctract(self, model):
+	def _dataExtract(self, model):
+		"""Extract contents from file model
+		Formats name, export script and recurs into directories
+		"""
 		data = [];
 		if model['type'] == 'file':
 			data.append({ "filename": model['name'], "content": model['content']});
@@ -93,8 +94,9 @@ class EaeHandler(APIHandler):
 			data[-1]['content'] = r2;
 		elif model['type'] == 'directory':
 			for file in model['content']:
-				data += dataExctract(file);
+				data += _dataExtract(file);
 		return data;
+		
 #-----------------------------------------------------------------------------
 # URL to handler mappings
 #-----------------------------------------------------------------------------
