@@ -665,6 +665,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 					that.eae_job['serverIp'] = that.eae_service.base_ip;
 					that.eae_job['zip'] = preSubmitSuccess.zip;
 					that.eae_job['scriptsExport'] = preSubmitSuccess.scriptsExport;
+					that.eae_job['filesExport'] = preSubmitSuccess.filesExport;
 					that.eae_job['mainScriptExport'] = preSubmitSuccess.mainScriptExport;
 					that.eae_service.Submit(that.eae_job).then(
 						function(submit_success) {
