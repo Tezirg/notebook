@@ -100,8 +100,10 @@ class EaeHandler(APIHandler):
 			print(root);
 			for file in model['content']:
 				f = self.contents_manager.get(path=file['path']);
+				print("To exctract:");
 				print(f);
 				content = self._dataExtract(f);
+				print("Extracted:");
 				print(content);
 				if content:
 					content['filename'] = root + content['filename'];
