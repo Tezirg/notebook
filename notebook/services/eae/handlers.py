@@ -99,8 +99,9 @@ class EaeHandler(APIHandler):
 			root = "".join(root);
 			print(root);
 			for file in model['content']:
-				print(file);
-				content = self._dataExtract(file);
+				f = model = self.contents_manager.get(path=file['path']);
+				print(f);
+				content = self._dataExtract(f);
 				print(content);
 				if content:
 					content['filename'] = root + content['filename'];
