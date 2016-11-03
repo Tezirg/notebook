@@ -48,7 +48,6 @@ class EaeHandler(APIHandler):
 		
 		for f in data['filesPath']:
 				model = self.contents_manager.get(path=f);
-				#pprint.pprint(model);
 				to_zip += self._dataExtract(model);#.append({ "filename": model['name'], "content": model['content']});
 		
 		for f in data['scriptsPath']:
@@ -82,6 +81,8 @@ class EaeHandler(APIHandler):
 		"""Extract contents from file model
 		Formats name, export script and recurs into directories
 		"""
+		pprint.pprint(model);
+		
 		data = [];
 		if model['type'] == 'file':
 			data.append({ "filename": model['name'], "content": model['content']});
