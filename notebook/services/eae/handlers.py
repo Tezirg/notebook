@@ -87,9 +87,8 @@ class EaeHandler(APIHandler):
 		if model['type'] == 'file' and model['content'] != None:
 			data.append({ "filename": model['name'], "content": model['content']});
 		elif model['type'] == 'notebook' and model['content'] != None:
-			root, ext = os.path.splitext(model['name']);
 			output, ressources = self.exporter.from_notebook_node(model['content']);
-			name = root + ressources['output_extension'];
+			name = model['name'] + ressources['output_extension'];
 			data.append({ "content": output, "filename": name });
 			r1 = re.sub(r'#(.*SparkConf\(\).*)', r'\1', data[-1]['content'], flags=re.MULTILINE);
 			r2 = re.sub(r'#(.*SparkContext\(.*\).*)', r'\1', r1, flags=re.MULTILINE);
