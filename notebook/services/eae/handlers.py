@@ -15,7 +15,7 @@ from notebook.utils import url_path_join, url_escape
 
 class EaeHandler(APIHandler):
 
-	exporter = get_exporter("script");
+    exporter = get_exporter("script");
 
     @web.authenticated
     @json_errors
