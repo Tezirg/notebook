@@ -221,6 +221,13 @@ p {
 	font-size: 12px;
 }
 
+.eae-param-btn {
+	padding-top: 4px;
+    margin-left: 2px;
+    padding-bottom: 5px;
+    margin-bottom: 1px;
+}
+
 .clear {
 	position: relative;
 	width: 100%;
@@ -229,16 +236,18 @@ p {
 
 .tick {
 	display: none;
-	position: relative;
-	top: -46px;
-	right: -92%;
-	height: 60px;
-	width: 10%;
-	display: none;
-	background-color: #ebebeb;
-	text-align: center;
-	line-height: 60px;
-	border: solid 1px #dddddd;
+    float: right;
+    top: 0;
+    right: 0;
+    height: 60px;
+    width: 60px;
+    display: none;
+    background-color: #ebebeb;
+    text-align: center;
+    line-height: 60px;
+    border: solid 1px #dddddd;
+    margin-right: -11px;
+    margin-top: -29px;
 }
 
 .chosen .tick {
