@@ -32,35 +32,21 @@ class EaeHandler(APIHandler):
 		scripts = [];
 		mainScript = "";
 		
+		#Handle main script
 		model = self.contents_manager.get(path=data['mainScriptPath']);
 		to_zip += self._dataExtract(model);
 		mainScript = to_zip[-1]['filename'];
 		
-		#output, ressources = exporter.from_notebook_node(model['content']);
-		
-		#root, ext = os.path.splitext(model['name']);
-		#name = root + ressources['output_extension'];
-		#mainScript = name;
-		#to_zip.append({ "content": output, "filename": mainScript });
-		#if data['clusterType'] == 'Spark' :
-			#r1 = re.sub(r'#(.*SparkConf\(\).*)', r'\1', to_zip[-1]['content'], flags=re.MULTILINE);
-			#r2 = re.sub(r'#(.*SparkContext\(.*\).*)', r'\1', r1, flags=re.MULTILINE);
-			#to_zip[-1]['content'] = r2;
-		
-		for f in data['filesPath']:
-				model = self.contents_manager.get(path=f);
-				to_zip += self._dataExtract(model);#.append({ "filename": model['name'], "content": model['content']});
-		
+		#Handle other scripts
 		for f in data['scriptsPath']:
 			model = self.contents_manager.get(path=f);
-			#output, ressource = exporter.from_notebook_node(model['content']);
-			#name = os.path.splitext(model['name'])[0] + ressource['output_extension'];
-			to_zip += self._dataExtract(model); #.append({ "content": output, "filename": name });
-			#if data['clusterType'] == 'Spark' :
-					#r1 = re.sub(r'#(.*SparkConf\(\).*)', r'\1', to_zip[-1]['content'], flags=re.MULTILINE);
-					#r2 = re.sub(r'#(.*SparkContext\(.*\).*)', r'\1', r1, flags=re.MULTILINE);
-					#to_zip[-1]['content'] = r2;
+			to_zip += self._dataExtract(model);
 			scripts.append(to_zip[-1]['filename']);
+
+		#Handle other files & dirs
+		for f in data['filesPath']:
+				model = self.contents_manager.get(path=f);
+				to_zip += self._dataExtract(model);	
 				
 		# Prepare the zip file
 		zip_path = "/tmp/" + data['id'] + '.zip';
