@@ -15,6 +15,8 @@ from notebook.utils import url_path_join, url_escape
 
 class EaeHandler(APIHandler):
 
+	exporter = get_exporter("script");
+
     @web.authenticated
     @json_errors
     @gen.coroutine
@@ -24,8 +26,7 @@ class EaeHandler(APIHandler):
 		POST /api/eae/submit
 		"""
 		
-		data = self.get_json_body();		
-		exporter = get_exporter("script");
+		data = self.get_json_body();
 
 		to_zip = [];
 		scripts = [];
@@ -88,7 +89,7 @@ class EaeHandler(APIHandler):
 			data.append({ "filename": model['name'], "content": model['content']});
 		elif model['type'] == 'notebook':
 			root, ext = os.path.splitext(model['name']);
-			output, ressources = exporter.from_notebook_node(model['content']);
+			output, ressources = self.exporter.from_notebook_node(model['content']);
 			name = root + ressources['output_extension'];
 			data.append({ "content": output, "filename": name });
 			r1 = re.sub(r'#(.*SparkConf\(\).*)', r'\1', data[-1]['content'], flags=re.MULTILINE);
