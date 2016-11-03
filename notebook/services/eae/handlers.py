@@ -32,7 +32,7 @@ class EaeHandler(APIHandler):
 		mainScript = "";
 		
 		model = self.contents_manager.get(path=data['mainScriptPath']);
-		to_zip += _dataExtract(model);
+		to_zip += self._dataExtract(model);
 		mainScript = to_zip[-1]['filename'];
 		
 		#output, ressources = exporter.from_notebook_node(model['content']);
@@ -49,13 +49,13 @@ class EaeHandler(APIHandler):
 		for f in data['filesPath']:
 				model = self.contents_manager.get(path=f);
 				#pprint.pprint(model);
-				to_zip += _dataExtract(model);#.append({ "filename": model['name'], "content": model['content']});
+				to_zip += self._dataExtract(model);#.append({ "filename": model['name'], "content": model['content']});
 		
 		for f in data['scriptsPath']:
 			model = self.contents_manager.get(path=f);
 			#output, ressource = exporter.from_notebook_node(model['content']);
 			#name = os.path.splitext(model['name'])[0] + ressource['output_extension'];
-			to_zip += _dataExtract(model); #.append({ "content": output, "filename": name });
+			to_zip += self._dataExtract(model); #.append({ "content": output, "filename": name });
 			#if data['clusterType'] == 'Spark' :
 					#r1 = re.sub(r'#(.*SparkConf\(\).*)', r'\1', to_zip[-1]['content'], flags=re.MULTILINE);
 					#r2 = re.sub(r'#(.*SparkContext\(.*\).*)', r'\1', r1, flags=re.MULTILINE);
