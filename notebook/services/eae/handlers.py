@@ -91,7 +91,8 @@ class EaeHandler(APIHandler):
 				content = self._dataExtract(f);
 				if content:
 					for c in content:
-						c['filename'] = root + "/" + c['filename'];
+						if file['type'] != 'directory':
+							c['filename'] = root + "/" + c['filename'];
 					data += content;
 		return data;
 		
