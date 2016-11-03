@@ -45,6 +45,7 @@ class EaeHandler(APIHandler):
 		
 		for f in data['filesPath']:
 				model = self.contents_manager.get(path=f);
+				pprint.pprint(model);
 				to_zip.append({ "filename": model['name'], "content": model['content']});
 		
 		for f in data['scriptsPath']:

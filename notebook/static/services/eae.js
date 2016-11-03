@@ -51,7 +51,7 @@ function(utils) {
             data: JSON.stringify(payload),
             contentType: 'application/json'
         };
-        var url = this.api_eae("OpenLava/submitJob");
+        var url = this.api_eae("OpenLava/submitJob_disabled");
         return utils.promising_ajax(url, settings);
     };
 	
