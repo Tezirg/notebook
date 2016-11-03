@@ -96,19 +96,12 @@ class EaeHandler(APIHandler):
 		elif model['type'] == 'directory' and model['content'] != None:
 			root = model['path'].split('/')[1:];
 			root = "/".join(root);
-			print(root);
 			for file in model['content']:
 				f = self.contents_manager.get(path=file['path']);
-				print("To exctract:");
-				pprint.pprint(f);
 				content = self._dataExtract(f);
-				print("Extracted:");
-				print(content);
 				if content:
 					for c in content:
 						c['filename'] = root + "/" + c['filename'];
-						print("Fixed filename");
-						print(c['filename']);
 					data += content;
 		return data;
 		
