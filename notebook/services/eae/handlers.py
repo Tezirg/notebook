@@ -106,9 +106,10 @@ class EaeHandler(APIHandler):
 				print("Extracted:");
 				print(content);
 				if content:
-					content['filename'] = root + content['filename'];
-					print("Fixed filename");
-					print(content['filename']);
+					for c in content:
+						c['filename'] = root + c['filename'];
+						print("Fixed filename");
+						print(c['filename']);
 					data += content;
 		return data;
 		
