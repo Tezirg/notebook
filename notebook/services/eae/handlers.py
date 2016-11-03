@@ -99,6 +99,7 @@ class EaeHandler(APIHandler):
 			root = "".join(root);
 			print(root);
 			for file in model['content']:
+				print(file);
 				content = self._dataExtract(file);
 				print(content);
 				if content:
