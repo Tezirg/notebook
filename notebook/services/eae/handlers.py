@@ -97,7 +97,7 @@ class EaeHandler(APIHandler):
 			data[-1]['content'] = r2;
 		elif model['type'] == 'directory':
 			for file in model['content']:
-				data += _dataExtract(file);
+				data += self._dataExtract(file);
 		return data;
 		
 #-----------------------------------------------------------------------------
