@@ -85,7 +85,7 @@ class EaeHandler(APIHandler):
 			data[-1]['content'] = r2;
 		elif model['type'] == 'directory' and model['content'] != None:
 			for file in model['content']:
-				root = file['path'].split('/')[1:];
+				root = file['path'].split('/')[1:-1];
 				root = "/".join(root);
 				f = self.contents_manager.get(path=file['path']);
 				content = self._dataExtract(f);
