@@ -49,8 +49,7 @@ class EaeHandler(APIHandler):
 				model = self.contents_manager.get(path=f);
 				extract = self._dataExtract(model);
 				for e in extract:
-					print(e);
-					files += e['filename'];
+					files.append(e['filename']);
 				to_zip += extract;
 				
 		# Prepare the zip file
