@@ -18,7 +18,7 @@ class EaeHandler(APIHandler):
     @web.authenticated
     @json_errors
     @gen.coroutine
-	def post(self):
+    def post(self):
 		"""Eae submit query prep. From notebook data form
 		
 		POST /api/eae/submit
@@ -77,7 +77,8 @@ class EaeHandler(APIHandler):
 		self.finish(json.dumps({ "id": data['id'], "zip": zip_path, "mainScriptExport": mainScript, "scriptsExport": scripts }, default=date_default));
 		return;
 	
-	def _dataExtract(self, model):
+	
+    def _dataExtract(self, model):
 		"""Extract contents from file model
 		Formats name, export script and recurs into directories
 		"""
