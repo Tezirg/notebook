@@ -4,7 +4,7 @@ define([
 function(utils) {
     "use strict";
 
-    var Eae = function(options) {
+    var Eae = function(options, class_config) {
 		this.eae_url = "146.169.15.140:8081";
 		this.base_ip = "146.169.32.182";
 		this.base_url = options.base_url;
@@ -14,6 +14,9 @@ function(utils) {
 				console.log("Config data:");
 				console.log(options.config.data);
 		});
+		console.log("Eae class config");
+		console.log(class_config);
+		options.config.load();
     };
 	
 	Eae.prototype.api_eae = function() {

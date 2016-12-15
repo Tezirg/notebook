@@ -51,16 +51,15 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
      * @param {string}          options.notebook_path
      * @param {string}          options.notebook_name
      */
-    export function Notebook(selector, options) {
-		this.eae_service = new eaemod.Eae(options);
-		this.eae_job = {};
-		
+    export function Notebook(selector, options) {		
         this.config = options.config;
         this.class_config = new configmod.ConfigWithDefaults(this.config, 
                                         Notebook.options_default, 'Notebook');
         this.base_url = options.base_url;
         this.notebook_path = options.notebook_path;
         this.notebook_name = options.notebook_name;
+				this.eae_service = new eaemod.Eae(options, this.class_config);
+		this.eae_job = {};
         this.events = options.events;
         this.keyboard_manager = options.keyboard_manager;
         this.contents = options.contents;
