@@ -10,8 +10,10 @@ function(utils) {
 		this.base_url = options.base_url;
 		console.log("Eae received theses options:");
 		console.log(options);
-		console.log("Config data:");
-		console.log(options.config.data);
+		options.config.loaded.then(function() { 
+				console.log("Config data:");
+				console.log(options.config.data);
+		});
     };
 	
 	Eae.prototype.api_eae = function() {
