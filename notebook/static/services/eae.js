@@ -8,6 +8,8 @@ function(utils) {
 		this.eae_url = "146.169.15.140:8081";
 		this.base_ip = "146.169.32.182";
 		this.base_url = options.base_url;
+		console.log("Eae received theses options:");
+		console.log(options);
     };
 	
 	Eae.prototype.api_eae = function() {
