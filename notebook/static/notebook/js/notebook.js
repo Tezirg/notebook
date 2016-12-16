@@ -189,7 +189,9 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
     Notebook.options_default = {
         // can be any cell type, or the special values of
         // 'above', 'below', or 'selected' to get the value from another cell.
-        default_cell_type: 'code'
+        default_cell_type: 'code',
+		eae_ip: 'localhost:6666',
+		base_ip: 'localhost:7777'
     };
 
     /**

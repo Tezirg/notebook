@@ -517,6 +517,13 @@ class NotebookApp(JupyterApp):
         help="The port the notebook server will listen on."
     )
 
+    eae_ip = Unicode('localhost', config=True,
+        help="The IP address of the EAE service."
+    )
+    eae_port = Integer(8080, config=True,
+        help="The port the EAE service is listening on."
+    )
+
     port_retries = Integer(50, config=True,
         help="The number of additional ports to try if the specified port is not available."
     )
@@ -1005,6 +1012,7 @@ class NotebookApp(JupyterApp):
             self.log.critical("\t$ python -m notebook.auth password")
             sys.exit(1)
 
+        self.config_manager.set("Eae", { "ip" : self.eae_ip, "port" : self.eae_port } )
         self.web_app = NotebookWebApplication(
             self, self.kernel_manager, self.contents_manager,
             self.session_manager, self.kernel_spec_manager,
