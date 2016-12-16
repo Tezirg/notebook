@@ -686,19 +686,17 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		var that = this;
 		this.eae_job['id'] = utils.uuid(); //Gen UUID for new task
 
-        this.config.loaded.then(function() {
-            //Is isAlive, display dialog
-            this.eae_service.isAlive().then(
-                function (alive_ok) { //Success
-                    that._eae_submit_step_1();
-                },
-                function (alive_nok) { // Fail. Don't allow submitting
-                    that._eae_fail("Eae interface is not responding, please try again later.");
-                }
-            );//End isAlive
-            return true;
-        });
+        //Is isAlive, display dialog
+        this.eae_service.isAlive().then(
+               function (alive_ok) { //Success
+                   that._eae_submit_step_1();
+               },
+               function (alive_nok) { // Fail. Don't allow submitting
+                   that._eae_fail("Eae interface is not responding, please try again later.");
+               }
+        );//End isAlive
         this.config.load();
+        return true;
 	};//End function eae_submit
 
     /**

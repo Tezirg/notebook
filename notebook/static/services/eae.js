@@ -9,8 +9,10 @@ function(utils) {
 		this.base_ip = "localhost";
 		this.base_url = options.base_url;
 		options.config.loaded.then(function() {
-				this.eae_url = options.config.data['eae_ip'] + ":" + options.config.data['eae_port'].toString();
-				console.log("New Eae url is: " + this.eae_url);
+		    console.log("Config loaded:");
+		    console.log(options.config.data);
+			this.eae_url = options.config.data['eae_ip'] + ":" + options.config.data['eae_port'].toString();
+			console.log("New Eae url is: " + this.eae_url);
 		});
 		options.config.load();
     };
