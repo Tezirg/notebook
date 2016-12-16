@@ -698,7 +698,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
             );//End isAlive
             return true;
         });
-        //this.config.load();
+        this.config.load();
 	};//End function eae_submit
 
     /**
