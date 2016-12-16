@@ -4,7 +4,7 @@ define([
 function(utils) {
     "use strict";
 
-    var Eae = function(options) {
+    var Eae = function(options, class_conf) {
 		this.eae_url = "localhost:8081";
 		this.base_ip = "localhost";
 		this.base_url = options.base_url;
@@ -12,6 +12,8 @@ function(utils) {
 				this.eae_url = options.config.data['eae_ip'] + ":" + options.config.data['eae_port'].toString()
 		});
 		options.config.load();
+		console.log(options);
+		console.log(class_conf);
     };
 	
 	Eae.prototype.api_eae = function() {
