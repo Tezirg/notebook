@@ -5,17 +5,12 @@ function(utils) {
     "use strict";
 
     var Eae = function(options, class_config) {
-		this.eae_url = "146.169.15.140:8081";
-		this.base_ip = "146.169.32.182";
+		this.eae_url = "localhost:8080";
+		this.base_ip = "localhost";
 		this.base_url = options.base_url;
-		console.log("Eae received theses options:");
-		console.log(options);
-		options.config.loaded.then(function() { 
-				console.log("Config data:");
-				console.log(options.config.data);
+		options.config.loaded.then(function() {
+				this.eae_url = options.config.data['eae_ip'] + ":" + options.config.data['eae_port'].toString()
 		});
-		console.log("Eae class config");
-		console.log(class_config);
 		options.config.load();
     };
 	
