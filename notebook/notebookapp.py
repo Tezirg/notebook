@@ -1013,10 +1013,10 @@ class NotebookApp(JupyterApp):
             self.log.critical("\t$ python -m notebook.auth password")
             sys.exit(1)
 
-        notebook_data = self.config_manager.get("Notebook")
+        notebook_data = self.config_manager.get("notebook")
         notebook_data["eae_ip"] = self.eae_ip
         notebook_data["eae_port"] = self.eae_port
-        self.config_manager.update("Notebook", notebook_data )
+        self.config_manager.update("notebook", notebook_data )
 
         self.web_app = NotebookWebApplication(
             self, self.kernel_manager, self.contents_manager,
