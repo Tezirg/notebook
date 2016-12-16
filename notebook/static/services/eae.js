@@ -12,7 +12,7 @@ function(utils) {
 				this.eae_url = options.config.data['eae_ip'] + ":" + options.config.data['eae_port'].toString();
 				console.log("New Eae url is: " + this.eae_url);
 		});
-		options.load();
+		options.config.load();
     };
 	
 	Eae.prototype.api_eae = function() {
