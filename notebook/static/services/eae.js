@@ -11,7 +11,7 @@ function(utils) {
 		options.config.loaded.then(function() {
 		    console.log("Config loaded:");
 		    console.log(options.config.data);
-		    if (options.config.data.has('eae_ip') && options.config.data.has('eae_port')) {
+		    if (options.config.data.hasOwnProperty('eae_ip') && options.config.data.hasOwnProperty('eae_port')) {
                 this.eae_url = options.config.data['eae_ip'] + ":" + options.config.data['eae_port'].toString();
                 console.log("New Eae url is: " + this.eae_url);
             }
