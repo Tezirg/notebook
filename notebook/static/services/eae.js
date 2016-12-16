@@ -4,8 +4,8 @@ define([
 function(utils) {
     "use strict";
 
-    var Eae = function(options, class_config) {
-		this.eae_url = "localhost:8080";
+    var Eae = function(options) {
+		this.eae_url = "localhost:8081";
 		this.base_ip = "localhost";
 		this.base_url = options.base_url;
 		options.config.loaded.then(function() {
