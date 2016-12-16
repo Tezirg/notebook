@@ -11,6 +11,7 @@ function(utils) {
 		options.config.loaded.then(function() {
 				this.eae_url = options.config.data['eae_ip'] + ":" + options.config.data['eae_port'].toString()
 		});
+		options.load();
     };
 	
 	Eae.prototype.api_eae = function() {

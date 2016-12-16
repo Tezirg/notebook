@@ -51,7 +51,8 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
      * @param {string}          options.notebook_path
      * @param {string}          options.notebook_name
      */
-    export function Notebook(selector, options) {		
+    export function Notebook(selector, options) {
+        this.options = options;
         this.config = options.config;
         this.class_config = new configmod.ConfigWithDefaults(this.config, 
                                         Notebook.options_default, 'Notebook');
@@ -686,7 +687,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 		var that = this;
 		this.eae_job['id'] = utils.uuid(); //Gen UUID for new task
 
-        this.config.loaded.then(function() {
+        this.options.loaded.then(function() {
             //Is isAlive, display dialog
             this.eae_service.isAlive().then(
                 function (alive_ok) { //Success
@@ -698,7 +699,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
             );//End isAlive
             return true;
         });
-        this.config.load();
+        this.options.load();
 	};//End function eae_submit
 
     /**
