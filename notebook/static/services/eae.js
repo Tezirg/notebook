@@ -8,12 +8,14 @@ function(utils) {
 		this.eae_url = "localhost:8081";
 		this.base_ip = "localhost";
 		this.base_url = options.base_url;
+
+		var that = this;
 		options.config.loaded.then(function() {
 		    console.log("Config loaded:");
 		    console.log(options.config.data);
 		    if (options.config.data.hasOwnProperty('eae_ip') && options.config.data.hasOwnProperty('eae_port')) {
-                this.eae_url = options.config.data['eae_ip'] + ":" + options.config.data['eae_port'].toString();
-                console.log("New Eae url is: " + this.eae_url);
+                that.eae_url = options.config.data['eae_ip'] + ":" + options.config.data['eae_port'].toString();
+                console.log("New Eae url is: " + that.eae_url);
             }
 		});
 		options.config.load();

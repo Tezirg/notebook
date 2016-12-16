@@ -695,7 +695,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
                    that._eae_fail("Eae interface is not responding, please try again later.");
                }
         );//End isAlive
-        this.config.load();
+
         return true;
 	};//End function eae_submit
 
