@@ -58,7 +58,7 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
         this.base_url = options.base_url;
         this.notebook_path = options.notebook_path;
         this.notebook_name = options.notebook_name;
-				this.eae_service = new eaemod.Eae(options, this.class_config);
+        this.eae_service = new eaemod.Eae(options, this.class_config);
 		this.eae_job = {};
         this.events = options.events;
         this.keyboard_manager = options.keyboard_manager;
@@ -685,17 +685,19 @@ import {ShortcutEditor} from 'notebook/js/shortcuteditor';
 	Notebook.prototype.eae_submit = function() {
 		var that = this;
 		this.eae_job['id'] = utils.uuid(); //Gen UUID for new task
-		
-		//Is isAlive, display dialog
-		this.eae_service.isAlive().then(
-				function(alive_ok) { //Success
-					that._eae_submit_step_1();
-				},
-				function(alive_nok) { // Fail. Don't allow submitting
-					that._eae_fail("Eae interface is not responding, please try again later.");
-				}
-		);//End isAlive
-		return true;
+
+        this.config.loaded.then(function() {
+            //Is isAlive, display dialog
+            this.eae_service.isAlive().then(
+                function (alive_ok) { //Success
+                    that._eae_submit_step_1();
+                },
+                function (alive_nok) { // Fail. Don't allow submitting
+                    that._eae_fail("Eae interface is not responding, please try again later.");
+                }
+            );//End isAlive
+            return true;
+        });
 	};//End function eae_submit
 
     /**
