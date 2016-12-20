@@ -525,6 +525,14 @@ class NotebookApp(JupyterApp):
         help="The port the EAE service is listening on."
     )
 
+    eae_host_ip = Unicode('127.0.0.1', config=True,
+        help="The host address of the notebook service."
+    )
+
+    eae_host_ssh_port = Integer(22, config=True,
+        help="The port used by ssh for this Notebook host."
+    )
+
     port_retries = Integer(50, config=True,
         help="The number of additional ports to try if the specified port is not available."
     )
@@ -1016,6 +1024,8 @@ class NotebookApp(JupyterApp):
         notebook_data = self.config_manager.get("notebook")
         notebook_data["eae_ip"] = self.eae_ip
         notebook_data["eae_port"] = self.eae_port
+        notebook_data["eae_host_ip"] = self.eae_host_ip
+        notebook_data["eae_host_ssh_port"] = self.eae_host_ssh_port
         self.config_manager.update("notebook", notebook_data )
 
         self.web_app = NotebookWebApplication(

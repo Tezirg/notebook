@@ -8,6 +8,8 @@ function(utils) {
 		this.eae_url = "localhost:8081";
 		this.base_ip = "localhost";
 		this.base_url = options.base_url;
+        this.ssh_port = 22;
+        this.host_ip = "127.0.0.1";
 
 		var that = this;
 		options.config.loaded.then(function() {
@@ -15,7 +17,8 @@ function(utils) {
 		    console.log(options.config.data);
 		    if (options.config.data.hasOwnProperty('eae_ip') && options.config.data.hasOwnProperty('eae_port')) {
                 that.eae_url = options.config.data['eae_ip'] + ":" + options.config.data['eae_port'].toString();
-                console.log("New Eae url is: " + that.eae_url);
+                that.ssh_port = options.config.data['eae_host_ssh_port'];
+                that.host_ip = options.config.data['eae_host_ip'];
             }
 		});
 		options.config.load();
@@ -56,6 +59,8 @@ function(utils) {
 	
 	Eae.prototype.Submit = function(submit_data) {
 		var payload = submit_data;
+		payload['host_ip'] = this.host_ip;
+		payload['ssh_port'] = this.ssh_port;
 		var settings = {
             type : "POST",
 			processData: false,
