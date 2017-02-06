@@ -54,7 +54,7 @@ class EaeHandler(APIHandler):
 				
 		# Prepare the zip file
 		zip_path = "/tmp/" + data['id'] + '.zip';
-		zipf = zipfile.ZipFile(zip_path, mode='w', compression=zipfile.ZIP_DEFLATED)
+		zipf = zipfile.ZipFile(zip_path, mode='w', compression=zipfile.ZIP_DEFLATED,allowZip64 = True)
 		for entry in to_zip:
 			zipf.writestr(entry['filename'], entry['content'])
 		zipf.close();
