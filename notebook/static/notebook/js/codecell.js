@@ -10,6 +10,7 @@
 
 
 define([
+    'jquery',
     'base/js/namespace',
     'base/js/utils',
     'base/js/keyboard',
@@ -21,7 +22,9 @@ define([
     'codemirror/lib/codemirror',
     'codemirror/mode/python/python',
     'notebook/js/codemirror-ipython'
-], function(IPython,
+], function(
+    $,
+    IPython,
     utils,
     keyboard,
     configmod,
@@ -331,6 +334,12 @@ define([
         CodeCell.msg_cells[this.last_msg_id] = this;
         this.render();
         this.events.trigger('execute.CodeCell', {cell: this});
+        var that = this;
+        this.events.on('finished_iopub.Kernel', function (evt, data) {
+            if (that.kernel.id === data.kernel.id && that.last_msg_id === data.msg_id) {
+		that.events.trigger('finished_execute.CodeCell', {cell: that});
+	    }
+        });
     };
     
     /**
@@ -340,6 +349,7 @@ define([
     CodeCell.prototype.get_callbacks = function () {
         var that = this;
         return {
+            clear_on_done: false,
             shell : {
                 reply : $.proxy(this._handle_execute_reply, this),
                 payload : {
@@ -349,13 +359,15 @@ define([
             },
             iopub : {
                 output : function() { 
+                    that.events.trigger('set_dirty.Notebook', {value: true});
                     that.output_area.handle_output.apply(that.output_area, arguments);
                 }, 
                 clear_output : function() { 
+                    that.events.trigger('set_dirty.Notebook', {value: true});
                     that.output_area.handle_clear_output.apply(that.output_area, arguments);
                 }, 
             },
-            input : $.proxy(this._handle_input_request, this)
+            input : $.proxy(this._handle_input_request, this),
         };
     };
     
@@ -476,6 +488,7 @@ define([
         var prompt_html = CodeCell.input_prompt_function(this.input_prompt_number, nline);
         // This HTML call is okay because the user contents are escaped.
         this.element.find('div.input_prompt').html(prompt_html);
+        this.events.trigger('set_dirty.Notebook', {value: true});
     };
 
 
@@ -531,7 +544,11 @@ define([
         var outputs = this.output_area.toJSON();
         data.outputs = outputs;
         data.metadata.trusted = this.output_area.trusted;
-        data.metadata.collapsed = this.output_area.collapsed;
+        if (this.output_area.collapsed) {
+            data.metadata.collapsed = this.output_area.collapsed;
+        } else {
+            delete data.metadata.collapsed;
+        }
         if (this.output_area.scroll_state === 'auto') {
             delete data.metadata.scrolled;
         } else {

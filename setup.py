@@ -55,7 +55,7 @@ from setupbase import (
     check_package_data_first,
     CompileCSS,
     CompileJS,
-    JavascriptDependencies,
+    Bower,
     JavascriptVersion,
     css_js_prerelease,
 )
@@ -72,7 +72,7 @@ share documents that contain live code, equations, visualizations, and
 explanatory text. The Notebook has support for multiple programming
 languages, sharing, and interactive widgets.
 
-Read `the documentation <https://jupyter-notebook.readthedocs.org>`_
+Read `the documentation <https://jupyter-notebook.readthedocs.io>`_
 for more information.
     """,
     version         = version,
@@ -119,7 +119,7 @@ setup_args['cmdclass'] = {
     'sdist' : css_js_prerelease(sdist, strict=True),
     'css' : CompileCSS,
     'js' : CompileJS,
-    'jsdeps' : JavascriptDependencies,
+    'jsdeps' : Bower,
     'jsversion' : JavascriptVersion,
 }
 

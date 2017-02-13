@@ -105,7 +105,7 @@ model. There are three model types: **notebook**, **file**, and **directory**.
 
 **Sample Models**
 
-.. sourcecode:: python
+.. code-block:: python
 
     # Notebook Model with Content
     {
@@ -214,6 +214,6 @@ ContentsManager.
    directories as SQL relations.  PGContents also provides an example of how to
    re-use the notebook's tests.
 
-.. _NBFormat: http://nbformat.readthedocs.org/en/latest/index.html
+.. _NBFormat: https://nbformat.readthedocs.io/en/latest/index.html
 .. _PGContents: https://github.com/quantopian/pgcontents
 .. _PostgreSQL: http://www.postgresql.org/

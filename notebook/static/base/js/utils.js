@@ -2,12 +2,13 @@
 // Distributed under the terms of the Modified BSD License.
 
 define([
+    'jquery',
     'codemirror/lib/codemirror',
     'moment',
     'underscore',
     // silently upgrades CodeMirror
     'codemirror/mode/meta',
-], function(CodeMirror, moment, _){
+], function($, CodeMirror, moment, _){
     "use strict";
     
     // keep track of which extensions have been loaded already
@@ -34,7 +35,7 @@ define([
             requirejs([ext_path], function(module) {
                 if (!is_loaded(extension)) {
                     console.log("Loading extension: " + extension);
-                    if (module.load_ipython_extension) {
+                    if (module && module.load_ipython_extension) {
                         Promise.resolve(module.load_ipython_extension()).then(function() {
                             resolve(module);
                         }).catch(reject);
@@ -444,12 +445,13 @@ define([
     // Remove chunks that should be overridden by the effect of
     // carriage return characters
     function fixCarriageReturn(txt) {
-        var tmp = txt;
-        do {
-            txt = tmp;
-            tmp = txt.replace(/\r+\n/gm, '\n'); // \r followed by \n --> newline
-            tmp = tmp.replace(/^.*\r+/gm, '');  // Other \r --> clear line
-        } while (tmp.length < txt.length);
+        txt = txt.replace(/\r+\n/gm, '\n'); // \r followed by \n --> newline
+        while (txt.search(/\r[^$]/g) > -1) {
+            var base = txt.match(/^(.*)\r+/m)[1];
+            var insert = txt.match(/\r+(.*)$/m)[1];
+            insert = insert + base.slice(insert.length, base.length);
+            txt = txt.replace(/\r+.*$/m, '\r').replace(/^.*\r/m, insert);
+        }
         return txt;
     }
 
@@ -602,7 +604,7 @@ define([
     
     var to_absolute_cursor_pos = function (cm, cursor) {
         console.warn('`utils.to_absolute_cursor_pos(cm, pos)` is deprecated. Use `cm.indexFromPos(cursor)`');
-        return cm.indexFromPos(cusrsor);
+        return cm.indexFromPos(cursor);
     };
     
     var from_absolute_cursor_pos = function (cm, cursor_pos) {
@@ -751,6 +753,35 @@ define([
         return wrapped_error;
     };
     
+    var ajax = function (url, settings) {
+        // like $.ajax, but ensure Authorization header is set
+        settings = _add_auth_header(settings);
+        return $.ajax(url, settings);
+    };
+    
+    var _get_cookie = function (name) {
+        // from tornado docs: http://www.tornadoweb.org/en/stable/guide/security.html
+        var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+        return r ? r[1] : undefined;
+    }
+
+    var _add_auth_header = function (settings) {
+        /**
+         * Adds auth header to jquery ajax settings
+         */
+        settings = settings || {};
+        if (!settings.headers) {
+            settings.headers = {};
+        }
+        if (!settings.headers.Authorization) {
+            var xsrf_token = _get_cookie('_xsrf');
+            if (xsrf_token) {
+                settings.headers['X-XSRFToken'] = xsrf_token;
+            }
+        }
+        return settings;
+    };
+
     var promising_ajax = function(url, settings) {
         /**
          * Like $.ajax, but returning an ES6 promise. success and error settings
@@ -765,7 +796,7 @@ define([
                 log_ajax_error(jqXHR, status, error);
                 reject(wrap_ajax_error(jqXHR, status, error));
             };
-            $.ajax(url, settings);
+            ajax(url, settings);
         });
     };
 
@@ -978,7 +1009,27 @@ define([
         return false;
     };
 
+    var throttle = function(fn, time) {
+      var pending = null;
+
+      return function () {
+        if (pending) return;
+        pending = setTimeout(run, time);
+
+        return function () {
+          clearTimeout(pending);
+          pending = null;
+        }
+      }
+
+      function run () {
+        pending = null;
+        fn();
+      }
+    }
+
     var utils = {
+        throttle: throttle,
         is_loaded: is_loaded,
         load_extension: load_extension,
         load_extensions: load_extensions,
@@ -1009,10 +1060,11 @@ define([
         is_or_has : is_or_has,
         is_focused : is_focused,
         mergeopt: mergeopt,
-        ajax_error_msg : ajax_error_msg,
-        log_ajax_error : log_ajax_error,
         requireCodeMirrorMode : requireCodeMirrorMode,
         XHR_ERROR : XHR_ERROR,
+        ajax : ajax,
+        ajax_error_msg : ajax_error_msg,
+        log_ajax_error : log_ajax_error,
         wrap_ajax_error : wrap_ajax_error,
         promising_ajax : promising_ajax,
         WrappedError: WrappedError,

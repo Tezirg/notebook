@@ -2,13 +2,14 @@
 // Distributed under the terms of the Modified BSD License.
 
 define([
+    'jquery',
     'base/js/namespace',
     'base/js/utils',
     'base/js/dialog',
     'base/js/events',
     'base/js/keyboard',
     'moment'
-], function(IPython, utils, dialog, events, keyboard, moment) {
+], function($, IPython, utils, dialog, events, keyboard, moment) {
     "use strict";
 
     var NotebookList = function (selector, options) {
@@ -53,8 +54,9 @@ define([
         };
         this._max_upload_size_mb = 25;
         this.EDIT_MIMETYPES = [
-          'application/javascipt',
+          'application/javascript',
           'application/x-sh',
+          'application/vnd.groove-tool-template'
         ];
     };
 
@@ -70,8 +72,8 @@ define([
     NotebookList.prototype.bind_events = function () {
         var that = this;
         $('#refresh_' + this.element_name + '_list').click(function () {
-            $("#sort-name i").switchClass("fa-arrow-down", "fa-arrow-up");
-            $("#last-modified i").switchClass("fa-arrow-down", "fa-arrow-up");
+            $("#sort-name i").removeClass("fa-arrow-down").addClass("fa-arrow-up");
+            $("#last-modified i").removeClass("fa-arrow-down").addClass("fa-arrow-up");
             that.load_sessions();
         });
         this.element.bind('dragover', function () {
@@ -137,6 +139,8 @@ define([
             $('.download-button').click($.proxy(this.download_selected, this));
             $('.shutdown-button').click($.proxy(this.shutdown_selected, this));
             $('.duplicate-button').click($.proxy(this.duplicate_selected, this));
+            $('.view-button').click($.proxy(this.view_selected, this));
+            $('.edit-button').click($.proxy(this.edit_selected, this));
             $('.delete-button').click($.proxy(this.delete_selected, this));
 
             // Bind events for selection menu buttons.
@@ -167,11 +171,11 @@ define([
 
                 if (that.sort_state.sort_on == 0) {
                     that.sort_list(sort_on, 1);
-                    $("#" + sort_on + " i").switchClass("fa-arrow-up", "fa-arrow-down");
+                    $("#" + sort_on + " i").removeClass("fa-arrow-up").addClass("fa-arrow-down");
                     that.sort_state.sort_on = 1;
                 } else {
                     that.sort_list(sort_on, 2);
-                    $("#" + sort_on + " i").switchClass("fa-arrow-down", "fa-arrow-up");
+                    $("#" + sort_on + " i").removeClass("fa-arrow-down").addClass("fa-arrow-up");
                     that.sort_state.sort_on = 0;
                 }
             });
@@ -556,9 +560,9 @@ define([
             $('.rename-button').css('display', 'none');
         }
 
-        // Move is visible iff at least one item is selected, and none of them
+        // Move is visible if at least one item is selected, and none of them
         // are a running notebook.
-        if (selected.length >= 1 && !has_running_notebook) {
+        if (selected.length > 0 && !has_running_notebook) {
             $('.move-button').css('display', 'inline-block');
         } else {
             $('.move-button').css('display', 'none');
@@ -593,6 +597,22 @@ define([
             $('.delete-button').css('display', 'inline-block');
         } else {
             $('.delete-button').css('display', 'none');
+        }
+
+        // View is visible when an item is renderable or downloadable
+        if (selected.length > 0 && !has_directory && selected.every(function(el) {
+            return el.path.match(/html?|json|jpe?g|png|gif|tiff?|svg|bmp|ico|pdf|doc|xls/);
+        })) {
+            $('.view-button').css('display', 'inline-block');
+        } else {
+            $('.view-button').css('display', 'none');
+        }
+
+        // Edit is visible when an item is editable
+        if (selected.length > 0 && !has_directory) {
+            $('.edit-button').css('display', 'inline-block');
+        } else {
+            $('.edit-button').css('display', 'none');
         }
 
         // If all of the items are selected, show the selector as checked.  If
@@ -734,7 +754,7 @@ define([
                 'api/sessions',
                 encodeURIComponent(session.id)
             );
-            $.ajax(url, settings);
+            utils.ajax(url, settings);
         }
     };
 
@@ -841,7 +861,7 @@ define([
                             that.contents.rename(item_path, new_path).then(function() {
                                 // After each move finishes, reload the list.
                                 that.load_list();
-                            }).catch(function(e) { 
+                            }).catch(function(e) {
                                 // If any of the moves fails, show this dialog for that move.
                                 dialog.modal({
                                     title: "Move Failed",
@@ -885,7 +905,7 @@ define([
 
         var item_path = that.selected[0].path;
 
-        window.open(utils.url_path_join('/files', item_path) + '?download=1');
+        window.open(utils.url_path_join(that.base_url, 'files', utils.encode_uri_components(item_path)) + '?download=1', IPython._target);
     };
 
     NotebookList.prototype.delete_selected = function() {
@@ -933,6 +953,26 @@ define([
                 }
             }
         });
+    };
+
+    NotebookList.prototype.view_selected = function() {
+        var that = this;
+        that.selected.forEach(function(item) {
+            var item_path = utils.encode_uri_components(item.path);
+            // Handle HTML files differently
+            var item_type = item_path.endsWith('.html') ? 'view' : 'files';
+            window.open(utils.url_path_join(that.base_url, item_type, utils.encode_uri_components(item_path)), IPython._target);
+      	});
+    };
+
+    NotebookList.prototype.edit_selected = function() {
+        var that = this;
+        that.selected.forEach(function(item) {
+            var item_path = utils.encode_uri_components(item.path);
+            // Handle ipynb files differently
+            var item_type = item_path.endsWith('.ipynb') ? 'notebooks' : 'edit';
+            window.open(utils.url_path_join(that.base_url, item_type, utils.encode_uri_components(item_path)), IPython._target);
+      	});
     };
 
     NotebookList.prototype.duplicate_selected = function() {

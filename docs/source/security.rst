@@ -1,11 +1,93 @@
+
+.. _server_security:
+
+Security in the Jupyter notebook server
+=======================================
+
+Since access to the Jupyter notebook server means access to running arbitrary code,
+it is important to restrict access to the notebook server.
+For this reason, notebook 4.3 introduces token-based authentication that is **on by default**.
+
+.. note::
+
+    If you enable a password for your notebook server,
+    token authentication is not enabled by default,
+    and the behavior of the notebook server is unchanged from from versions earlier than 4.3.
+
+When token authentication is enabled, the notebook uses a token to authenticate requests.
+This token can be provided to login to the notebook server in three ways:
+
+- in the ``Authorization`` header, e.g.::
+
+    Authorization: token abcdef...
+
+- In a URL parameter, e.g.::
+
+    https://my-notebook/tree/?token=abcdef...
+
+- In the password field of the login form that will be shown to you if you are not logged in.
+
+When you start a notebook server with token authentication enabled (default),
+a token is generated to use for authentication.
+This token is logged to the terminal, so that you can copy/paste the URL into your browser::
+
+    [I 11:59:16.597 NotebookApp] The Jupyter Notebook is running at: http://localhost:8888/?token=c8de56fa4deed24899803e93c227592aef6538f93025fe01
+
+
+If the notebook server is going to open your browser automatically
+(the default, unless ``--no-browser`` has been passed),
+an *additional* token is generated for launching the browser.
+This additional token can be used only once,
+and is used to set a cookie for your browser once it connects.
+After your browser has made its first request with this one-time-token,
+the token is discarded and a cookie is set in your browser.
+
+At any later time, you can see the tokens and URLs for all of your running servers with :command:`jupyter notebook list`::
+
+    $ jupyter notebook list
+    Currently running servers:
+    http://localhost:8888/?token=abc... :: /home/you/notebooks
+    https://0.0.0.0:9999/?token=123... :: /tmp/public
+    http://localhost:8889/ :: /tmp/has-password
+
+For servers with token-authentication enabled, the URL in the above listing will include the token,
+so you can copy and paste that URL into your browser to login.
+If a server has no token (e.g. it has a password or has authentication disabled),
+the URL will not include the token argument.
+Once you have visited this URL,
+a cookie will be set in your browser and you won't need to use the token again,
+unless you switch browsers, clear your cookies, or start a notebook server on a new port.
+
+Alternatives to token authentication
+------------------------------------
+
+If a generated token doesn't work well for you,
+you can set a password for your notebook.
+:command:`jupyter notebook password` will prompt you for a password,
+and store the hashed password in your :file:`jupyter_notebook_config.json`.
+
+.. versionadded:: 5.0
+
+    :command:`jupyter notebook password` command is added.
+
+
+It is possible disable authentication altogether by setting the token and password to empty strings,
+but this is **NOT RECOMMENDED**, unless authentication or access restrictions are handled at a different layer in your web application:
+
+.. sourcecode:: python
+
+    c.NotebookApp.token = ''
+    c.NotebookApp.password = ''
+
+
 .. _notebook_security:
 
-Security in Jupyter notebooks
-=============================
+Security in notebook documents
+==============================
 
 As Jupyter notebooks become more popular for sharing and collaboration,
 the potential for malicious people to attempt to exploit the notebook
-for their nefarious purposes increases. IPython 2.0 introduces a
+for their nefarious purposes increases. IPython 2.0 introduced a
 security model to prevent execution of untrusted code without explicit
 user input.
 
@@ -40,22 +122,19 @@ Our security model
 The details of trust
 --------------------
 
-Jupyter notebooks store a signature in metadata, which is used to answer
-the question "Did the current user do this?"
+When a notebook is executed and saved, a signature is computed from a
+digest of the notebook's contents plus a secret key. This is stored in a
+database, writable only by the current user. By default, this is located at::
 
-This signature is a digest of the notebooks contents plus a secret key,
-known only to the user. The secret key is a user-only readable file in
-the Jupyter data directory. By default, this is::
+    ~/.local/share/jupyter/nbsignatures.db  # Linux
+    ~/Library/Jupyter/nbsignatures.db       # OS X
+    %APPDATA%/jupyter/nbsignatures.db       # Windows
 
+Each signature represents a series of outputs which were produced by code the
+current user executed, and are therefore trusted.
 
-    ~/.local/share/jupyter/notebook_secret # linux
-    ~/Library/Jupyter/notebook_secret # OS X
-    %APPDATA%/jupyter/notebook_secret # Windows
-
-
-When a notebook is opened by a user, the server computes a signature
-with the user's key, and compares it with the signature stored in the
-notebook's metadata. If the signature matches, HTML and Javascript
+When you open a notebook, the server computes its signature, and checks if it's
+in the database. If a match is found, HTML and Javascript
 output in the notebook will be trusted at load, otherwise it will be
 untrusted.
 
@@ -71,7 +150,7 @@ been removed (either via ``Clear Output`` or re-execution), then the
 notebook will become trusted.
 
 While trust is updated per output, this is only for the duration of a
-single session. A notebook file on disk is either trusted or not in its
+single session. A newly loaded notebook file is either trusted or not in its
 entirety.
 
 Explicit trust
@@ -87,8 +166,8 @@ long time. Users can explicitly trust a notebook in two ways:
 
 -  After loading the untrusted notebook, with ``File / Trust Notebook``
 
-These two methods simply load the notebook, compute a new signature with
-the user's key, and then store the newly signed notebook.
+These two methods simply load the notebook, compute a new signature, and add
+that signature to the user's database.
 
 Reporting security issues
 -------------------------
@@ -103,9 +182,9 @@ you can use :download:`this PGP public key <ipython_security.asc>`.
 Affected use cases
 ------------------
 
-Some use cases that work in Jupyter 1.0 will become less convenient in
+Some use cases that work in Jupyter 1.0 became less convenient in
 2.0 as a result of the security changes. We do our best to minimize
-these annoyance, but security is always at odds with convenience.
+these annoyances, but security is always at odds with convenience.
 
 Javascript and CSS in Markdown cells
 ************************************
@@ -133,13 +212,15 @@ in an untrusted state. There are three basic approaches to this:
 -  re-run notebooks when you get them (not always viable)
 -  explicitly trust notebooks via ``jupyter trust`` or the notebook menu
    (annoying, but easy)
--  share a notebook secret, and use configuration dedicated to the
+-  share a notebook signatures database, and use configuration dedicated to the
    collaboration while working on the project.
 
-When sharing a notebook secret across configurations, you can use
+To share a signatures database among users, you can configure:
 
-.. sourcecode:: python
+.. code-block:: python
 
-    c.NotebookApp.secret_file = "/path/to/notebook_secret"
+    c.NotebookNotary.data_dir = "/path/to/signature_dir"
 
-to specify a non-default path to the secret file.
+to specify a non-default path to the SQLite database (of notebook hashes,
+essentially). We are aware that SQLite doesn't work well on NFS and we are
+`working out better ways to do this <https://github.com/jupyter/notebook/issues/1782>`_.

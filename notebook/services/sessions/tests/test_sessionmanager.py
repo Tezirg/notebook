@@ -9,10 +9,14 @@ from tornado.ioloop import IOLoop
 from ..sessionmanager import SessionManager
 from notebook.services.kernels.kernelmanager import MappingKernelManager
 from notebook.services.contents.manager import ContentsManager
+from notebook._tz import utcnow, isoformat
 
 class DummyKernel(object):
     def __init__(self, kernel_name='python'):
         self.kernel_name = kernel_name
+
+dummy_date = utcnow()
+dummy_date_s = isoformat(dummy_date)
 
 class DummyMKM(MappingKernelManager):
     """MappingKernelManager interface that doesn't start kernels, for testing"""
@@ -25,7 +29,10 @@ class DummyMKM(MappingKernelManager):
     
     def start_kernel(self, kernel_id=None, path=None, kernel_name='python', **kwargs):
         kernel_id = kernel_id or self._new_id()
-        self._kernels[kernel_id] = DummyKernel(kernel_name=kernel_name)
+        k = self._kernels[kernel_id] = DummyKernel(kernel_name=kernel_name)
+        self._kernel_connections[kernel_id] = 0
+        k.last_activity = dummy_date
+        k.execution_state = 'idle'
         return kernel_id
 
     def shutdown_kernel(self, kernel_id, now=False):
@@ -47,6 +54,7 @@ class TestSessionManager(TestCase):
         def co_add():
             sessions = []
             for kwargs in kwarg_list:
+                kwargs.setdefault('type', 'notebook')
                 session = yield self.sm.create_session(**kwargs)
                 sessions.append(session)
             raise gen.Return(sessions)
@@ -60,8 +68,17 @@ class TestSessionManager(TestCase):
         session_id = self.create_session(path='/path/to/test.ipynb', kernel_name='bar')['id']
         model = sm.get_session(session_id=session_id)
         expected = {'id':session_id,
-                    'notebook':{'path': u'/path/to/test.ipynb'},
-                    'kernel': {'id':u'A', 'name': 'bar'}}
+                    'path': u'/path/to/test.ipynb',
+                    'notebook': {'path': u'/path/to/test.ipynb', 'name': None},
+                    'type': 'notebook',
+                    'name': None,
+                    'kernel': {
+                        'id': 'A',
+                        'name': 'bar',
+                        'connections': 0,
+                        'last_activity': dummy_date_s,
+                        'execution_state': 'idle',
+                    }}
         self.assertEqual(model, expected)
 
     def test_bad_get_session(self):
@@ -86,24 +103,49 @@ class TestSessionManager(TestCase):
         sm = self.sm
         sessions = self.create_sessions(
             dict(path='/path/to/1/test1.ipynb', kernel_name='python'),
-            dict(path='/path/to/2/test2.ipynb', kernel_name='python'),
-            dict(path='/path/to/3/test3.ipynb', kernel_name='python'),
+            dict(path='/path/to/2/test2.py', type='file', kernel_name='python'),
+            dict(path='/path/to/3', name='foo', type='console', kernel_name='python'),
         )
         
         sessions = sm.list_sessions()
         expected = [
             {
                 'id':sessions[0]['id'],
-                'notebook':{'path': u'/path/to/1/test1.ipynb'},
-                'kernel':{'id':u'A', 'name':'python'}
+                'path': u'/path/to/1/test1.ipynb',
+                'type': 'notebook',
+                'notebook': {'path': u'/path/to/1/test1.ipynb', 'name': None},
+                'name': None,
+                'kernel': {
+                    'id': 'A',
+                    'name':'python',
+                    'connections': 0,
+                    'last_activity': dummy_date_s,
+                    'execution_state': 'idle',
+                }
             }, {
                 'id':sessions[1]['id'],
-                'notebook': {'path': u'/path/to/2/test2.ipynb'},
-                'kernel':{'id':u'B', 'name':'python'}
+                'path': u'/path/to/2/test2.py',
+                'type': 'file',
+                'name': None,
+                'kernel': {
+                    'id': 'B',
+                    'name':'python',
+                    'connections': 0,
+                    'last_activity': dummy_date_s,
+                    'execution_state': 'idle',
+                }
             }, {
                 'id':sessions[2]['id'],
-                'notebook':{'path': u'/path/to/3/test3.ipynb'},
-                'kernel':{'id':u'C', 'name':'python'}
+                'path': u'/path/to/3',
+                'type': 'console',
+                'name': 'foo',
+                'kernel': {
+                    'id': 'C',
+                    'name':'python',
+                    'connections': 0,
+                    'last_activity': dummy_date_s,
+                    'execution_state': 'idle',
+                }
             }
         ]
         self.assertEqual(sessions, expected)
@@ -120,12 +162,16 @@ class TestSessionManager(TestCase):
         expected = [
             {
                 'id': sessions[1]['id'],
-                'notebook': {
-                    'path': u'/path/to/2/test2.ipynb',
-                },
+                'path': u'/path/to/2/test2.ipynb',
+                'type': 'notebook',
+                'name': None,
+                'notebook': {'path': u'/path/to/2/test2.ipynb', 'name': None},
                 'kernel': {
-                    'id': u'B',
+                    'id': 'B',
                     'name':'python',
+                    'connections': 0,
+                    'last_activity': dummy_date_s,
+                    'execution_state': 'idle',
                 }
             }
         ]
@@ -138,8 +184,18 @@ class TestSessionManager(TestCase):
         sm.update_session(session_id, path='/path/to/new_name.ipynb')
         model = sm.get_session(session_id=session_id)
         expected = {'id':session_id,
-                    'notebook':{'path': u'/path/to/new_name.ipynb'},
-                    'kernel':{'id':u'A', 'name':'julia'}}
+                    'path': u'/path/to/new_name.ipynb',
+                    'type': 'notebook',
+                    'name': None,
+                    'notebook': {'path': u'/path/to/new_name.ipynb', 'name': None},
+                    'kernel': {
+                        'id': 'A',
+                        'name':'julia',
+                        'connections': 0,
+                        'last_activity': dummy_date_s,
+                        'execution_state': 'idle',
+                    }
+        }
         self.assertEqual(model, expected)
     
     def test_bad_update_session(self):
@@ -154,18 +210,35 @@ class TestSessionManager(TestCase):
         sessions = self.create_sessions(
             dict(path='/path/to/1/test1.ipynb', kernel_name='python'),
             dict(path='/path/to/2/test2.ipynb', kernel_name='python'),
-            dict(path='/path/to/3/test3.ipynb', kernel_name='python'),
+            dict(path='/path/to/3', name='foo', type='console', kernel_name='python'),
         )
         sm.delete_session(sessions[1]['id'])
         new_sessions = sm.list_sessions()
         expected = [{
                 'id': sessions[0]['id'],
-                'notebook': {'path': u'/path/to/1/test1.ipynb'},
-                'kernel': {'id':u'A', 'name':'python'}
+                'path': u'/path/to/1/test1.ipynb',
+                'type': 'notebook',
+                'name': None,
+                'notebook': {'path': u'/path/to/1/test1.ipynb', 'name': None},
+                'kernel': {
+                    'id': 'A',
+                    'name':'python',
+                    'connections': 0,
+                    'last_activity': dummy_date_s,
+                    'execution_state': 'idle',
+                }
             }, {
                 'id': sessions[2]['id'],
-                'notebook': {'path': u'/path/to/3/test3.ipynb'},
-                'kernel': {'id':u'C', 'name':'python'}
+                'type': 'console',
+                'path': u'/path/to/3',
+                'name': 'foo',
+                'kernel': {
+                    'id': 'C',
+                    'name':'python',
+                    'connections': 0,
+                    'last_activity': dummy_date_s,
+                    'execution_state': 'idle',
+                }
             }
         ]
         self.assertEqual(new_sessions, expected)

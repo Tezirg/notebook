@@ -2,10 +2,11 @@
 // Distributed under the terms of the Modified BSD License.
 
 define([
+    'jquery',
     'base/js/utils',
     'base/js/dialog',
     'underscore'
-], function(utils, dialog, _) {
+], function($, utils, dialog, _) {
     "use strict";
     var platform = utils.platform;
 
@@ -187,10 +188,6 @@ define([
             $(this.shortcut_dialog).modal("toggle");
             return;
         }
-        var command_shortcuts = this.keyboard_manager.command_shortcuts.help();
-        var edit_shortcuts = this.keyboard_manager.edit_shortcuts.help();
-        var help, shortcut;
-        var i, half, n;
         var element = $('<div/>');
 
         // The documentation
@@ -260,14 +257,29 @@ define([
 
 
     QuickHelp.prototype.build_command_help = function () {
+        var that = this;
         var command_shortcuts = this.keyboard_manager.command_shortcuts.help();
-        return build_div('<h4>Command Mode (press <kbd>Esc</kbd> to enable)</h4>', command_shortcuts);
+        var div = build_div('<h4>Command Mode (press <kbd>Esc</kbd> to enable)</h4>', command_shortcuts);
+        var edit_button = $('<button/>')
+            .text("Edit Shortcuts")
+            .addClass('btn btn-xs btn-default pull-right')
+            .attr('href', '#')
+            .attr('title', 'edit command-mode keyboard shortcuts')
+            .click(function () {
+                // close this dialog
+                $(that.shortcut_dialog).modal("toggle");
+                // and open the next one
+                that.keyboard_manager.actions.call(
+                    'jupyter-notebook:edit-command-mode-keyboard-shortcuts');
+            });
+        div.find('h4').append(edit_button);
+        return div;
     };
 
     
     QuickHelp.prototype.build_edit_help = function (cm_shortcuts) {
         var edit_shortcuts = this.keyboard_manager.edit_shortcuts.help();
-        edit_shortcuts = jQuery.merge(jQuery.merge([], cm_shortcuts), edit_shortcuts);
+        edit_shortcuts = $.merge($.merge([], cm_shortcuts), edit_shortcuts);
         return build_div('<h4>Edit Mode (press <kbd>Enter</kbd> to enable)</h4>', edit_shortcuts);
     };
 

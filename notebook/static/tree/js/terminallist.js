@@ -2,10 +2,11 @@
 // Distributed under the terms of the Modified BSD License.
 
 define([
+    'jquery',
     'base/js/namespace',
     'base/js/utils',
     'tree/js/notebooklist',
-], function(IPython, utils, notebooklist) {
+], function($, IPython, utils, notebooklist) {
     "use strict";
 
     var TerminalList = function (selector, options) {
@@ -60,12 +61,12 @@ define([
             this.base_url,
             'api/terminals'
         );
-        $.ajax(url, settings);
+        utils.ajax(url, settings);
     };
     
     TerminalList.prototype.load_terminals = function() {
         var url = utils.url_path_join(this.base_url, 'api/terminals');
-        $.ajax(url, {
+        utils.ajax(url, {
             type: "GET",
             cache: false,
             dataType: "json",
@@ -113,7 +114,7 @@ define([
                 };
                 var url = utils.url_path_join(that.base_url, 'api/terminals',
                     utils.encode_uri_components(name));
-                $.ajax(url, settings);
+                utils.ajax(url, settings);
                 return false;
             });
         item.find(".item_buttons").text("").append(shutdown_button);

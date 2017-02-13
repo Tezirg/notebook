@@ -10,13 +10,14 @@
 
 
 define([
+    'jquery',
     'base/js/utils',
     'codemirror/lib/codemirror',
     'codemirror/addon/edit/matchbrackets',
     'codemirror/addon/edit/closebrackets',
     'codemirror/addon/comment/comment',
     'services/config',
-], function(utils, CodeMirror, cm_match, cm_closeb, cm_comment, configmod) {
+], function($, utils, CodeMirror, cm_match, cm_closeb, cm_comment, configmod) {
     "use strict";
     
     var overlayHack = CodeMirror.scrollbarModel.native.prototype.overlayHack;
@@ -202,6 +203,7 @@ define([
         });
         if (this.code_mirror) {
             this.code_mirror.on("change", function(cm, change) {
+                that.events.trigger("change.Cell", {cell: that, change: change});
                 that.events.trigger("set_dirty.Notebook", {value: true});
             });
         }
@@ -489,6 +491,15 @@ define([
         var data = {};
         // deepcopy the metadata so copied cells don't share the same object
         data.metadata = JSON.parse(JSON.stringify(this.metadata));
+        if (data.metadata.deletable) {
+            delete data.metadata.deletable;
+        }
+        if (data.metadata.editable) {
+            delete data.metadata.editable;
+        }
+        if (data.metadata.collapsed === false) {
+            delete data.metadata.collapsed;
+        }
         data.cell_type = this.cell_type;
         return data;
     };
@@ -500,14 +511,6 @@ define([
     Cell.prototype.fromJSON = function (data) {
         if (data.metadata !== undefined) {
             this.metadata = data.metadata;
-        }
-        // upgrade cell's editable metadata if not defined
-        if (this.metadata.editable === undefined) {
-          this.metadata.editable = this.is_editable();
-        }
-        // upgrade cell's deletable metadata if not defined
-        if (this.metadata.deletable === undefined) {
-          this.metadata.deletable = this.is_deletable();
         }
     };
 

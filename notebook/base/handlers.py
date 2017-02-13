@@ -20,9 +20,7 @@ except ImportError:
     from urlparse import urlparse # Py 2
 
 from jinja2 import TemplateNotFound
-from tornado import web
-
-from tornado import gen, escape
+from tornado import web, gen, escape
 from tornado.log import app_log
 
 from notebook._sysinfo import get_sys_info
@@ -32,6 +30,7 @@ from ipython_genutils.path import filefind
 from ipython_genutils.py3compat import string_types
 
 import notebook
+from notebook._tz import utcnow
 from notebook.utils import is_hidden, url_path_join, url_is_absolute, url_escape
 from notebook.services.security import csp_report_uri
 
@@ -42,9 +41,15 @@ non_alphanum = re.compile(r'[^A-Za-z0-9]')
 
 sys_info = json.dumps(get_sys_info())
 
+def log():
+    if Application.initialized():
+        return Application.instance().log
+    else:
+        return app_log
+
 class AuthenticatedHandler(web.RequestHandler):
     """A RequestHandler with an authenticated user."""
-    
+
     @property
     def content_security_policy(self):
         """The default Content-Security-Policy header
@@ -81,6 +86,23 @@ class AuthenticatedHandler(web.RequestHandler):
             return 'anonymous'
         return self.login_handler.get_user(self)
 
+    def skip_check_origin(self):
+        """Ask my login_handler if I should skip the origin_check
+        
+        For example: in the default LoginHandler, if a request is token-authenticated,
+        origin checking should be skipped.
+        """
+        if self.login_handler is None or not hasattr(self.login_handler, 'should_check_origin'):
+            return False
+        return not self.login_handler.should_check_origin(self)
+
+    @property
+    def token_authenticated(self):
+        """Have I been authenticated with a token?"""
+        if self.login_handler is None or not hasattr(self.login_handler, 'is_token_authenticated'):
+            return False
+        return self.login_handler.is_token_authenticated(self)
+
     @property
     def cookie_name(self):
         default_cookie_name = non_alphanum.sub('-', 'username-{}'.format(
@@ -100,6 +122,16 @@ class AuthenticatedHandler(web.RequestHandler):
         return self.settings.get('login_handler_class', None)
 
     @property
+    def token(self):
+        """Return the login token for this application, if any."""
+        return self.settings.get('token', None)
+
+    @property
+    def one_time_token(self):
+        """Return the one-time-use token for this application, if any."""
+        return self.settings.get('one_time_token', None)
+
+    @property
     def login_available(self):
         """May a user proceed to log in?
 
@@ -109,7 +141,7 @@ class AuthenticatedHandler(web.RequestHandler):
         """
         if self.login_handler is None:
             return False
-        return bool(self.login_handler.login_available(self.settings))
+        return bool(self.login_handler.get_login_available(self.settings))
 
 
 class IPythonHandler(AuthenticatedHandler):
@@ -133,10 +165,7 @@ class IPythonHandler(AuthenticatedHandler):
     @property
     def log(self):
         """use the IPython log by default, falling back on tornado's logger"""
-        if Application.initialized():
-            return Application.instance().log
-        else:
-            return app_log
+        return log()
 
     @property
     def jinja_template_vars(self):
@@ -178,8 +207,8 @@ class IPythonHandler(AuthenticatedHandler):
     @property
     def contents_js_source(self):
         self.log.debug("Using contents: %s", self.settings.get('contents_js_source',
-            'services/built/contents'))
-        return self.settings.get('contents_js_source', 'services/built/contents')
+            'services/contents'))
+        return self.settings.get('contents_js_source', 'services/contents')
     
     #---------------------------------------------------------------
     # Manager objects
@@ -259,15 +288,20 @@ class IPythonHandler(AuthenticatedHandler):
         Copied from WebSocket with changes:
 
         - allow unspecified host/origin (e.g. scripts)
+        - allow token-authenticated requests
         """
-        if self.allow_origin == '*':
+        if self.allow_origin == '*' or self.skip_check_origin():
             return True
 
         host = self.request.headers.get("Host")
         origin = self.request.headers.get("Origin")
 
-        # If no header is provided, assume it comes from a script/curl.
-        # We are only concerned with cross-site browser stuff here.
+        # If no header is provided, let the request through.
+        # Origin can be None for:
+        # - same-origin (IE, Firefox)
+        # - Cross-site POST form (IE, Firefox)
+        # - Scripts
+        # The cross-site POST (XSRF) case is handled by tornado's xsrf_token
         if origin is None or host is None:
             return True
 
@@ -287,11 +321,19 @@ class IPythonHandler(AuthenticatedHandler):
             # No CORS headers deny the request
             allow = False
         if not allow:
-            self.log.warning("Blocking Cross Origin API request.  Origin: %s, Host: %s",
-                origin, host,
+            self.log.warning("Blocking Cross Origin API request for %s.  Origin: %s, Host: %s",
+                self.request.path, origin, host,
             )
         return allow
-    
+
+    def check_xsrf_cookie(self):
+        """Bypass xsrf cookie checks when token-authenticated"""
+        if self.token_authenticated or self.settings.get('disable_check_xsrf', False):
+            # Token-authenticated requests do not need additional XSRF-check
+            # Servers without authentication are vulnerable to XSRF
+            return
+        return super(IPythonHandler, self).check_xsrf_cookie()
+
     #---------------------------------------------------------------
     # template rendering
     #---------------------------------------------------------------
@@ -313,10 +355,15 @@ class IPythonHandler(AuthenticatedHandler):
             ws_url=self.ws_url,
             logged_in=self.logged_in,
             login_available=self.login_available,
+            token_available=bool(self.token or self.one_time_token),
             static_url=self.static_url,
             sys_info=sys_info,
             contents_js_source=self.contents_js_source,
             version_hash=self.version_hash,
+            ignore_minified_js=self.ignore_minified_js,
+            xsrf_form_html=self.xsrf_form_html,
+            token=self.token,
+            xsrf_token=self.xsrf_token.decode('utf8'),
             **self.jinja_template_vars
         )
     
@@ -339,6 +386,7 @@ class IPythonHandler(AuthenticatedHandler):
         exc_info = kwargs.get('exc_info')
         message = ''
         status_message = responses.get(status_code, 'Unknown HTTP Error')
+        exception = '(unknown)'
         if exc_info:
             exception = exc_info[1]
             # get the custom message, if defined
@@ -359,15 +407,14 @@ class IPythonHandler(AuthenticatedHandler):
             message=message,
             exception=exception,
         )
-        
+
         self.set_header('Content-Type', 'text/html')
         # render the template
         try:
             html = self.render_template('%s.html' % status_code, **ns)
         except TemplateNotFound:
-            self.log.debug("No template for %d", status_code)
             html = self.render_template('error.html', **ns)
-        
+
         self.write(html)
 
 
@@ -386,13 +433,23 @@ class APIHandler(IPythonHandler):
                 "default-src 'none'",
             ])
         return csp
-    
+
+    # set _track_activity = False on API handlers that shouldn't track activity
+    _track_activity = True
+
+    def update_api_activity(self):
+        """Update last_activity of API requests"""
+        # record activity of authenticated requests
+        if self._track_activity and self.get_current_user():
+            self.settings['api_last_activity'] = utcnow()
+
     def finish(self, *args, **kwargs):
+        self.update_api_activity()
         self.set_header('Content-Type', 'application/json')
         return super(APIHandler, self).finish(*args, **kwargs)
 
     def options(self, *args, **kwargs):
-        self.set_header('Access-Control-Allow-Headers', 'accept, content-type')
+        self.set_header('Access-Control-Allow-Headers', 'accept, content-type, authorization')
         self.set_header('Access-Control-Allow-Methods',
                         'GET, PUT, POST, PATCH, DELETE, OPTIONS')
         self.finish()
@@ -529,6 +586,9 @@ class FileFindHandler(IPythonHandler, web.StaticFileHandler):
                 return ''
             
             cls._static_paths[path] = abspath
+            
+
+            log().debug("Path %s served from %s"%(path, abspath))
             return abspath
     
     def validate_absolute_path(self, root, absolute_path):
@@ -598,6 +658,17 @@ class FilesRedirectHandler(IPythonHandler):
     def get(self, path=''):
         return self.redirect_to_files(self, path)
 
+
+class RedirectWithParams(web.RequestHandler):
+    """Sam as web.RedirectHandler, but preserves URL parameters"""
+    def initialize(self, url, permanent=True):
+        self._url = url
+        self._permanent = permanent
+
+    def get(self):
+        sep = '&' if '?' in self._url else '?'
+        url = sep.join([self._url, self.request.query])
+        self.redirect(url, permanent=self._permanent)
 
 #-----------------------------------------------------------------------------
 # URL pattern fragments for re-use

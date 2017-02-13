@@ -16,6 +16,7 @@ data-ws-path="{{ws_path}}"
 {{super()}}
 
 <link rel="stylesheet" href="{{ static_url("terminal/css/override.css") }}" type="text/css" />
+<link rel="stylesheet" href="{{static_url("components/xterm.js/dist/xterm.css") }}" type="text/css" />
 {% endblock %}
 
 {% block site %}
@@ -61,5 +62,5 @@ data-ws-path="{{ws_path}}"
 
     {{super()}}
 
-<script src="{{ static_url("terminal/js/built/main.min.js") }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{ static_url("terminal/js/main.min.js") }}" type="text/javascript" charset="utf-8"></script>
 {% endblock %}

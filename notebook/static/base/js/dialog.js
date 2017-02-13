@@ -5,6 +5,8 @@ define(function(require) {
     "use strict";
 
     var CodeMirror = require('codemirror/lib/codemirror');
+    var bs = require('bootstrap');
+    var $ = require('jquery');
 
     /**
      * A wrapper around bootstrap modal for easier use
@@ -53,6 +55,9 @@ define(function(require) {
         dialog_content.append(
             $("<div/>")
                 .addClass("modal-header")
+                .mousedown(function() {
+                  $(".modal").draggable({handle: '.modal-header'});
+                })
                 .append($("<button>")
                     .attr("type", "button")
                     .addClass("close")
@@ -65,9 +70,11 @@ define(function(require) {
                         .text(options.title || "")
                 )
         ).append(
-            $("<div/>").addClass("modal-body").append(
-                options.body || $("<p/>")
-            )
+            $("<div/>")
+                .addClass("modal-body")
+                .append(
+                    options.body || $("<p/>")
+                )
         );
         
         var footer = $("<div/>").addClass("modal-footer");

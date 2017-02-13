@@ -2,13 +2,14 @@
 // Distributed under the terms of the Modified BSD License.
 
 define([
+    'jquery',
     'base/js/utils',
     'base/js/security',
     'base/js/keyboard',
     'services/config',
     'notebook/js/mathjaxutils',
     'components/marked/lib/marked',
-], function(utils, security, keyboard, configmod, mathjaxutils, marked) {
+], function($, utils, security, keyboard, configmod, mathjaxutils, marked) {
     "use strict";
 
     /**
@@ -34,11 +35,14 @@ define([
         } else {
             this.prompt_area = options.prompt_area;
         }
+        this._display_id_targets = {};
         this.create_elements();
         this.style();
         this.bind_events();
         this.class_config = new configmod.ConfigWithDefaults(this.config,
                                         OutputArea.config_defaults, 'OutputArea');
+
+        this.handle_appended = utils.throttle(this.handle_appended.bind(this));
     };
 
     OutputArea.config_defaults = {
@@ -97,8 +101,8 @@ define([
             return false;
         }
         // line-height from http://stackoverflow.com/questions/1185151
-        var fontSize = this.element.css('font-size');
-        var lineHeight = Math.floor(parseInt(fontSize.replace('px','')) * 1.5);
+        var fontSize = this.element.css('font-size') || '14px';
+        var lineHeight = Math.floor((parseFloat(fontSize.replace('px','')) || 14) * 1.3);
         return (this.element.height() > threshold * lineHeight);
     };
 
@@ -108,11 +112,7 @@ define([
         this.prompt_overlay.dblclick(function () { that.toggle_output(); });
         this.prompt_overlay.click(function () { that.toggle_scroll(); });
 
-        this.element.resize(function () {
-            // FIXME: Firefox on Linux misbehaves, so automatic scrolling is disabled
-            if ( utils.browser[0] === "Firefox" ) {
-                return;
-            }
+        this.element.on('resizeOutput', function () {
             // maybe scroll output,
             // if it's grown large enough and hasn't already been scrolled.
             if (!that.scrolled && that._should_scroll()) {
@@ -218,37 +218,41 @@ define([
         var json = {};
         var msg_type = json.output_type = msg.header.msg_type;
         var content = msg.content;
-        if (msg_type === "stream") {
+        switch(msg_type) {
+        case "stream" :
             json.text = content.text;
             json.name = content.name;
-        } else if (msg_type === "display_data") {
-            json.data = content.data;
-            json.metadata = content.metadata;
-        } else if (msg_type === "execute_result") {
-            json.data = content.data;
-            json.metadata = content.metadata;
+            break;
+        case "execute_result":
             json.execution_count = content.execution_count;
-        } else if (msg_type === "error") {
+        case "update_display_data":
+        case "display_data":
+            json.transient = content.transient;
+            json.data = content.data;
+            json.metadata = content.metadata;
+            break;
+        case "error":
             json.ename = content.ename;
             json.evalue = content.evalue;
             json.traceback = content.traceback;
-        } else {
-            console.log("unhandled output message", msg);
+            break;
+        default:
+            console.error("unhandled output message", msg);
             return;
         }
         this.append_output(json);
     };
     
     // Declare mime type as constants
-    const MIME_JAVASCRIPT = 'application/javascript';
-    const MIME_HTML = 'text/html';
-    const MIME_MARKDOWN = 'text/markdown';
-    const MIME_LATEX = 'text/latex';
-    const MIME_SVG = 'image/svg+xml';
-    const MIME_PNG = 'image/png';
-    const MIME_JPEG = 'image/jpeg';
-    const MIME_PDF = 'application/pdf';
-    const MIME_TEXT = 'text/plain';
+    var MIME_JAVASCRIPT = 'application/javascript';
+    var MIME_HTML = 'text/html';
+    var MIME_MARKDOWN = 'text/markdown';
+    var MIME_LATEX = 'text/latex';
+    var MIME_SVG = 'image/svg+xml';
+    var MIME_PNG = 'image/png';
+    var MIME_JPEG = 'image/jpeg';
+    var MIME_PDF = 'application/pdf';
+    var MIME_TEXT = 'text/plain';
     
     
     OutputArea.output_types = [
@@ -260,7 +264,7 @@ define([
         MIME_PNG,
         MIME_JPEG,
         MIME_PDF,
-        MIME_TEXT
+        MIME_TEXT,
     ];
 
     OutputArea.prototype.validate_mimebundle = function (bundle) {
@@ -275,7 +279,7 @@ define([
         }
         var data = bundle.data;
         $.map(OutputArea.output_types, function(key){
-            if (key !== 'application/json' &&
+            if ((key.indexOf('application/') === -1 || key.indexOf('json') === -1) &&
                 data[key] !== undefined &&
                 typeof data[key] !== 'string'
             ) {
@@ -289,15 +293,18 @@ define([
     OutputArea.prototype.append_output = function (json) {
         this.expand();
         
-        // Clear the output if clear is queued.
-        var needs_height_reset = false;
         if (this.clear_queued) {
             this.clear_output(false);
-            needs_height_reset = true;
+            this._needs_height_reset = true;
         }
 
         var record_output = true;
         switch(json.output_type) {
+            case 'update_display_data':
+                record_output = false;
+                json = this.validate_mimebundle(json);
+                this.update_display_data(json);
+                return;
             case 'execute_result':
                 json = this.validate_mimebundle(json);
                 this.append_execute_result(json);
@@ -318,24 +325,11 @@ define([
                 this.append_unrecognized(json);
         }
 
-        // We must release the animation fixed height in a callback since Gecko
-        // (FireFox) doesn't render the image immediately as the data is 
-        // available.
-        var that = this;
-        var handle_appended = function ($el) {
-            /**
-             * Only reset the height to automatic if the height is currently
-             * fixed (done by wait=True flag on clear_output).
-             */
-            if (needs_height_reset) {
-                that.element.height('');
-            }
-            that.element.trigger('resize');
-        };
         if (json.output_type === 'display_data') {
-            this.append_display_data(json, handle_appended);
+            var that = this;
+            this.append_display_data(json, this.handle_appended);
         } else {
-            handle_appended();
+            this.handle_appended();
         }
         
         if (record_output) {
@@ -343,6 +337,14 @@ define([
         }
     };
 
+    OutputArea.prototype.handle_appended = function () {
+        if (this._needs_height_reset) {
+            this.element.height('');
+            this._needs_height_reset = false;
+        }
+
+        this.element.trigger('resizeOutput');
+    };
 
     OutputArea.prototype.create_output_area = function () {
         var oa = $("<div/>").addClass("output_area");
@@ -419,7 +421,7 @@ define([
             .append($('<div/>').text('See your browser Javascript console for more details.').addClass('js-error'));
     };
     
-    OutputArea.prototype._safe_append = function (toinsert) {
+    OutputArea.prototype._safe_append = function (toinsert, toreplace) {
         /**
          * safely append an item to the document
          * this is an object created by user code,
@@ -427,12 +429,16 @@ define([
          * under any circumstances.
          */
         try {
-            this.element.append(toinsert);
+            if (toreplace) {
+                toreplace.replaceWith(toinsert);
+            } else {
+                this.element.append(toinsert);
+            }
         } catch(err) {
-            console.log(err);
+            console.error(err);
             // Create an actual output_area and output_subarea, which creates
             // the prompt area and the proper indentation.
-            var toinsert = this.create_output_area();
+            toinsert = this.create_output_area();
             var subarea = $('<div/>').addClass('output_subarea');
             toinsert.append(subarea);
             this._append_javascript_error(err, subarea);
@@ -447,6 +453,7 @@ define([
     OutputArea.prototype.append_execute_result = function (json) {
         var n = json.execution_count || ' ';
         var toinsert = this.create_output_area();
+        this._record_display_id(json, toinsert);
         if (this.prompt_area) {
             toinsert.find('div.prompt').addClass('output_prompt').text('Out[' + n + ']:');
         }
@@ -490,6 +497,7 @@ define([
             return false;
         }
         var subclass = "output_"+json.name;
+
         if (this.outputs.length > 0){
             // have at least one output to consider
             var last = this.outputs[this.outputs.length-1];
@@ -564,8 +572,56 @@ define([
     };
 
 
+    OutputArea.prototype.update_display_data = function (json, handle_inserted) {
+        var oa = this;
+        var targets;
+        var display_id = (json.transient || {}).display_id;
+        if (!display_id) {
+            console.warn("Handling update_display with no display_id", json);
+            return;
+        }
+        targets = this._display_id_targets[display_id];
+        if (!targets) {
+            console.warn("No targets for display_id", display_id, json);
+            return;
+        }
+        // we've seen it before, update output data
+        targets.map(function (target) {
+            oa.outputs[target.index].data = json.data;
+            oa.outputs[target.index].metadata = json.metadata;
+            var toinsert = oa.create_output_area();
+            if (oa.append_mime_type(json, toinsert, handle_inserted)) {
+                oa._safe_append(toinsert, target.element);
+            }
+            target.element = toinsert;
+        });
+
+        // If we just output something that could contain latex, typeset it.
+        if ((json.data[MIME_LATEX] !== undefined) ||
+            (json.data[MIME_HTML] !== undefined) ||
+            (json.data[MIME_MARKDOWN] !== undefined)) {
+            this.typeset();
+        }
+    };
+
+    OutputArea.prototype._record_display_id = function (json, element) {
+        // record display_id of a display_data / execute_result
+        var display_id = (json.transient || {}).display_id;
+        if (!display_id) return;
+        // it has a display_id;
+        var targets = this._display_id_targets[display_id];
+        if (!targets) {
+            targets = this._display_id_targets[display_id] = [];
+        }
+        targets.push({
+            index: this.outputs.length,
+            element: element,
+        });
+    };
+    
     OutputArea.prototype.append_display_data = function (json, handle_inserted) {
         var toinsert = this.create_output_area();
+        this._record_display_id(json, toinsert);
         if (this.append_mime_type(json, toinsert, handle_inserted)) {
             this._safe_append(toinsert);
             // If we just output latex, typeset it.
@@ -577,14 +633,12 @@ define([
         }
     };
 
+    OutputArea.safe_outputs = {};
+    OutputArea.safe_outputs[MIME_TEXT] = true;
+    OutputArea.safe_outputs[MIME_LATEX] = true;
+    OutputArea.safe_outputs[MIME_PNG] = true;
+    OutputArea.safe_outputs[MIME_JPEG] = true;
 
-    OutputArea.safe_outputs = {
-        [MIME_TEXT] : true,
-        [MIME_LATEX] : true,
-        [MIME_PNG] : true,
-        [MIME_JPEG] : true
-    };
-    
     OutputArea.prototype.append_mime_type = function (json, element, handle_inserted) {
         for (var i=0; i < OutputArea.display_order.length; i++) {
             var type = OutputArea.display_order[i];
@@ -859,7 +913,7 @@ define([
         // remove form container
         container.parent().remove();
         // replace with plaintext version in stdout
-        this.append_output(content, false);
+        this.append_output(content);
         this.events.trigger('send_input_reply.Kernel', value);
     };
 
@@ -905,6 +959,7 @@ define([
             this.element.trigger('changed');
             
             this.outputs = [];
+            this._display_id_targets = {};
             this.trusted = true;
             this.unscroll_area();
             return;
@@ -938,9 +993,20 @@ define([
         }
     };
 
-
+    /**
+     * Return for-saving version of outputs.
+     * Excludes transient values.
+     */
     OutputArea.prototype.toJSON = function () {
-        return this.outputs;
+        return this.outputs.map(function (out) {
+            var out2 = {};
+            Object.keys(out).map(function (key) {
+                if (key != 'transient') {
+                    out2[key] = out[key];
+                }
+            });
+            return out2;
+        });
     };
 
     /**
@@ -985,16 +1051,28 @@ define([
         MIME_TEXT
     ];
 
-    OutputArea.append_map = {
-        [MIME_TEXT] : append_text,
-        [MIME_HTML] : append_html,
-        [MIME_MARKDOWN]: append_markdown,
-        [MIME_SVG] : append_svg,
-        [MIME_PNG] : append_png,
-        [MIME_JPEG] : append_jpeg,
-        [MIME_LATEX] : append_latex,
-        [MIME_JAVASCRIPT] : append_javascript,
-        [MIME_PDF] : append_pdf
+    OutputArea.append_map = {};
+    OutputArea.append_map[MIME_TEXT] = append_text;
+    OutputArea.append_map[MIME_HTML] = append_html;
+    OutputArea.append_map[MIME_MARKDOWN] = append_markdown;
+    OutputArea.append_map[MIME_SVG] = append_svg;
+    OutputArea.append_map[MIME_PNG] = append_png;
+    OutputArea.append_map[MIME_JPEG] = append_jpeg;
+    OutputArea.append_map[MIME_LATEX] = append_latex;
+    OutputArea.append_map[MIME_JAVASCRIPT] = append_javascript;
+    OutputArea.append_map[MIME_PDF] = append_pdf;
+    
+    OutputArea.prototype.mime_types = function () {
+        return OutputArea.display_order;
+    };
+    
+    OutputArea.prototype.register_mime_type = function (mimetype, append, options) {
+        if (mimetype && typeof(append) === 'function') {
+            OutputArea.output_types.push(mimetype);
+            if (options.safe) OutputArea.safe_outputs[mimetype] = true;
+            OutputArea.display_order.splice(options.index || 0, 0, mimetype);
+            OutputArea.append_map[mimetype] = append;
+        }
     };
 
     return {'OutputArea': OutputArea};

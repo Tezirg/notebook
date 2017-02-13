@@ -6,6 +6,8 @@
 
 from __future__ import absolute_import, print_function
 
+import notebook
+import binascii
 import datetime
 import errno
 import importlib
@@ -52,6 +54,7 @@ if version_info < (4,0):
 
 from tornado import httpserver
 from tornado import web
+from tornado.httputil import url_concat
 from tornado.log import LogFormatter, app_log, access_log, gen_log
 
 from notebook import (
@@ -59,8 +62,6 @@ from notebook import (
     DEFAULT_TEMPLATE_PATH_LIST,
     __version__,
 )
-from .auth import passwd
-from getpass import getpass
 
 # py23 compatibility
 try:
@@ -68,7 +69,7 @@ try:
 except NameError:
     raw_input = input
 
-from .base.handlers import Template404
+from .base.handlers import Template404, RedirectWithParams
 from .log import log_request
 from .services.kernels.kernelmanager import MappingKernelManager
 from .services.config import ConfigManager
@@ -85,6 +86,7 @@ from traitlets.config.application import catch_config_error, boolean_flag
 from jupyter_core.application import (
     JupyterApp, base_flags, base_aliases,
 )
+from jupyter_core.paths import jupyter_config_path
 from jupyter_client import KernelManager
 from jupyter_client.kernelspec import KernelSpecManager, NoSuchKernel, NATIVE_KERNEL_NAME
 from jupyter_client.session import Session
@@ -97,6 +99,7 @@ from ipython_genutils import py3compat
 from jupyter_core.paths import jupyter_runtime_dir, jupyter_path
 from notebook._sysinfo import get_sys_info
 
+from ._tz import utcnow
 from .utils import url_path_join, check_pid, url_escape
 
 #-----------------------------------------------------------------------------
@@ -106,6 +109,7 @@ from .utils import url_path_join, check_pid, url_escape
 _examples = """
 jupyter notebook                       # start the notebook
 jupyter notebook --certfile=mycert.pem # use SSL/TLS certificate
+jupyter notebook password              # enter a password to protect the server
 """
 
 DEV_NOTE_NPM = """It looks like you're running the notebook from source.
@@ -192,10 +196,12 @@ class NotebookWebApplication(web.Application):
             version_hash = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 
         if jupyter_app.ignore_minified_js:
-            log.warn("""The `ignore_minified_js` flag is deprecated and no 
+            log.warning("""The `ignore_minified_js` flag is deprecated and no 
                 longer works.  Alternatively use `npm run build:watch` when
                 working on the notebook's Javascript and LESS""")
             warnings.warn("The `ignore_minified_js` flag is deprecated and will be removed in Notebook 6.0", DeprecationWarning)
+
+        now = utcnow()
 
         settings = dict(
             # basics
@@ -218,6 +224,11 @@ class NotebookWebApplication(web.Application):
             iopub_msg_rate_limit=jupyter_app.iopub_msg_rate_limit,
             iopub_data_rate_limit=jupyter_app.iopub_data_rate_limit,
             rate_limit_window=jupyter_app.rate_limit_window,
+
+            # maximum request sizes - support saving larger notebooks
+            # tornado defaults are 100 MiB, we increase it to 0.5 GiB
+            max_body_size = 512 * 1024 * 1024,
+            max_buffer_size = 512 * 1024 * 1024,
             
             # authentication
             cookie_secret=jupyter_app.cookie_secret,
@@ -225,6 +236,8 @@ class NotebookWebApplication(web.Application):
             login_handler_class=jupyter_app.login_handler_class,
             logout_handler_class=jupyter_app.logout_handler_class,
             password=jupyter_app.password,
+            xsrf_cookies=True,
+            disable_check_xsrf=jupyter_app.disable_check_xsrf,
 
             # managers
             kernel_manager=kernel_manager,
@@ -233,7 +246,8 @@ class NotebookWebApplication(web.Application):
             kernel_spec_manager=kernel_spec_manager,
             config_manager=config_manager,
 
-            # IPython stuff
+            # Jupyter stuff
+            started=now,
             jinja_template_vars=jupyter_app.jinja_template_vars,
             nbextensions_path=jupyter_app.nbextensions_path,
             websocket_url=jupyter_app.websocket_url,
@@ -258,6 +272,7 @@ class NotebookWebApplication(web.Application):
         handlers.extend([(r"/login", settings['login_handler_class'])])
         handlers.extend([(r"/logout", settings['logout_handler_class'])])
         handlers.extend(load_handlers('files.handlers'))
+        handlers.extend(load_handlers('view.handlers'))
         handlers.extend(load_handlers('notebook.handlers'))
         handlers.extend(load_handlers('nbconvert.handlers'))
         handlers.extend(load_handlers('bundler.handlers'))
@@ -272,24 +287,6 @@ class NotebookWebApplication(web.Application):
         handlers.extend(load_handlers('services.kernelspecs.handlers'))
         handlers.extend(load_handlers('services.security.handlers'))
         handlers.extend(load_handlers('services.eae.handlers'))
-        
-        # BEGIN HARDCODED WIDGETS HACK
-        # TODO: Remove on notebook 5.0
-        widgets = None
-        try:
-            import widgetsnbextension
-        except:
-            try:
-                import ipywidgets as widgets
-                handlers.append(
-                    (r"/nbextensions/widgets/(.*)", FileFindHandler, {
-                        'path': widgets.find_static_assets(),
-                        'no_cache_paths': ['/'], # don't cache anything in nbextensions
-                    }),
-                )
-            except:
-                app_log.warning('Widgets are unavailable. Please install widgetsnbextension or ipywidgets 4.0')
-        # END HARDCODED WIDGETS HACK
         
         handlers.append(
             (r"/nbextensions/(.*)", FileFindHandler, {
@@ -307,7 +304,7 @@ class NotebookWebApplication(web.Application):
         handlers.extend(load_handlers('base.handlers'))
         # set the URL that will be redirected from `/`
         handlers.append(
-            (r'/?', web.RedirectHandler, {
+            (r'/?', RedirectWithParams, {
                 'url' : settings['default_url'],
                 'permanent': False, # want 302, not 301
             })
@@ -322,6 +319,24 @@ class NotebookWebApplication(web.Application):
         # add 404 on the end, which will catch everything that falls through
         new_handlers.append((r'(.*)', Template404))
         return new_handlers
+
+
+class NotebookPasswordApp(JupyterApp):
+    """Set a password for the notebook server.
+
+    Setting a password secures the notebook server
+    and removes the need for token-based authentication.
+    """
+    
+    description = __doc__
+
+    def _config_file_default(self):
+        return os.path.join(self.config_dir, 'jupyter_notebook_config.json')
+
+    def start(self):
+        from .auth.security import set_password
+        set_password(config_file=self.config_file)
+        self.log.info("Wrote hashed password to %s" % self.config_file)
 
 
 class NbserverListApp(JupyterApp):
@@ -344,7 +359,10 @@ class NbserverListApp(JupyterApp):
             if self.json:
                 print(json.dumps(serverinfo))
             else:
-                print(serverinfo['url'], "::", serverinfo['notebook_dir'])
+                url = serverinfo['url']
+                if serverinfo.get('token'):
+                    url = url + '?token=%s' % serverinfo['token']
+                print(url, "::", serverinfo['notebook_dir'])
 
 #-----------------------------------------------------------------------------
 # Aliases and Flags
@@ -424,6 +442,7 @@ class NotebookApp(JupyterApp):
     
     subcommands = dict(
         list=(NbserverListApp, NbserverListApp.description.splitlines()[0]),
+        password=(NotebookPasswordApp, NotebookPasswordApp.description.splitlines()[0]),
     )
 
     _log_formatter_cls = LogFormatter
@@ -590,6 +609,39 @@ class NotebookApp(JupyterApp):
                 self.cookie_secret_file
             )
 
+    token = Unicode('<generated>',
+        help="""Token used for authenticating first-time connections to the server.
+
+        When no password is enabled,
+        the default is to generate a new, random token.
+
+        Setting to an empty string disables authentication altogether, which is NOT RECOMMENDED.
+        """
+    ).tag(config=True)
+
+    one_time_token = Unicode(
+        help="""One-time token used for opening a browser.
+
+        Once used, this token cannot be used again.
+        """
+    )
+
+    _token_generated = True
+
+    @default('token')
+    def _token_default(self):
+        if self.password:
+            # no token if password is enabled
+            self._token_generated = False
+            return u''
+        else:
+            self._token_generated = True
+            return binascii.hexlify(os.urandom(24)).decode('ascii')
+
+    @observe('token')
+    def _token_changed(self, change):
+        self._token_generated = False
+
     password = Unicode(u'', config=True,
                       help="""Hashed password to use for web authentication.
 
@@ -610,6 +662,22 @@ class NotebookApp(JupyterApp):
                       since any user can connect to the notebook server via ssh.
 
                       """
+    )
+
+    disable_check_xsrf = Bool(False, config=True,
+        help="""Disable cross-site-request-forgery protection
+
+        Jupyter notebook 4.3.1 introduces protection from cross-site request forgeries,
+        requiring API requests to either:
+
+        - originate from pages served by this server (validated with XSRF cookie and token), or
+        - authenticate with a token
+
+        Some anonymous compute resources still desire the ability to run code,
+        completely without authentication.
+        These services can disable all authentication and security checks,
+        with the full knowledge of what that implies.
+        """
     )
 
     open_browser = Bool(True, config=True,
@@ -923,7 +991,8 @@ class NotebookApp(JupyterApp):
     nbserver_extensions = Dict({}, config=True,
         help=("Dict of Python modules to load as notebook server extensions."
               "Entry values can be used to enable and disable the loading of"
-              "the extensions.")
+              "the extensions. The extensions will be loaded in alphabetical "
+              "order.")
     )
 
     reraise_server_extension_failures = Bool(
@@ -932,15 +1001,15 @@ class NotebookApp(JupyterApp):
         help="Reraise exceptions encountered loading server extensions?",
     )
 
-    iopub_msg_rate_limit = Float(0, config=True, help="""(msg/sec)
+    iopub_msg_rate_limit = Float(1000, config=True, help="""(msgs/sec)
         Maximum rate at which messages can be sent on iopub before they are
         limited.""")
 
-    iopub_data_rate_limit = Float(0, config=True, help="""(bytes/sec)
+    iopub_data_rate_limit = Float(1000000, config=True, help="""(bytes/sec)
         Maximum rate at which messages can be sent on iopub before they are
         limited.""")
 
-    rate_limit_window = Float(1.0, config=True, help="""(sec) Time window used to 
+    rate_limit_window = Float(3, config=True, help="""(sec) Time window used to 
         check the message and data rate limits.""")
 
     def parse_command_line(self, argv=None):
@@ -1011,6 +1080,11 @@ class NotebookApp(JupyterApp):
             self.tornado_settings['allow_origin_pat'] = re.compile(self.allow_origin_pat)
         self.tornado_settings['allow_credentials'] = self.allow_credentials
         self.tornado_settings['cookie_options'] = self.cookie_options
+        self.tornado_settings['token'] = self.token
+        if (self.open_browser or self.file_to_run) and not self.password:
+            self.one_time_token = binascii.hexlify(os.urandom(24)).decode('ascii')
+            self.tornado_settings['one_time_token'] = self.one_time_token
+
         # ensure default_url starts with base_url
         if not self.default_url.startswith(self.base_url):
             self.default_url = url_path_join(self.base_url, self.default_url)
@@ -1082,7 +1156,12 @@ class NotebookApp(JupyterApp):
     @property
     def display_url(self):
         ip = self.ip if self.ip else '[all ip addresses on your system]'
-        return self._url(ip)
+        url = self._url(ip)
+        if self.token:
+            # Don't log full token if it came from config
+            token = self.token if self._token_generated else '...'
+            url = url_concat(url, {'token': token})
+        return url
 
     @property
     def connection_url(self):
@@ -1183,9 +1262,28 @@ class NotebookApp(JupyterApp):
             # in the new traitlet
             if not modulename in self.nbserver_extensions:
                 self.nbserver_extensions[modulename] = True
-        
-        for modulename in self.nbserver_extensions:
-            if self.nbserver_extensions[modulename]:
+
+        # Load server extensions with ConfigManager.
+        # This enables merging on keys, which we want for extension enabling.
+        # Regular config loading only merges at the class level,
+        # so each level (user > env > system) clobbers the previous.
+        config_path = jupyter_config_path()
+        if self.config_dir not in config_path:
+            # add self.config_dir to the front, if set manually
+            config_path.insert(0, self.config_dir)
+        manager = ConfigManager(read_config_path=config_path)
+        section = manager.get(self.config_file_name)
+        extensions = section.get('NotebookApp', {}).get('nbserver_extensions', {})
+
+        for modulename, enabled in self.nbserver_extensions.items():
+            if modulename not in extensions:
+                # not present in `extensions` means it comes from Python config,
+                # so we need to add it.
+                # Otherwise, trust ConfigManager to have loaded it.
+                extensions[modulename] = enabled
+
+        for modulename, enabled in sorted(extensions.items()):
+            if enabled:
                 try:
                     mod = importlib.import_module(modulename)
                     func = getattr(mod, 'load_jupyter_server_extension', None)
@@ -1240,14 +1338,16 @@ class NotebookApp(JupyterApp):
                 'port': self.port,
                 'secure': bool(self.certfile),
                 'base_url': self.base_url,
+                'token': self.token,
                 'notebook_dir': os.path.abspath(self.notebook_dir),
-                'pid': os.getpid()
+                'password': bool(self.password),
+                'pid': os.getpid(),
                }
 
     def write_server_info_file(self):
         """Write the result of server_info() to the JSON file info_file."""
         with open(self.info_file, 'w') as f:
-            json.dump(self.server_info(), f, indent=2)
+            json.dump(self.server_info(), f, indent=2, sort_keys=True)
 
     def remove_server_info_file(self):
         """Remove the nbserver-<pid>.json file created for this server.
@@ -1282,6 +1382,11 @@ class NotebookApp(JupyterApp):
         for line in self.notebook_info().split("\n"):
             info(line)
         info("Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).")
+        if 'dev' in notebook.__version__:
+            info("Welcome to Project Jupyter! Explore the various tools available"
+                 " and their corresponding documentation. If you are interested"
+                 " in contributing to the platform, please visit the community"
+                 "resources section at http://jupyter.org/community.html.")
 
         self.write_server_info_file()
 
@@ -1302,11 +1407,23 @@ class NotebookApp(JupyterApp):
             else:
                 # default_url contains base_url, but so does connection_url
                 uri = self.default_url[len(self.base_url):]
+            if self.one_time_token:
+                uri = url_concat(uri, {'token': self.one_time_token})
             if browser:
                 b = lambda : browser.open(url_path_join(self.connection_url, uri),
                                           new=2)
                 threading.Thread(target=b).start()
-        
+
+        if self.token and self._token_generated:
+            # log full URL with generated token, so there's a copy/pasteable link
+            # with auth info.
+            self.log.critical('\n'.join([
+                '\n',
+                'Copy/paste this URL into your browser when you connect for the first time,',
+                'to login with a token:',
+                '    %s' % url_concat(self.connection_url, {'token': self.token}),
+            ]))
+
         self.io_loop = ioloop.IOLoop.current()
         if sys.platform.startswith('win'):
             # add no-op to wake every 5s
@@ -1318,9 +1435,9 @@ class NotebookApp(JupyterApp):
         except KeyboardInterrupt:
             info("Interrupted...")
         finally:
-            self.cleanup_kernels()
             self.remove_server_info_file()
-    
+            self.cleanup_kernels()
+
     def stop(self):
         def _stop():
             self.http_server.stop()
@@ -1354,7 +1471,7 @@ def list_running_servers(runtime_dir=None):
             else:
                 # If the process has died, try to delete its info file
                 try:
-                    os.unlink(file)
+                    os.unlink(os.path.join(runtime_dir, file))
                 except OSError:
                     pass  # TODO: This should warn or log or something
 #-----------------------------------------------------------------------------

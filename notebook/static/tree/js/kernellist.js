@@ -2,9 +2,10 @@
 // Distributed under the terms of the Modified BSD License.
 
 define([
+    'jquery',
     'base/js/namespace',
     'tree/js/notebooklist',
-], function(IPython, notebooklist) {
+], function($, IPython, notebooklist) {
     "use strict";
 
     var KernelList = function (selector, options) {
@@ -48,7 +49,7 @@ define([
             return; // wait for kernelspecs before first load
         }
         this.clear_list();
-        var item, path, session;
+        var item, path, session, info;
         for (path in d) {
             if (!d.hasOwnProperty(path)) {
                 // nothing is safe in javascript
@@ -56,11 +57,12 @@ define([
             }
             session = d[path];
             item = this.new_item(-1);
+            info = this.kernelspecs[session.kernel.name];
             this.add_link({
                 name: path,
                 path: path,
                 type: 'notebook',
-                kernel_display_name: this.kernelspecs[session.kernel.name].spec.display_name
+                kernel_display_name: (info && info.spec) ? info.spec.display_name : session.kernel.name
             }, item);
         }
         $('#running_list_placeholder').toggle($.isEmptyObject(d));
