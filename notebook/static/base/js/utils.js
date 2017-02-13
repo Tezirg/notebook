@@ -796,7 +796,8 @@ define([
                 log_ajax_error(jqXHR, status, error);
                 reject(wrap_ajax_error(jqXHR, status, error));
             };
-            ajax(url, settings);
+            // ajax(url, settings);
+            return $.ajax(url, settings);
         });
     };
 
