@@ -5,6 +5,7 @@ define([
     'jquery',
     'base/js/utils',
     'services/kernels/kernel',
+    'services/eae',
 ], function($, utils, kernel) {
     "use strict";
 
