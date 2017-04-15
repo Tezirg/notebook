@@ -68,5 +68,5 @@ module.exports = {
     'services/kernels/kernel': require('./services/kernels/kernel.js'),
     'services/config': require('./services/config.js'),
     'services/eae': require('./services/eae.js'),
-    'dropzone': require('./tree/js/dropzone.js'),
+    'tree/js/dropzone': require('./tree/js/dropzone.js'),
 };

@@ -35,6 +35,7 @@ require([
     'tree/js/terminallist',
     'tree/js/newnotebook',
     'auth/js/loginwidget',
+    'tree/js/dropzone',
 ], function(
     IPython,
     dialog,
@@ -47,7 +48,8 @@ require([
     kernellist,
     terminallist,
     newnotebook,
-    loginwidget){
+    loginwidget,
+    dropzone){
     "use strict";
     try{
         requirejs(['custom/custom'], function() {});
