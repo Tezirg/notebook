@@ -201,7 +201,8 @@ require([
         $("#tabs").find("a[href=" + window.location.hash + "]").click();
     }
 
-    const myDropzone = new dropzone.dropzone("div#mydropzone", {
+    $("div#mydropzone").dropzone({
+        url: "uploadfile",
         maxFilesize: 10000,// MB
         parallelUploads: 3,
         uploadMultiple: true,
