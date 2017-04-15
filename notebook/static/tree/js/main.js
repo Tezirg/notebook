@@ -200,5 +200,14 @@ require([
     if (window.location.hash) {
         $("#tabs").find("a[href=" + window.location.hash + "]").click();
     }
+
+    var myDropzone = new Dropzone("div#my-dropzone", { url: "/file/post"});
+    Dropzone.options.myDropzone = {
+        paramName: "file", // The name that will be used to transfer the file
+        maxFilesize: 10000, // MB
+        accept: function(file, done) {
+            done();
+        }
+    };
 });
 });
