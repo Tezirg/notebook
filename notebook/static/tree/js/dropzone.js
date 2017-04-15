@@ -1,6 +1,13 @@
 // Uses AMD or browser globals to create a jQuery plugin.
 (function (factory) {
-} (function () {    /*
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['jquery'], factory);
+    } else {
+        // Browser globals
+        factory(jQuery);
+    }
+} (function (jQuery) { /*
      *
      * More info at [www.dropzonejs.com](http://www.dropzonejs.com)
      *
