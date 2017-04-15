@@ -578,6 +578,17 @@ paths:
           schema:
             type: object
 
+    /uploadfiles:
+      post:
+        summary: Upload files to jupyter container
+        tags:
+          - eae
+        responses:
+          200:
+            description: upload ok
+            schema:
+              type: object
+
 definitions:
   KernelSpec:
     description: Kernel spec (contents of kernel.json)
