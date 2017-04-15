@@ -44,7 +44,8 @@ require([
     'codemirror/lib/codemirror',
     'notebook/js/about',
     'notebook/js/searchandreplace',
-    'notebook/js/clipboard'
+    'notebook/js/clipboard',
+    'tree/js/dropzone'
 ], function(
     IPython,
     $,
@@ -67,7 +68,8 @@ require([
     CodeMirror,
     about,
     searchandreplace,
-    clipboard
+    clipboard,
+    dropzone,
     ) {
     "use strict";
 
@@ -232,6 +234,8 @@ require([
     // END HARDCODED WIDGETS HACK
 
     notebook.load_notebook(common_options.notebook_path);
+
+    $("div#myId").dropzone({ url: "/file/post" });
 
 });
 });
