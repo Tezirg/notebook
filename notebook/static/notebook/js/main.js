@@ -233,7 +233,6 @@ require([
     });
     // END HARDCODED WIDGETS HACK
 
-
-
+    notebook.load_notebook(common_options.notebook_path);
 });
 });
