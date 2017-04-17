@@ -72,9 +72,6 @@ class UploadFilesHandler(APIHandler):
     def post(self):
         print "I am in the post"
         file = self.request.files['file[0]'][0]
-        print file.keys()
-        print file['filename']
-        print file['body']
         filename = file['filename']
         with open(UPLOAD_FOLDER + filename, 'a') as f:
             f.write(str(file['body']))
