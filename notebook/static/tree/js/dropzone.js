@@ -1,12 +1,6 @@
 // Uses AMD or browser globals to create a jQuery plugin.
-(function (factory) {
-    if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
-        define(['jquery'], factory);
-    } else {
-        // Browser globals
-        factory('jquery');
-    }
+(function () {
+
 } (function (jQuery) { /*
      *
      * More info at [www.dropzonejs.com](http://www.dropzonejs.com)
@@ -1631,13 +1625,11 @@
             return false;
         };
 
-        if (typeof jQuery !== "undefined" && jQuery !== null) {
-            jQuery.fn.dropzone = function(options) {
-                return this.each(function() {
-                    return new Dropzone(this, options);
-                });
-            };
-        }
+        $.fn.dropzone = function(options) {
+            return this.each(function() {
+                return new Dropzone(this, options);
+            });
+        };
 
         if (typeof module !== "undefined" && module !== null) {
             module.exports = Dropzone;
