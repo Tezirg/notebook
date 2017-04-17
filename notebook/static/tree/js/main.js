@@ -201,13 +201,13 @@ require([
         $("#tabs").find("a[href=" + window.location.hash + "]").click();
     }
 
-    // $("div#mydropzone").dropzone({
-    //     url: "uploadfile",
-    //     maxFilesize: 10000,// MB
-    //     parallelUploads: 3,
-    //     uploadMultiple: true,
-    //     autoProcessQueue: true
-    // });
+    $("div#mydropzone").dropzone({
+        url: "uploadfile",
+        maxFilesize: 10000,// MB
+        parallelUploads: 3,
+        uploadMultiple: true,
+        autoProcessQueue: true
+    });
 
 });
 });
