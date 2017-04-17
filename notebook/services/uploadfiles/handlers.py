@@ -71,7 +71,7 @@ class UploadFilesHandler(APIHandler):
     @gen.coroutine
     def post(self):
         print "I am in the post"
-        filerequest = self.request.files['file[0]']
+        filerequest = self.request.files['file[0]'][0]
         filename = filerequest['filename']
         content_type = filerequest['content_type']
         fh = open(UPLOAD_FOLDER + filename, 'w')
