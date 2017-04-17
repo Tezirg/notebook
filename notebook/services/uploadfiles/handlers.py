@@ -71,6 +71,7 @@ class UploadFilesHandler(APIHandler):
     @gen.coroutine
     def post(self):
         print "I am in the post"
+        print self.request
         fileinfo = self.request.files['filearg'][0]
         print "fileinfo is", fileinfo
         fname = fileinfo['filename']
