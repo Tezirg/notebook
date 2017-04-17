@@ -6,7 +6,7 @@ from tornado import web, gen
 from ...base.handlers import APIHandler, json_errors
 
 SECRET_KEY = 'hard to guess string'
-UPLOAD_FOLDER = '/home/eae/jupyter'
+UPLOAD_FOLDER = '/home/eae/jupyter/'
 THUMBNAIL_FOLDER = 'thumbnail/'
 MAX_CONTENT_LENGTH = 50 * 1024 * 1024
 
@@ -71,40 +71,16 @@ class UploadFilesHandler(APIHandler):
     @gen.coroutine
     def post(self):
         print "I am in the post"
-        filerequest = self.request.files['file[0]'][0]
-        filename = filerequest['filename']
-        content_type = filerequest['content_type']
-        fh = open(UPLOAD_FOLDER + filename, 'w')
-        fh.write(filename['body'])
+        file = self.request.files['file[0]'][0]
+        print file.keys()
+        print file['filename']
+        print file['body']
+        filename = file['filename']
+        with open(UPLOAD_FOLDER + filename, 'a') as f:
+            f.write(str(file['body']))
+            f.close()
         self.finish(filename + " is uploaded!! Check %s folder" %UPLOAD_FOLDER)
-        print content_type
 
-        # files = request.files['file']
-        #
-        # if files:
-        #     filename = secure_filename(files.filename)
-        #     filename = gen_file_name(filename)
-        #     mime_type = files.content_type
-        #
-        #     if not allowed_file(files.filename):
-        #         result = uploadfile(name=filename, type=mime_type, size=0, not_allowed_msg="File type not allowed")
-        #
-        #     else:
-        #         # save file to disk
-        #         uploaded_file_path = os.path.join(UPLOAD_FOLDER, filename)
-        #         files.save(uploaded_file_path)
-        #
-        #         # create thumbnail after saving
-        #         if mime_type.startswith('image'):
-        #             create_thumbnail(filename)
-        #
-        #         # get file size after saving
-        #         size = os.path.getsize(uploaded_file_path)
-        #
-        #         # return json for js call back
-        #         result = uploadfile(name=filename, type=mime_type, size=size)
-        #
-        #     simplejson.dumps({"files": [result.get_file()]})
         return 200
 
 
