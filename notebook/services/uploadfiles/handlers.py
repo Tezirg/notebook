@@ -33,7 +33,7 @@ def gen_file_name(filename):
     return filename
 
 
-class UploadFilesHandler(APIHandler):
+class UploadFilesHandler(APIHandler, tornado.web.RequestHandler):
 
     def initialize(self):
         self.bytes_read = 0
