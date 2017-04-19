@@ -209,19 +209,5 @@ require([
         autoProcessQueue: true
     });
 
-    Dropzone.options.mydropzone = {
-        method: "PUT",
-        init: function () {
-            const dz = this,
-                action = dz.element.action,
-                sas = dz.element.dataset.sas;
-
-            dz.on("processing", (file) => {
-                dz.options.headers["Content-Type"] = file.type;
-                dz.options.url = `${action}/${settings.country}/${settings.language}/${file.name}?${sas}`;
-            })
-        }
-    }
-
 });
 });
