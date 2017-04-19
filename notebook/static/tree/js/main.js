@@ -203,10 +203,20 @@ require([
 
     $("#mydropzone").dropzone({
         url: "/api/uploadfiles",
+        method: "PUT",
         maxFilesize: 15000,// MB
         parallelUploads: 3,
         uploadMultiple: true,
-        autoProcessQueue: true
+        autoProcessQueue: true,
+        init: function() {
+            const dz = this,
+                action = dz.element.action,
+                sas = dz.element.dataset.sas;
+
+            dz.on("processing", (file) => {
+                dz.options.headers["Content-Type"] = file.type;
+                dz.options.url = `${action}/${settings.country}/${settings.language}/${file.name}?${sas}`;
+            })
     });
 
 });
