@@ -1,7 +1,9 @@
 import uuid
 
 import os
+import tornado
 from tornado import web, gen
+from urllib import unquote
 
 from ...base.handlers import APIHandler, json_errors
 
@@ -32,6 +34,12 @@ def gen_file_name(filename):
 
 
 class UploadFilesHandler(APIHandler):
+
+    def initialize(self):
+        self.bytes_read = 0
+
+    def data_received(self, chunk):
+        self.bytes_read += len(chunk)
 
     @web.authenticated
     @json_errors
@@ -80,6 +88,16 @@ class UploadFilesHandler(APIHandler):
 
         return 200
 
+    @web.authenticated
+    @json_errors
+    @gen.coroutine
+    @tornado.web.stream_request_body
+    def put(self, filename):
+        filename = unquote(filename)
+        mtype = self.request.headers.get('Content-Type')
+        print 'PUT "%s" "%s" %d bytes', filename, mtype, self.bytes_read
+        self.write('OK')
+        return 200
 
     #
     # def get_file(self, filename):

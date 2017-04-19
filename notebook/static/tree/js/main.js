@@ -207,15 +207,7 @@ require([
         maxFilesize: 15000,// MB
         parallelUploads: 3,
         uploadMultiple: true,
-        autoProcessQueue: true,
-         headers: {"Content-Type": "text/plain"}, // Default value
-        init: function() {
-            const dz = this
-
-            dz.on("processing", (file) => {
-                dz.options.headers["Content-Type"] = file.type;
-            })
-        }
+        autoProcessQueue: true
     });
 
 });
