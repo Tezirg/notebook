@@ -42,39 +42,6 @@ class UploadFilesHandler(APIHandler):
     def data_received(self, chunk):
         self.bytes_read += len(chunk)
 
-    # @web.authenticated
-    # @json_errors
-    # @gen.coroutine
-    # def get(self):
-    #     print "I am in the post"
-    #     # files = request.files['file']
-    #     #
-    #     # if files:
-    #     #     filename = secure_filename(files.filename)
-    #     #     filename = gen_file_name(filename)
-    #     #     mime_type = files.content_type
-    #     #
-    #     #     if not allowed_file(files.filename):
-    #     #         result = uploadfile(name=filename, type=mime_type, size=0, not_allowed_msg="File type not allowed")
-    #     #
-    #     #     else:
-    #     #         # save file to disk
-    #     #         uploaded_file_path = os.path.join(UPLOAD_FOLDER, filename)
-    #     #         files.save(uploaded_file_path)
-    #     #
-    #     #         # create thumbnail after saving
-    #     #         if mime_type.startswith('image'):
-    #     #             create_thumbnail(filename)
-    #     #
-    #     #         # get file size after saving
-    #     #         size = os.path.getsize(uploaded_file_path)
-    #     #
-    #     #         # return json for js call back
-    #     #         result = uploadfile(name=filename, type=mime_type, size=size)
-    #     #
-    #     #     simplejson.dumps({"files": [result.get_file()]})
-    #     return 200
-
     @web.authenticated
     @json_errors
     @gen.coroutine
@@ -95,16 +62,14 @@ class UploadFilesHandler(APIHandler):
     def put(self):
         print self.request
         print self.request.headers
-        print self.request.body
-        filename = unquote(self.request.body.filename)
+        filename = "toto.txt"
         mtype = self.request.headers.get('Content-Type')
         print 'PUT "%s" "%s" %d bytes', filename, mtype, self.bytes_read
+        with open(UPLOAD_FOLDER + filename, 'a') as f:
+            f.write(self.request.body)
+            f.close()
         self.write('OK')
         return 200
-
-        #
-        # def get_file(self, filename):
-        #     return send_from_directory(os.path.join(UPLOAD_FOLDER), filename=filename)
 
 
 # -----------------------------------------------------------------------------
