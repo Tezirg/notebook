@@ -207,7 +207,11 @@ require([
         maxFilesize: 15000,// MB
         parallelUploads: 3,
         uploadMultiple: true,
-        autoProcessQueue: true
+        autoProcessQueue: true,
+        sending: function(file, xhr, formData) {
+        // Will send the filesize along with the file as PUT data.
+        formData.append("filename", file.name);
+        }
     });
 
 });

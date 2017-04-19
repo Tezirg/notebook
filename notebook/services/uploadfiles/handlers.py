@@ -15,8 +15,9 @@ MAX_CONTENT_LENGTH = 50 * 1024 * 1024
 ALLOWED_EXTENSIONS = set(['txt', 'gif', 'png', 'jpg', 'jpeg', 'bmp', 'rar', 'zip', '7zip', 'doc', 'docx'])
 IGNORED_FILES = set(['.gitignore'])
 
+
 def allowed_file(filename):
-    return '.' in filename and  filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def gen_file_name(filename):
@@ -33,46 +34,46 @@ def gen_file_name(filename):
     return filename
 
 
-class UploadFilesHandler(APIHandler, tornado.web.RequestHandler):
-
+@web.stream_request_body
+class UploadFilesHandler(APIHandler):
     def initialize(self):
         self.bytes_read = 0
 
     def data_received(self, chunk):
         self.bytes_read += len(chunk)
 
-    @web.authenticated
-    @json_errors
-    @gen.coroutine
-    def get(self):
-        print "I am in the post"
-        # files = request.files['file']
-        #
-        # if files:
-        #     filename = secure_filename(files.filename)
-        #     filename = gen_file_name(filename)
-        #     mime_type = files.content_type
-        #
-        #     if not allowed_file(files.filename):
-        #         result = uploadfile(name=filename, type=mime_type, size=0, not_allowed_msg="File type not allowed")
-        #
-        #     else:
-        #         # save file to disk
-        #         uploaded_file_path = os.path.join(UPLOAD_FOLDER, filename)
-        #         files.save(uploaded_file_path)
-        #
-        #         # create thumbnail after saving
-        #         if mime_type.startswith('image'):
-        #             create_thumbnail(filename)
-        #
-        #         # get file size after saving
-        #         size = os.path.getsize(uploaded_file_path)
-        #
-        #         # return json for js call back
-        #         result = uploadfile(name=filename, type=mime_type, size=size)
-        #
-        #     simplejson.dumps({"files": [result.get_file()]})
-        return 200
+    # @web.authenticated
+    # @json_errors
+    # @gen.coroutine
+    # def get(self):
+    #     print "I am in the post"
+    #     # files = request.files['file']
+    #     #
+    #     # if files:
+    #     #     filename = secure_filename(files.filename)
+    #     #     filename = gen_file_name(filename)
+    #     #     mime_type = files.content_type
+    #     #
+    #     #     if not allowed_file(files.filename):
+    #     #         result = uploadfile(name=filename, type=mime_type, size=0, not_allowed_msg="File type not allowed")
+    #     #
+    #     #     else:
+    #     #         # save file to disk
+    #     #         uploaded_file_path = os.path.join(UPLOAD_FOLDER, filename)
+    #     #         files.save(uploaded_file_path)
+    #     #
+    #     #         # create thumbnail after saving
+    #     #         if mime_type.startswith('image'):
+    #     #             create_thumbnail(filename)
+    #     #
+    #     #         # get file size after saving
+    #     #         size = os.path.getsize(uploaded_file_path)
+    #     #
+    #     #         # return json for js call back
+    #     #         result = uploadfile(name=filename, type=mime_type, size=size)
+    #     #
+    #     #     simplejson.dumps({"files": [result.get_file()]})
+    #     return 200
 
     @web.authenticated
     @json_errors
@@ -84,24 +85,25 @@ class UploadFilesHandler(APIHandler, tornado.web.RequestHandler):
         with open(UPLOAD_FOLDER + filename, 'a') as f:
             f.write(str(file['body']))
             f.close()
-        self.finish(filename + " is uploaded!! Check %s folder" %UPLOAD_FOLDER)
+        self.finish(filename + " is uploaded!! Check %s folder" % UPLOAD_FOLDER)
 
         return 200
 
     @web.authenticated
     @json_errors
     @gen.coroutine
-    @tornado.web.stream_request_body
-    def put(self, filename):
-        filename = unquote(filename)
+    def put(self):
+        print self.request
+        print self.request.headers
+        filename = unquote(self.request.headers.filename)
         mtype = self.request.headers.get('Content-Type')
         print 'PUT "%s" "%s" %d bytes', filename, mtype, self.bytes_read
         self.write('OK')
         return 200
 
-    #
-    # def get_file(self, filename):
-    #     return send_from_directory(os.path.join(UPLOAD_FOLDER), filename=filename)
+        #
+        # def get_file(self, filename):
+        #     return send_from_directory(os.path.join(UPLOAD_FOLDER), filename=filename)
 
 
 # -----------------------------------------------------------------------------
