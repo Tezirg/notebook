@@ -67,7 +67,8 @@
     'services/kernels/serialize',
     'services/kernels/comm',
     'services/kernels/kernel',
-    'services/config'
+    'services/config',
+    'tree/js/dropzone'
 ].forEach(function (modulePath) {
     define(modulePath, ['notebook'], function(notebookApp) {
         console.warn(["Direct module require deprecated.  Instead of using",
