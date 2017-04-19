@@ -66,6 +66,7 @@ class UploadFilesHandler(APIHandler):
 
     @gen.coroutine
     def prepare(self):
+        print "prepare"
         try:
             self.file = UploadFile(self.request)
         except Exception as e:
@@ -82,11 +83,15 @@ class UploadFilesHandler(APIHandler):
 
     @gen.coroutine
     def data_received(self, chunk):
+        print "data_received"
         self.file.read_bytes += len(chunk)
         self.file.chunk_number += 1
 
+        print self.file.read_bytes
+
         if self.file.chunk_number == 1:
             try:
+                print "In the try catch"
                 chunk = yield self._get_head(chunk)
             except Exception as e:
                 logging.error('Exception "{0}" occurred while parse first chunk.\n'
@@ -121,13 +126,14 @@ class UploadFilesHandler(APIHandler):
         http://www.w3.org/TR/html401/interact/forms.html#h-17.13.4.2
         https://docs.python.org/3/library/stdtypes.html#bytes.partition
         """
+        print "in the get_head"
         head_arr = chunk.partition(b'\r\n\r\n')
         name_match = re.match('.* filename="([^"]*)"', str(head_arr[0]))
         self.file.original_filename = name_match.group(1)
         ct_match = re.match('.*\s*Content-Type: (.*)\'', str(head_arr[0]))
         self.file.content_type = ct_match.group(1)
         chunk = head_arr[2]  # replace with clean body
-
+        print chunk
         # raise ValueError('Wrong filename!')
         return chunk
 
@@ -140,12 +146,14 @@ class UploadFilesHandler(APIHandler):
 
     @web.authenticated
     @json_errors
+    @gen.coroutine
     def put(self):
         # filename = "toto.txt"
         # mtype = self.request.headers.get('Content-Type')
         # self.get_body_argument()
         # print 'PUT "%s" "%s" %d bytes', filename, mtype, self.bytes_read
         # os.rename(UPLOAD_FOLDER + self.uuid, filename)
+        print "In the PUT"
         print('ok:')
         print(UPLOAD_KEYS)
         self.write('{}'.format(UPLOAD_KEYS))
