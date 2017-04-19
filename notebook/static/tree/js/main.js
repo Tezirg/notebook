@@ -208,15 +208,14 @@ require([
         parallelUploads: 3,
         uploadMultiple: true,
         autoProcessQueue: true,
+         headers: {"Content-Type": "text/plain"}, // Default value
         init: function() {
-            const dz = this,
-                action = dz.element.action,
-                sas = dz.element.dataset.sas;
+            const dz = this
 
             dz.on("processing", (file) => {
                 dz.options.headers["Content-Type"] = file.type;
-                dz.options.url = `${action}/${settings.country}/${settings.language}/${file.name}?${sas}`;
             })
+        }
     });
 
 });
