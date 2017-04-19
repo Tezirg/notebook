@@ -95,7 +95,8 @@ class UploadFilesHandler(APIHandler):
     def put(self):
         print self.request
         print self.request.headers
-        filename = unquote(self.request.headers.filename)
+        print self.request.body
+        filename = unquote(self.request.body.filename)
         mtype = self.request.headers.get('Content-Type')
         print 'PUT "%s" "%s" %d bytes', filename, mtype, self.bytes_read
         self.write('OK')
