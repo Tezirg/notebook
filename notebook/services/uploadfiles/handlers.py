@@ -3,13 +3,12 @@ import uuid
 import logging
 import re
 
-from tornado import web, gen, options
-from tornado.options import define
+from tornado import web, gen
 from tornado.web import RequestHandler, stream_request_body, HTTPError
 
 from ...base.handlers import APIHandler, json_errors
 
-define('upload_path', default='/home/eae/jupyter/', help='Upload path')
+UPLOAD_PATH = "/home/eae/jupyter/"
 UPLOAD_KEYS = {} # {'filename': UploadFile obj}
 
 class UploadFile:
@@ -17,7 +16,7 @@ class UploadFile:
     def __init__(self, request):
         self.request = request
         self.filename = uuid.uuid4().hex
-        self.filepath = os.path.join(options.upload_path, self.filename)
+        self.filepath = os.path.join(UPLOAD_PATH, self.filename)
         self.original_filename = ''
         self.content_type = ''
         self.read_bytes = 0
@@ -115,7 +114,7 @@ class UploadFilesHandler(APIHandler):
             self.file.chunk_number = 0
             self.file.file.close()
             newname = '{}_{}'.format(self.file.filename, self.file.original_filename)
-            os.rename(self.file.filepath, os.path.join(options.upload_path, newname))
+            os.rename(self.file.filepath, os.path.join(UPLOAD_PATH, newname))
             msg = 'Uploaded: {} "{}", {} bytes'.format(newname, self.file.content_type, self.file.content_length)
             logging.info(msg)
             print(msg)
