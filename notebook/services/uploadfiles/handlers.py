@@ -38,36 +38,25 @@ def gen_file_name(filename):
 class UploadFilesHandler(APIHandler):
     def initialize(self):
         self.bytes_read = 0
+        self.chunks = []
 
+    @gen.coroutine
     def data_received(self, chunk):
+        print len(chunk)
+        print chunk
         self.bytes_read += len(chunk)
+        yield self.chunks.put(chunk)
 
     @web.authenticated
     @json_errors
-    @gen.coroutine
-    def post(self):
-        print "I am in the post"
-        file = self.request.files['file[0]'][0]
-        filename = file['filename']
-        with open(UPLOAD_FOLDER + filename, 'a') as f:
-            f.write(str(file['body']))
-            f.close()
-        self.finish(filename + " is uploaded!! Check %s folder" % UPLOAD_FOLDER)
-
-        return 200
-
-    @web.authenticated
-    @json_errors
-    @gen.coroutine
     def put(self):
         print self.request
         print self.request.headers
         filename = "toto.txt"
         mtype = self.request.headers.get('Content-Type')
         print 'PUT "%s" "%s" %d bytes', filename, mtype, self.bytes_read
-        with open(UPLOAD_FOLDER + filename, 'a') as f:
-            f.write(self.request.body)
-            f.close()
+        print "totototooto"
+        print self.chunks
         self.write('OK')
         return 200
 
