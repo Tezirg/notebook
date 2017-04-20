@@ -67,6 +67,7 @@ class UploadFilesHandler(APIHandler):
                               .format(str(e), self.file.read_bytes))
                 raise HTTPError(500)
 
+        if len(chunk) > 1:
             self.file.file.write(chunk)
 
         if self.file.read_bytes == self.file.content_length:
@@ -101,8 +102,9 @@ class UploadFilesHandler(APIHandler):
 
     @web.authenticated
     @json_errors
+    @gen.coroutine
     def put(self):
-        print 'Uploaded: {}\n Length: {}\n Content Type: {}'.format(self.file.original_filename, self.file.content_length, self.file.content_type)
+        print("OK")
         return 200
 
 
