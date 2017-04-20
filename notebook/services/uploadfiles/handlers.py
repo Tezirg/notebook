@@ -86,9 +86,7 @@ class UploadFilesHandler(APIHandler):
         self.file.read_bytes += len(chunk)
         self.file.chunk_number += 1
 
-        print self.file.read_bytes
-
-        if self.file.chunk_number == 1:
+        if self.file.chunk_number == 2:
             try:
                 print "In the try catch"
                 chunk = yield self._get_head(chunk)
