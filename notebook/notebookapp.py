@@ -534,11 +534,11 @@ class NotebookApp(JupyterApp):
         help="The port used by ssh for this Notebook host."
     )
 
-    tornado_max_body_size = Integer(26843545600, config=True,
+    tornado_max_body_size = Integer(104857600, config=True,
                                 help="max_body_size is the largest response body that the client will accept."
     )
 
-    tornado_max_buffer_size = Integer(26843545600, config=True,
+    tornado_max_buffer_size = Integer(104857600, config=True,
                                 help="max_buffer_size is the number of bytes that can be read into memory at once"
     )
 
