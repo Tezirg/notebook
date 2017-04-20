@@ -67,7 +67,6 @@ class UploadFilesHandler(APIHandler):
                               .format(str(e), self.file.read_bytes))
                 raise HTTPError(500)
 
-        if(len(chunk) > 1 ):
             self.file.file.write(chunk)
 
         if self.file.read_bytes == self.file.content_length:
