@@ -37,7 +37,6 @@ class UploadFilesHandler(APIHandler):
 
     @gen.coroutine
     def prepare(self):
-        print "prepare"
         try:
             self.file = UploadFile(self.request)
         except Exception as e:
