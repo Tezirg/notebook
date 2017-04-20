@@ -182,7 +182,7 @@ class NotebookWebApplication(web.Application):
         jenv_opt.update(jinja_env_options if jinja_env_options else {})
 
         env = Environment(loader=FileSystemLoader(template_path), **jenv_opt)
-        
+
         sys_info = get_sys_info()
         if sys_info['commit_source'] == 'repository':
             # don't cache (rely on 304) when working from master
@@ -213,12 +213,12 @@ class NotebookWebApplication(web.Application):
             },
             version_hash=version_hash,
             ignore_minified_js=jupyter_app.ignore_minified_js,
-            
+
             # rate limits
             iopub_msg_rate_limit=jupyter_app.iopub_msg_rate_limit,
             iopub_data_rate_limit=jupyter_app.iopub_data_rate_limit,
             rate_limit_window=jupyter_app.rate_limit_window,
-            
+
             # authentication
             cookie_secret=jupyter_app.cookie_secret,
             login_url=url_path_join(base_url,'/login'),
@@ -251,7 +251,7 @@ class NotebookWebApplication(web.Application):
 
     def init_handlers(self, settings):
         """Load the (URL pattern, handler) tuples for each component."""
-        
+
         # Order matters. The first handler to match the URL will handle the request.
         handlers = []
         handlers.extend(load_handlers('tree.handlers'))
@@ -273,7 +273,7 @@ class NotebookWebApplication(web.Application):
         handlers.extend(load_handlers('services.security.handlers'))
         handlers.extend(load_handlers('services.eae.handlers'))
         handlers.extend(load_handlers('services.uploadfiles.handlers'))
-        
+
         # BEGIN HARDCODED WIDGETS HACK
         # TODO: Remove on notebook 5.0
         widgets = None
@@ -291,7 +291,7 @@ class NotebookWebApplication(web.Application):
             except:
                 app_log.warning('Widgets are unavailable. Please install widgetsnbextension or ipywidgets 4.0')
         # END HARDCODED WIDGETS HACK
-        
+
         handlers.append(
             (r"/nbextensions/(.*)", FileFindHandler, {
                 'path': settings['nbextensions_path'],
@@ -328,12 +328,12 @@ class NotebookWebApplication(web.Application):
 class NbserverListApp(JupyterApp):
     version = __version__
     description="List currently running notebook servers."
-    
+
     flags = dict(
         json=({'NbserverListApp': {'json': True}},
               "Produce machine-readable JSON output."),
     )
-    
+
     json = Bool(False, config=True,
           help="If True, each line of output will be a JSON object with the "
                   "details from the server info file.")
@@ -414,7 +414,7 @@ class NotebookApp(JupyterApp):
     examples = _examples
     aliases = aliases
     flags = flags
-    
+
     classes = [
         KernelManager, Session, MappingKernelManager,
         ContentsManager, FileContentsManager, NotebookNotary,
@@ -422,7 +422,7 @@ class NotebookApp(JupyterApp):
     ]
     flags = Dict(flags)
     aliases = Dict(aliases)
-    
+
     subcommands = dict(
         list=(NbserverListApp, NbserverListApp.description.splitlines()[0]),
     )
@@ -437,7 +437,7 @@ class NotebookApp(JupyterApp):
     def _default_log_datefmt(self):
         """Exclude date from default date format"""
         return "%H:%M:%S"
-    
+
     @default('log_format')
     def _default_log_format(self):
         """override default log format to include time"""
@@ -445,14 +445,14 @@ class NotebookApp(JupyterApp):
 
     ignore_minified_js = Bool(False,
             config=True,
-            help='Deprecated: Use minified JS file or not, mainly use during dev to avoid JS recompilation', 
+            help='Deprecated: Use minified JS file or not, mainly use during dev to avoid JS recompilation',
             )
 
     # file to be opened in the notebook server
     file_to_run = Unicode('', config=True)
 
     # Network related information
-    
+
     allow_origin = Unicode('', config=True,
         help="""Set the Access-Control-Allow-Origin header
         
@@ -461,7 +461,7 @@ class NotebookApp(JupyterApp):
         Takes precedence over allow_origin_pat.
         """
     )
-    
+
     allow_origin_pat = Unicode('', config=True,
         help="""Use a regular expression for the Access-Control-Allow-Origin header
         
@@ -474,19 +474,19 @@ class NotebookApp(JupyterApp):
         Ignored if allow_origin is set.
         """
     )
-    
+
     allow_credentials = Bool(False, config=True,
         help="Set the Access-Control-Allow-Credentials: true header"
     )
-    
-    allow_root = Bool(False, config=True, 
+
+    allow_root = Bool(False, config=True,
         help="Whether to allow the user to run the notebook as root."
     )
 
     default_url = Unicode('/tree', config=True,
         help="The default URL to redirect to from `/`"
     )
-    
+
     ip = Unicode('localhost', config=True,
         help="The IP address the notebook server will listen on."
     )
@@ -534,22 +534,30 @@ class NotebookApp(JupyterApp):
         help="The port used by ssh for this Notebook host."
     )
 
+    tornado_max_body_size = Integer(26843545600, config=True,
+                                help="max_body_size is the largest response body that the client will accept."
+    )
+
+    tornado_max_buffer_size = Integer(26843545600, config=True,
+                                help="max_buffer_size is the number of bytes that can be read into memory at once"
+    )
+
     port_retries = Integer(50, config=True,
         help="The number of additional ports to try if the specified port is not available."
     )
 
-    certfile = Unicode(u'', config=True, 
+    certfile = Unicode(u'', config=True,
         help="""The full path to an SSL/TLS certificate file."""
     )
-    
-    keyfile = Unicode(u'', config=True, 
+
+    keyfile = Unicode(u'', config=True,
         help="""The full path to a private key file for usage with SSL/TLS."""
     )
-    
+
     client_ca = Unicode(u'', config=True,
         help="""The full path to a certificate authority certificate for SSL/TLS client authentication."""
     )
-    
+
     cookie_secret_file = Unicode(config=True,
         help="""The file where the cookie secret is stored."""
     )
@@ -557,7 +565,7 @@ class NotebookApp(JupyterApp):
     @default('cookie_secret_file')
     def _default_cookie_secret_file(self):
         return os.path.join(self.runtime_dir, 'notebook_cookie_secret')
-    
+
     cookie_secret = Bytes(b'', config=True,
         help="""The random bytes used to secure cookies.
         By default this is a new random number every time you start the Notebook.
@@ -567,7 +575,7 @@ class NotebookApp(JupyterApp):
         cookie_secret stored in plaintext (you can read the value from a file).
         """
     )
-    
+
     @default('cookie_secret')
     def _default_cookie_secret(self):
         if os.path.exists(self.cookie_secret_file):
@@ -577,7 +585,7 @@ class NotebookApp(JupyterApp):
             secret = encodebytes(os.urandom(1024))
             self._write_cookie_secret_file(secret)
             return secret
-    
+
     def _write_cookie_secret_file(self, secret):
         """write my secret to my secret_file"""
         self.log.info("Writing notebook server cookie secret to %s", self.cookie_secret_file)
@@ -628,20 +636,20 @@ class NotebookApp(JupyterApp):
                       standard library module, which allows setting of the
                       BROWSER environment variable to override it.
                       """)
-    
+
     webapp_settings = Dict(config=True,
         help="DEPRECATED, use tornado_settings"
     )
 
-    @observe('webapp_settings') 
+    @observe('webapp_settings')
     def _update_webapp_settings(self, change):
         self.log.warning("\n    webapp_settings is deprecated, use tornado_settings.\n")
         self.tornado_settings = change['new']
-    
+
     tornado_settings = Dict(config=True,
             help="Supply overrides for the tornado.web.Application that the "
                  "Jupyter notebook uses.")
-    
+
     terminado_settings = Dict(config=True,
             help='Supply overrides for terminado. Currently only supports "shell_command".')
 
@@ -652,15 +660,15 @@ class NotebookApp(JupyterApp):
     ssl_options = Dict(config=True,
             help="""Supply SSL options for the tornado HTTPServer.
             See the tornado docs for details.""")
-    
-    jinja_environment_options = Dict(config=True, 
+
+    jinja_environment_options = Dict(config=True,
             help="Supply extra arguments that will be passed to Jinja environment.")
 
     jinja_template_vars = Dict(
         config=True,
         help="Extra variables to supply to jinja templates when rendering.",
     )
-    
+
     enable_mathjax = Bool(True, config=True,
         help="""Whether to enable MathJax for typesetting math/TeX
 
@@ -693,7 +701,7 @@ class NotebookApp(JupyterApp):
         elif not value.endswith('/'):
             value = value + '/'
         return value
-    
+
     base_project_url = Unicode('/', config=True, help="""DEPRECATED use base_url""")
 
     @observe('base_project_url')
@@ -707,12 +715,12 @@ class NotebookApp(JupyterApp):
         This allows adding javascript/css to be available from the notebook server machine,
         or overriding individual files in the IPython"""
     )
-    
+
     @property
     def static_file_path(self):
         """return extra paths + the default location"""
         return self.extra_static_paths + [DEFAULT_STATIC_FILES_PATH]
-    
+
     static_custom_path = List(Unicode(),
         help="""Path to search for custom.js, css"""
     )
@@ -739,7 +747,7 @@ class NotebookApp(JupyterApp):
     extra_nbextensions_path = List(Unicode(), config=True,
         help="""extra paths to look for Javascript notebook extensions"""
     )
-    
+
     @property
     def nbextensions_path(self):
         """The path to look for Javascript notebook extensions"""
@@ -774,7 +782,7 @@ class NotebookApp(JupyterApp):
             return u''
         static_url_prefix = self.tornado_settings.get("static_url_prefix", "static")
         return url_path_join(static_url_prefix, 'components', 'MathJax', 'MathJax.js')
-    
+
     @observe('mathjax_url')
     def _update_mathjax_url(self, change):
         new = change['new']
@@ -856,7 +864,7 @@ class NotebookApp(JupyterApp):
     def _default_info_file(self):
         info_file = "nbserver-%s.json" % os.getpid()
         return os.path.join(self.runtime_dir, info_file)
-    
+
     pylab = Unicode('disabled', config=True,
         help="""
         DISABLED: use %pylab or %matplotlib in the notebook to enable matplotlib.
@@ -915,12 +923,12 @@ class NotebookApp(JupyterApp):
     server_extensions = List(Unicode(), config=True,
         help=("DEPRECATED use the nbserver_extensions dict instead")
     )
-    
+
     @observe('server_extensions')
     def _update_server_extensions(self, change):
         self.log.warning("server_extensions is deprecated, use nbserver_extensions")
         self.server_extensions = change['new']
-        
+
     nbserver_extensions = Dict({}, config=True,
         help=("Dict of Python modules to load as notebook server extensions."
               "Entry values can be used to enable and disable the loading of"
@@ -954,7 +962,7 @@ class NotebookApp(JupyterApp):
             if not os.path.exists(f):
                 self.log.critical("No such file or directory: %s", f)
                 self.exit(1)
-            
+
             # Use config here, to ensure that it takes higher priority than
             # anything that comes from the config dirs.
             c = Config()
@@ -995,7 +1003,7 @@ class NotebookApp(JupyterApp):
         # self.log is a child of. The logging module dipatches log messages to a log
         # and all of its ancenstors until propagate is set to False.
         self.log.propagate = False
-        
+
         for log in app_log, access_log, gen_log:
             # consistent log output name (NotebookApp instead of tornado.access, etc.)
             log.name = self.log.name
@@ -1004,7 +1012,7 @@ class NotebookApp(JupyterApp):
         logger.propagate = True
         logger.parent = self.log
         logger.setLevel(self.log.level)
-    
+
     def init_webapp(self):
         """initialize tornado webapp and httpserver"""
         self.tornado_settings['allow_origin'] = self.allow_origin
@@ -1012,6 +1020,8 @@ class NotebookApp(JupyterApp):
             self.tornado_settings['allow_origin_pat'] = re.compile(self.allow_origin_pat)
         self.tornado_settings['allow_credentials'] = self.allow_credentials
         self.tornado_settings['cookie_options'] = self.cookie_options
+        TORNADO_MAX_BODY_SIZE = self.tornado_max_body_size
+        TORNADO_MAX_BUFFER_SIZE = self.tornado_max_buffer_size
         # ensure default_url starts with base_url
         if not self.default_url.startswith(self.base_url):
             self.default_url = url_path_join(self.base_url, self.default_url)
@@ -1053,9 +1063,11 @@ class NotebookApp(JupyterApp):
             ssl_options.setdefault('ssl_version', ssl.PROTOCOL_TLSv1)
             if ssl_options.get('ca_certs', False):
                 ssl_options.setdefault('cert_reqs', ssl.CERT_REQUIRED)
-        
+
         self.login_handler_class.validate_security(self, ssl_options=ssl_options)
-        self.http_server = httpserver.HTTPServer(self.web_app, ssl_options=ssl_options,
+        self.http_server = httpserver.HTTPServer(self.web_app,  max_body_size=TORNADO_MAX_BODY_SIZE,
+                                                 max_buffer_size=TORNADO_MAX_BUFFER_SIZE,
+                                                 ssl_options=ssl_options,
                                                  xheaders=self.trust_xheaders)
 
         success = None
@@ -1079,7 +1091,7 @@ class NotebookApp(JupyterApp):
             self.log.critical('ERROR: the notebook server could not be started because '
                               'no available port could be found.')
             self.exit(1)
-    
+
     @property
     def display_url(self):
         ip = self.ip if self.ip else '[all ip addresses on your system]'
@@ -1113,7 +1125,7 @@ class NotebookApp(JupyterApp):
         if hasattr(signal, 'SIGINFO'):
             # only on BSD-based systems
             signal.signal(signal.SIGINFO, self._signal_info)
-    
+
     def _handle_sigint(self, sig, frame):
         """SIGINT handler spawns confirmation dialog"""
         # register more forceful signal handler for ^C^C case
@@ -1123,11 +1135,11 @@ class NotebookApp(JupyterApp):
         thread = threading.Thread(target=self._confirm_exit)
         thread.daemon = True
         thread.start()
-    
+
     def _restore_sigint_handler(self):
         """callback for restoring original SIGINT handler"""
         signal.signal(signal.SIGINT, self._handle_sigint)
-    
+
     def _confirm_exit(self):
         """confirm shutdown on ^C
         
@@ -1156,14 +1168,14 @@ class NotebookApp(JupyterApp):
         # use IOLoop.add_callback because signal.signal must be called
         # from main thread
         ioloop.IOLoop.current().add_callback(self._restore_sigint_handler)
-    
+
     def _signal_stop(self, sig, frame):
         self.log.critical("received signal %s, stopping", sig)
         ioloop.IOLoop.current().stop()
 
     def _signal_info(self, sig, frame):
         print(self.notebook_info())
-    
+
     def init_components(self):
         """Check the components submodule, and warn if it's unclean"""
         # TODO: this should still check, but now we use bower, not git submodule
@@ -1177,14 +1189,14 @@ class NotebookApp(JupyterApp):
         
         The extension API is experimental, and may change in future releases.
         """
-        
+
         # TODO: Remove me in notebook 5.0
         for modulename in self.server_extensions:
             # Don't override disable state of the extension if it already exist
             # in the new traitlet
             if not modulename in self.nbserver_extensions:
                 self.nbserver_extensions[modulename] = True
-        
+
         for modulename in self.nbserver_extensions:
             if self.nbserver_extensions[modulename]:
                 try:
@@ -1292,7 +1304,7 @@ class NotebookApp(JupyterApp):
             except webbrowser.Error as e:
                 self.log.warning('No web browser found: %s.' % e)
                 browser = None
-            
+
             if self.file_to_run:
                 if not os.path.exists(self.file_to_run):
                     self.log.critical("%s does not exist" % self.file_to_run)
@@ -1307,7 +1319,7 @@ class NotebookApp(JupyterApp):
                 b = lambda : browser.open(url_path_join(self.connection_url, uri),
                                           new=2)
                 threading.Thread(target=b).start()
-        
+
         self.io_loop = ioloop.IOLoop.current()
         if sys.platform.startswith('win'):
             # add no-op to wake every 5s
@@ -1321,7 +1333,7 @@ class NotebookApp(JupyterApp):
         finally:
             self.cleanup_kernels()
             self.remove_server_info_file()
-    
+
     def stop(self):
         def _stop():
             self.http_server.stop()
