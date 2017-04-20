@@ -9,7 +9,7 @@ from tornado.web import RequestHandler, stream_request_body, HTTPError
 from ...base.handlers import APIHandler, json_errors
 
 UPLOAD_PATH = "/home/eae/jupyter/"
-UPLOAD_KEYS = {} # {'filename': UploadFile obj}
+# UPLOAD_KEYS = {} # {'filename': UploadFile obj}
 
 class UploadFile:
 
@@ -23,12 +23,12 @@ class UploadFile:
         self.chunk_number = 0
         self.file = open(self.filepath, 'wb')
 
-        self.client_key = self.request.query_arguments.get('key', None)
-        if not self.client_key:
-            raise 'No "key" (GET) parameter!'
-        else:
-            self.client_key = self.client_key[0]
-            print(self.client_key)
+        # self.client_key = self.request.query_arguments.get('key', None)
+        # if not self.client_key:
+        #     raise 'No "key" (GET) parameter!'
+        # else:
+        #     self.client_key = self.client_key[0]
+        #     print(self.client_key)
 
         try:
             self.content_length = int(self.request.headers.get('Content-Length'))
@@ -40,24 +40,24 @@ class UploadFile:
         return int(round(self.read_bytes / self.content_length, 2) * 100)
 
 
-class UploadForm(RequestHandler):
-
-    @gen.coroutine
-    def get(self):
-        self.render("upload_form.html")
-
-
-class UploadPercentages(RequestHandler):
-
-    @gen.coroutine
-    def get(self):
-        try:
-            client_key = str(self.get_argument('key'))
-            file = UPLOAD_KEYS.get(client_key, None)
-            p = yield file.percentages() if file else ''
-            self.write('{}%'.format(p))
-        except Exception as e:
-            raise('Exception "{0}" occurred while get file upload percentages!'.format(str(e)))
+# class UploadForm(RequestHandler):
+#
+#     @gen.coroutine
+#     def get(self):
+#         self.render("upload_form.html")
+#
+#
+# class UploadPercentages(RequestHandler):
+#
+#     @gen.coroutine
+#     def get(self):
+#         try:
+#             client_key = str(self.get_argument('key'))
+#             file = UPLOAD_KEYS.get(client_key, None)
+#             p = yield file.percentages() if file else ''
+#             self.write('{}%'.format(p))
+#         except Exception as e:
+#             raise('Exception "{0}" occurred while get file upload percentages!'.format(str(e)))
 
 
 @stream_request_body
@@ -70,7 +70,7 @@ class UploadFilesHandler(APIHandler):
             self.file = UploadFile(self.request)
         except Exception as e:
             raise HTTPError(500)
-        UPLOAD_KEYS[self.file.client_key] = self.file
+        # UPLOAD_KEYS[self.file.client_key] = self.file
 
     # @gen.coroutine
     # def data_received(self, chunk):
@@ -154,8 +154,8 @@ class UploadFilesHandler(APIHandler):
         # os.rename(UPLOAD_FOLDER + self.uuid, filename)
         print "In the PUT"
         print('ok:')
-        print(UPLOAD_KEYS)
-        self.write('{}'.format(UPLOAD_KEYS))
+        # print(UPLOAD_KEYS)
+        # self.write('{}'.format(UPLOAD_KEYS))
         return 200
 
 
