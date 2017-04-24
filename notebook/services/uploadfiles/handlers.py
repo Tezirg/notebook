@@ -3,7 +3,6 @@ import uuid
 import logging
 import re
 
-from pathlib import Path
 from tornado import web, gen
 from tornado.web import stream_request_body, HTTPError
 
@@ -74,7 +73,7 @@ class UploadFilesHandler(APIHandler):
             self.file.chunk_number = 0
             self.file.file.close()
             newname = self.file.original_filename
-            if Path(UPLOAD_PATH + self.file.original_filename).is_file():
+            if os.path.isfile(UPLOAD_PATH + self.file.original_filename):
                 # file exists
                 newname = '{}_{}'.format(self.file.filename, self.file.original_filename)
             os.rename(self.file.filepath, os.path.join(UPLOAD_PATH, newname))
