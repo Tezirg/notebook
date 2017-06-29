@@ -47,7 +47,7 @@ class UploadFilesHandler(APIHandler):
         self.file.read_bytes += len(chunk)
         self.file.chunk_number += 1
 
-        if self.file.chunk_number == 2:
+        if self.file.chunk_number == 1:
             try:
                 chunk = yield self._get_head(chunk)
             except Exception as e:
@@ -66,8 +66,8 @@ class UploadFilesHandler(APIHandler):
                               .format(str(e), self.file.read_bytes))
                 raise HTTPError(500)
 
-        if self.file.chunk_number > 1:
-            self.file.file.write(chunk)
+
+        self.file.file.write(chunk)
 
         if self.file.read_bytes == self.file.content_length:
             self.file.chunk_number = 0
